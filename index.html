@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Walter Montiel — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <span class="nav-logo">WM</span>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-content">
+      <p class="hero-greeting">Hello, I'm</p>
+      <h1 class="hero-name">Walter<br><span>Montiel</span></h1>
+      <div class="hero-roles">
+        <span class="role-tag">RPA Developer</span>
+        <span class="role-tag">Data Analyst</span>
+        <span class="role-tag">Software Engineer</span>
+      </div>
+      <p class="hero-summary">
+        System Analyst with <strong>5+ years in RPA</strong> and <strong>9+ years in software development</strong>,
+        delivering automation, data intelligence, and enterprise solutions across Latin America.
+      </p>
+      <div class="hero-cta">
+        <a href="#experience" class="btn btn-primary">View My Work</a>
+        <a href="#contact" class="btn btn-outline">Get In Touch</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="code-block">
+        <div class="code-header">
+          <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+          <span class="code-title">walter.py</span>
+        </div>
+        <pre><code><span class="kw">class</span> <span class="cls">WalterMontiel</span>:
+  role     = <span class="str">"Senior RPA / Data Analyst"</span>
+  location = <span class="str">"Asunción, Paraguay"</span>
+  years_exp = <span class="num">9</span>
+
+  skills = [
+    <span class="str">"Blue Prism"</span>, <span class="str">"Python"</span>,
+    <span class="str">"Power BI"</span>, <span class="str">"SQL Server"</span>,
+    <span class="str">".NET / C#"</span>, <span class="str">"JavaScript"</span>,
+  ]
+
+  <span class="kw">def</span> <span class="fn">solve</span>(self, problem):
+    <span class="kw">return</span> <span class="str">"automated solution"</span></code></pre>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <span>scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <h2 class="section-title">About Me</h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>
+            I'm a <strong>System Analyst</strong> based in Asunción, Paraguay, specializing in Robotic Process Automation,
+            data analysis, and enterprise software development. Over 9 years I've worked across industries including
+            consulting, FMCG, fintech, real estate, and utilities.
+          </p>
+          <p>
+            My work spans the full lifecycle: from process discovery and automation design to deployment, QA, and training.
+            I've led RPA teams, served as Scrum Master, and mentored junior developers — always focused on delivering
+            measurable FTE savings and business value.
+          </p>
+          <p>
+            Fluent in English and Spanish, I collaborate comfortably with international clients and cross-functional teams.
+          </p>
+          <div class="about-stats">
+            <div class="stat"><span class="stat-num">9+</span><span class="stat-label">Years Experience</span></div>
+            <div class="stat"><span class="stat-num">5+</span><span class="stat-label">Years RPA</span></div>
+            <div class="stat"><span class="stat-num">7</span><span class="stat-label">Companies</span></div>
+            <div class="stat"><span class="stat-num">3</span><span class="stat-label">Languages</span></div>
+          </div>
+        </div>
+        <div class="about-contact-card">
+          <h3>Quick Info</h3>
+          <ul>
+            <li><span class="icon">&#9993;</span> <a href="mailto:walterlorenzopy@hotmail.com">walterlorenzopy@hotmail.com</a></li>
+            <li><span class="icon">&#128222;</span> +595 972 199 660</li>
+            <li><span class="icon">&#127759;</span> Asunción, Paraguay (GMT-3)</li>
+            <li><span class="icon">&#128279;</span> <a href="https://linkedin.com/in/walterlorenzomontielvargas" target="_blank">LinkedIn Profile</a></li>
+          </ul>
+          <div class="lang-badges">
+            <span class="lang-badge">English — Fluent</span>
+            <span class="lang-badge">Spanish — Native</span>
+            <span class="lang-badge">Portuguese — Intermediate</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="container">
+      <h2 class="section-title">Experience</h2>
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-card">
+            <div class="job-header">
+              <div>
+                <h3 class="job-title">Data Analyst / RPA Consultant</h3>
+                <p class="job-company">Dynamus</p>
+              </div>
+              <span class="job-period">2024 – 2025</span>
+            </div>
+            <p class="job-desc">
+              Embedded within the ANDE (Administración Nacional de Electricidad) AMI tender project, supporting
+              the licitación process for Advanced Metering Infrastructure across Paraguay's national electric utility.
+              Delivered data analysis, reporting pipelines, and automation solutions to support the bid evaluation
+              and technical assessment workflow.
+            </p>
+            <div class="job-tags">
+              <span>Data Analysis</span><span>PostgreSQL</span><span>Python</span><span>Power BI</span><span>RPA</span><span>Utilities</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-card">
+            <div class="job-header">
+              <div>
+                <h3 class="job-title">Innovation Advisory Supervisor</h3>
+                <p class="job-company">Grant Thornton</p>
+              </div>
+              <span class="job-period">2023</span>
+            </div>
+            <p class="job-desc">
+              Led innovation initiatives identifying opportunities for process optimization and tech advancement.
+              Directed cross-functional teams to develop and implement solutions driving productivity and cost savings.
+              Provided strategic recommendations on RPA, IT audit, and cybersecurity; assessed risks of emerging
+              technologies and presented mitigation strategies to senior management.
+            </p>
+            <div class="job-tags">
+              <span>RPA Strategy</span><span>IT Audit</span><span>Cybersecurity</span><span>Innovation</span><span>Team Lead</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-card">
+            <div class="job-header">
+              <div>
+                <h3 class="job-title">RPA Developer</h3>
+                <p class="job-company">EDGE — Client: Tigo Paraguay</p>
+              </div>
+              <span class="job-period">~1 year</span>
+            </div>
+            <p class="job-desc">
+              Developed and deployed RPA automation processes for Tigo Paraguay (Millicom), one of the largest
+              telecoms in the country. Designed automated workflows to reduce manual operations across
+              back-office and operational areas.
+            </p>
+            <div class="job-tags">
+              <span>Blue Prism</span><span>RPA</span><span>Telecom</span><span>.NET</span><span>SQL</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-card">
+            <div class="job-header">
+              <div>
+                <h3 class="job-title">C# Developer</h3>
+                <p class="job-company">Microtech</p>
+              </div>
+              <span class="job-period">2022</span>
+            </div>
+            <p class="job-desc">
+              Pivotal role in QA during development of a new core CRM for a Real Estate company.
+              Led middleware development focused on API creation and integration. Employed .NET Core, C#,
+              SQL Integration Services, and VB Script in a Database First architecture.
+            </p>
+            <div class="job-tags">
+              <span>C# / .NET Core</span><span>REST APIs</span><span>SQL Server</span><span>QA</span><span>Real Estate</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-card">
+            <div class="job-header">
+              <div>
+                <h3 class="job-title">Business Solution Analyst</h3>
+                <p class="job-company">Nestlé Business Services</p>
+              </div>
+              <span class="job-period">2021 – 2022</span>
+            </div>
+            <p class="job-desc">
+              Lead developer for automation projects improving FTE savings across Nestlé operations.
+              Automated repetitive business tasks via Blue Prism, SAP Script, SQL, .NET, and VbScript.
+              Also served as <strong>Scrum Master</strong> ensuring framework adherence, and as
+              <strong>Lead Instructor</strong> for an Apprentice Program mentoring 7 interns.
+            </p>
+            <div class="job-tags">
+              <span>Blue Prism</span><span>SAP</span><span>Scrum Master</span><span>Mentoring</span><span>FMCG</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-card">
+            <div class="job-header">
+              <div>
+                <h3 class="job-title">RPA Developer</h3>
+                <p class="job-company">EY (Ernst &amp; Young)</p>
+              </div>
+              <span class="job-period">2017 – 2021</span>
+            </div>
+            <p class="job-desc">
+              Lead developer for client automation projects, delivering significant FTE savings through process
+              analysis and end-to-end automation. Built support tools using Visual .NET, HTML/CSS/JS, jQuery,
+              Azure APIs, Blue Prism, PowerShell, SQL, Python, and R. Also contributed to Data Analysis projects
+              delivering statistics, visualizations, and projections via Power BI, Tibco Spotfire, Tableau,
+              Python, Computer Vision, and Tesseract OCR.
+            </p>
+            <div class="job-tags">
+              <span>Blue Prism</span><span>Power BI</span><span>Python</span><span>Azure</span><span>Tableau</span><span>OCR</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-card">
+            <div class="job-header">
+              <div>
+                <h3 class="job-title">.NET Developer</h3>
+                <p class="job-company">EDYDSI</p>
+              </div>
+              <span class="job-period">2016 – 2017</span>
+            </div>
+            <p class="job-desc">
+              Developed, updated, and maintained accounting and billing software products. Added new reports
+              and modules using Visual .Net, ASP .Net, SQL Server, JavaScript, HTML, jQuery, XML,
+              Crystal Reports, VB Script, and DevExpress.
+            </p>
+            <div class="job-tags">
+              <span>Visual .NET</span><span>ASP.NET</span><span>SQL Server</span><span>Crystal Reports</span><span>DevExpress</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="container">
+      <h2 class="section-title">Skills</h2>
+      <div class="skills-grid">
+
+        <div class="skill-category">
+          <h3><span class="skill-icon">&#129302;</span> RPA &amp; Automation</h3>
+          <div class="skill-items">
+            <div class="skill-item"><span>Blue Prism</span><div class="bar"><div class="fill" style="width:95%"></div></div></div>
+            <div class="skill-item"><span>Process Analysis</span><div class="bar"><div class="fill" style="width:92%"></div></div></div>
+            <div class="skill-item"><span>VBA / VbScript</span><div class="bar"><div class="fill" style="width:90%"></div></div></div>
+            <div class="skill-item"><span>SAP Automation</span><div class="bar"><div class="fill" style="width:80%"></div></div></div>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <h3><span class="skill-icon">&#128202;</span> Data &amp; Analytics</h3>
+          <div class="skill-items">
+            <div class="skill-item"><span>Power BI</span><div class="bar"><div class="fill" style="width:92%"></div></div></div>
+            <div class="skill-item"><span>Python (Pandas/ML)</span><div class="bar"><div class="fill" style="width:85%"></div></div></div>
+            <div class="skill-item"><span>Tableau</span><div class="bar"><div class="fill" style="width:75%"></div></div></div>
+            <div class="skill-item"><span>TIBCO Spotfire</span><div class="bar"><div class="fill" style="width:70%"></div></div></div>
+            <div class="skill-item"><span>R</span><div class="bar"><div class="fill" style="width:65%"></div></div></div>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <h3><span class="skill-icon">&#128187;</span> Software Development</h3>
+          <div class="skill-items">
+            <div class="skill-item"><span>Visual .NET / C#</span><div class="bar"><div class="fill" style="width:92%"></div></div></div>
+            <div class="skill-item"><span>Python</span><div class="bar"><div class="fill" style="width:88%"></div></div></div>
+            <div class="skill-item"><span>HTML / CSS / JS</span><div class="bar"><div class="fill" style="width:85%"></div></div></div>
+            <div class="skill-item"><span>PHP / C++</span><div class="bar"><div class="fill" style="width:80%"></div></div></div>
+            <div class="skill-item"><span>React / Node.js</span><div class="bar"><div class="fill" style="width:55%"></div></div></div>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <h3><span class="skill-icon">&#128451;</span> Databases</h3>
+          <div class="skill-items">
+            <div class="skill-item"><span>SQL Server</span><div class="bar"><div class="fill" style="width:95%"></div></div></div>
+            <div class="skill-item"><span>Oracle SQL</span><div class="bar"><div class="fill" style="width:90%"></div></div></div>
+            <div class="skill-item"><span>PostgreSQL</span><div class="bar"><div class="fill" style="width:75%"></div></div></div>
+            <div class="skill-item"><span>MongoDB</span><div class="bar"><div class="fill" style="width:50%"></div></div></div>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <h3><span class="skill-icon">&#127959;</span> Architecture &amp; Tooling</h3>
+          <div class="skill-items">
+            <div class="skill-item"><span>REST APIs / Azure APIs</span><div class="bar"><div class="fill" style="width:85%"></div></div></div>
+            <div class="skill-item"><span>Git / GitHub</span><div class="bar"><div class="fill" style="width:88%"></div></div></div>
+            <div class="skill-item"><span>PowerShell</span><div class="bar"><div class="fill" style="width:80%"></div></div></div>
+            <div class="skill-item"><span>Docker</span><div class="bar"><div class="fill" style="width:50%"></div></div></div>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <h3><span class="skill-icon">&#127963;</span> Methodologies</h3>
+          <div class="skill-items">
+            <div class="skill-item"><span>Scrum / Scrum Master</span><div class="bar"><div class="fill" style="width:90%"></div></div></div>
+            <div class="skill-item"><span>Kanban</span><div class="bar"><div class="fill" style="width:85%"></div></div></div>
+            <div class="skill-item"><span>QA / Testing</span><div class="bar"><div class="fill" style="width:88%"></div></div></div>
+            <div class="skill-item"><span>Lean Software Dev</span><div class="bar"><div class="fill" style="width:80%"></div></div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="container">
+      <h2 class="section-title">Education</h2>
+      <div class="edu-grid">
+        <div class="edu-card">
+          <div class="edu-icon">&#127979;</div>
+          <div>
+            <h3>Bachelor of Computer Science</h3>
+            <p class="edu-school">Universidad Autónoma de Asunción</p>
+            <p class="edu-courses">OOP (C++, .NET, C#, Java) &middot; Compilers &middot; Algorithms &middot; Operating Systems &middot; Data Structures &middot; Software Quality &middot; Project Management</p>
+          </div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-icon">&#127891;</div>
+          <div>
+            <h3>Specialist in University Didactics</h3>
+            <p class="edu-school">Universidad del Norte</p>
+            <p class="edu-courses">Didactics Resources &amp; TICS &middot; Assessment of Learning &middot; Curricular Design &middot; Competency-Based Instruction</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <h2 class="section-title">Get In Touch</h2>
+      <p class="contact-subtitle">
+        Open to consulting engagements, RPA projects, and data analytics work.
+        Based in Asunción — available remotely worldwide.
+      </p>
+      <div class="contact-links">
+        <a href="mailto:walterlorenzopy@hotmail.com" class="contact-card">
+          <span class="contact-icon">&#9993;</span>
+          <span class="contact-label">Email</span>
+          <span class="contact-value">walterlorenzopy@hotmail.com</span>
+        </a>
+        <a href="https://linkedin.com/in/walterlorenzomontielvargas" target="_blank" class="contact-card">
+          <span class="contact-icon">&#128101;</span>
+          <span class="contact-label">LinkedIn</span>
+          <span class="contact-value">walterlorenzomontielvargas</span>
+        </a>
+        <a href="tel:+595972199660" class="contact-card">
+          <span class="contact-icon">&#128222;</span>
+          <span class="contact-label">Phone / WhatsApp</span>
+          <span class="contact-value">+595 972 199 660</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Walter Montiel &mdash; Asunción, Paraguay &mdash; 2025</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
