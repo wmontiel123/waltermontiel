@@ -34,10 +34,14 @@
     .yg-section-title { font-size: 1.4rem; font-weight:700; margin: 2.5rem 0 1.2rem; display:inline-block; }
     .yg-section-title::after { content:''; display:block; height:3px; width:55%; background: linear-gradient(90deg, var(--accent), transparent); margin-top:.35rem; border-radius:2px; }
 
-    .yg-table-wrap { overflow-x:auto; border:1px solid var(--border); border-radius:14px; }
-    table.yg-table { width:100%; border-collapse: collapse; font-size:.88rem; min-width: 860px; }
-    .yg-table th, .yg-table td { padding:.55rem .7rem; text-align:left; border-bottom:1px solid var(--border); }
-    .yg-table thead th { background: var(--bg3); font-family: var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.04em; color: var(--muted); white-space:nowrap; }
+    .yg-table-wrap { overflow:auto; max-height:340px; border:1px solid var(--border); border-radius:14px; }
+    .yg-table-wrap::-webkit-scrollbar { width:10px; height:10px; }
+    .yg-table-wrap::-webkit-scrollbar-track { background: var(--bg3); }
+    .yg-table-wrap::-webkit-scrollbar-thumb { background: rgba(212,175,55,.4); border-radius:999px; }
+    .yg-table-wrap::-webkit-scrollbar-thumb:hover { background: rgba(212,175,55,.6); }
+    table.yg-table { width:100%; border-collapse: collapse; font-size:.8rem; min-width: 820px; }
+    .yg-table th, .yg-table td { padding:.32rem .6rem; text-align:left; border-bottom:1px solid var(--border); }
+    .yg-table thead th { position:sticky; top:0; z-index:2; background: #14120d; font-family: var(--mono); font-size:.64rem; text-transform:uppercase; letter-spacing:.03em; color: var(--muted); white-space:nowrap; }
     .yg-table tbody tr:hover { background: rgba(212,175,55,.04); }
     .yg-table td.qty, .yg-table th.qty { text-align:center; width:42px; font-family:var(--mono); }
     .yg-cat-col { text-align:center; width:72px; }
@@ -47,10 +51,13 @@
     .g2-input { width:48px; text-align:center; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:.25rem; font-family:var(--mono); font-size:.82rem; }
     .zone-sel { background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:.25rem .35rem; font-family:var(--mono); font-size:.76rem; }
     tr.zone-extra { opacity:.6; } tr.zone-side { background: rgba(122,184,209,.04); }
-    .cat-chk { appearance:none; width:18px; height:18px; border:1px solid var(--border); border-radius:5px; cursor:pointer; position:relative; background: var(--card); transition: all .15s; }
+    .cat-chk { appearance:none; width:15px; height:15px; border:1px solid var(--border); border-radius:4px; cursor:pointer; position:relative; background: var(--card); transition: all .15s; }
     .cat-chk:hover { border-color: var(--accent); }
     .cat-chk:checked { background: var(--gold-grad); border-color: transparent; }
-    .cat-chk:checked::after { content:'\2713'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#1a1305; font-size:.8rem; font-weight:700; }
+    .cat-chk:checked::after { content:'\2713'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#1a1305; font-size:.68rem; font-weight:700; }
+    .yg-cat-col { width:64px; }
+    .g2-input { width:42px; padding:.18rem; }
+    .zone-sel { padding:.18rem .3rem; font-size:.72rem; }
 
     .yg-stats { display:grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap:1rem; margin-top:1.2rem; }
     .stat-card { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:1.1rem 1.2rem; }
