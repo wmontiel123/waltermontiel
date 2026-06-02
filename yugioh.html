@@ -137,6 +137,9 @@
     .comp-table th, .comp-table td { padding:.6rem .8rem; border-bottom:1px solid var(--border); text-align:center; }
     .comp-table th:first-child, .comp-table td:first-child { text-align:left; }
     .comp-table thead th { background:var(--bg3); font-family:var(--mono); font-size:.7rem; text-transform:uppercase; color:var(--muted); }
+    #saveCompBtn { background:linear-gradient(135deg,#9ad17a,#6fae52); color:#10210a; border:1px solid rgba(154,209,122,.5); font-weight:600; }
+    #saveCompBtn:hover { box-shadow:0 0 22px rgba(154,209,122,.45); color:#0a1505; transform:translateY(-1px); }
+
     .del-deck { cursor:pointer; color:#e08a4a; font-size:.75rem; font-family:var(--mono); }
     .deck-color { width:18px; height:18px; padding:0; border:1px solid var(--border); border-radius:4px; background:none; cursor:pointer; vertical-align:middle; margin-right:.45rem; }
     .deck-color::-webkit-color-swatch-wrapper { padding:0; }
@@ -583,8 +586,7 @@
     document.getElementById('ydkFile').addEventListener('change',e=>{
       const file=e.target.files[0]; if(!file) return;
       const baseName=file.name.replace(/\.(ydk|txt)$/i,'').trim();
-      const nameInput=document.getElementById('deckName');
-      if(!nameInput.value.trim() && baseName) nameInput.value=baseName;
+      if(baseName) document.getElementById('deckName').value=baseName;
       const reader=new FileReader();
       reader.onload=ev=>{ document.getElementById('deckInput').value=ev.target.result; document.getElementById('formatSel').value='ydk'; loadDeck(ev.target.result); };
       reader.readAsText(file);
