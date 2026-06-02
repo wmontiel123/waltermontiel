@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analizador de Decks Yu-Gi-Oh | Walter Montiel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .yg-wrap { max-width: 1100px; margin: 0 auto; padding: 7.5rem 2rem 5rem; }
+    .yg-back { font-family: var(--mono); font-size: .82rem; color: var(--muted); display:inline-block; margin-bottom: 1.5rem; }
+    .yg-back:hover { color: var(--accent2); }
+    .yg-title { font-size: clamp(1.9rem, 5vw, 3rem); font-weight: 700; margin-bottom: .5rem; }
+    .yg-title span { background: var(--gold-grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+    .yg-sub { color: var(--muted); max-width: 640px; margin-bottom: 2.5rem; line-height: 1.7; }
+
+    .yg-input-grid { display:grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 1rem; }
+    textarea#deckInput { width:100%; min-height: 180px; resize: vertical; background: var(--card); color: var(--text);
+      border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.1rem; font-family: var(--mono); font-size: .9rem; line-height: 1.6; }
+    textarea#deckInput:focus { outline: none; border-color: rgba(212,175,55,.5); }
+    .yg-formats { font-family: var(--mono); font-size: .76rem; color: var(--muted); line-height: 1.9; background: var(--bg3); border:1px solid var(--border); border-radius: 10px; padding: .8rem 1rem; }
+    .yg-formats b { color: var(--accent2); }
+    .yg-actions { display:flex; flex-wrap: wrap; gap: .8rem; align-items:center; margin: 1.2rem 0 2.5rem; }
+    .yg-file-label { font-family: var(--mono); font-size:.82rem; color: var(--muted); cursor:pointer; border:1px dashed var(--border); padding:.6rem 1rem; border-radius:8px; }
+    .yg-file-label:hover { border-color: var(--accent); color: var(--accent2); }
+    #ydkFile { display:none; }
+    .yg-note { font-size:.8rem; color: var(--muted); }
+
+    .yg-section-title { font-size: 1.4rem; font-weight:700; margin: 2.5rem 0 1.2rem; display:inline-block; }
+    .yg-section-title::after { content:''; display:block; height:3px; width:55%; background: linear-gradient(90deg, var(--accent), transparent); margin-top:.35rem; border-radius:2px; }
+
+    .yg-table-wrap { overflow-x:auto; border:1px solid var(--border); border-radius:14px; }
+    table.yg-table { width:100%; border-collapse: collapse; font-size:.9rem; min-width: 720px; }
+    .yg-table th, .yg-table td { padding:.6rem .8rem; text-align:left; border-bottom:1px solid var(--border); }
+    .yg-table thead th { background: var(--bg3); font-family: var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color: var(--muted); white-space:nowrap; }
+    .yg-table tbody tr:hover { background: rgba(212,175,55,.04); }
+    .yg-table td.qty, .yg-table th.qty { text-align:center; width:48px; font-family:var(--mono); }
+    .yg-cat-col { text-align:center; width:84px; }
+    .yg-cardname { font-weight:500; }
+    .cat-chk { appearance:none; width:18px; height:18px; border:1px solid var(--border); border-radius:5px; cursor:pointer; position:relative; background: var(--card); transition: all .15s; }
+    .cat-chk:hover { border-color: var(--accent); }
+    .cat-chk:checked { background: var(--gold-grad); border-color: transparent; }
+    .cat-chk:checked::after { content:'\2713'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#1a1305; font-size:.8rem; font-weight:700; }
+
+    .yg-stats { display:grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap:1rem; margin-top:1.5rem; }
+    .stat-card { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:1.2rem 1.3rem; }
+    .stat-card .lbl { font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); display:block; margin-bottom:.4rem; }
+    .stat-card .val { font-size:1.8rem; font-weight:700; color: var(--accent2); font-family:var(--mono); }
+    .stat-card .sub { font-size:.78rem; color:var(--muted); margin-top:.2rem; }
+    .stat-card.good .val { color:#9ad17a; } .stat-card.warn .val { color:#e0b24a; } .stat-card.bad .val { color:#e08a4a; }
+
+    .yg-hand { display:flex; flex-wrap:wrap; gap:.7rem; margin-top:1.2rem; }
+    .hand-card { background: var(--card); border:1px solid var(--border); border-radius:10px; padding:.7rem .9rem; min-width:150px; flex:1 1 160px; max-width:220px; }
+    .hand-card .hc-name { font-size:.85rem; font-weight:500; margin-bottom:.4rem; }
+    .hand-card .hc-tags { display:flex; flex-wrap:wrap; gap:.3rem; }
+    .tag { font-family:var(--mono); font-size:.62rem; padding:.1rem .45rem; border-radius:999px; border:1px solid; }
+    .tag.starter { color:#9ad17a; border-color:rgba(154,209,122,.4); background:rgba(154,209,122,.08); }
+    .tag.extender { color:#7ab8d1; border-color:rgba(122,184,209,.4); background:rgba(122,184,209,.08); }
+    .tag.handtrap { color:#d17a9a; border-color:rgba(209,122,154,.4); background:rgba(209,122,154,.08); }
+    .tag.breaker { color:#c9a227; border-color:rgba(201,162,39,.4); background:rgba(201,162,39,.08); }
+    .tag.brick { color:#e08a4a; border-color:rgba(224,138,74,.4); background:rgba(224,138,74,.08); }
+    .tag.none { color:var(--muted); border-color:var(--border); }
+
+    .empty-msg { color:var(--muted); font-size:.95rem; padding:1rem 0; }
+  </style>
+</head>
+<body>
+
+  <div class="yg-wrap">
+    <a href="proyectos.html" class="yg-back">&larr; Volver a Demos</a>
+    <h1 class="yg-title">Analizador de Decks <span>Yu-Gi-Oh!</span></h1>
+    <p class="yg-sub">
+      Pegá tu decklist, clasificá cada carta y calculá la consistencia del deck para manos de apertura de 5 cartas.
+      Incluye un simulador de manos. Todo corre en tu navegador.
+    </p>
+
+    <h2 class="yg-section-title">1 · Cargar decklist</h2>
+    <div class="yg-input-grid">
+      <textarea id="deckInput" placeholder="Pegá tu decklist aquí..."></textarea>
+      <div class="yg-formats">
+        Formatos aceptados:<br>
+        &bull; <b>3 Ash Blossom &amp; Joyous Spring</b> &nbsp;(cantidad + nombre)<br>
+        &bull; <b>Ash Blossom &amp; Joyous Spring x3</b> &nbsp;(nombre + xcantidad)<br>
+        &bull; <b>.ydk</b> &nbsp;(archivo o texto con IDs &mdash; los nombres se obtienen de YGOPRODeck)
+      </div>
+    </div>
+    <div class="yg-actions">
+      <button class="btn btn-primary" id="loadBtn">Cargar deck</button>
+      <label class="yg-file-label" for="ydkFile">&#128193; Subir archivo .ydk</label>
+      <input type="file" id="ydkFile" accept=".ydk,.txt" />
+      <span class="yg-note" id="loadNote"></span>
+    </div>
+
+    <div id="results" style="display:none;">
+      <h2 class="yg-section-title">2 · Clasificar cartas</h2>
+      <p class="yg-sub" style="margin-bottom:1rem;">Marcá una o más categorías por carta. La consistencia se recalcula automáticamente.</p>
+      <div class="yg-table-wrap">
+        <table class="yg-table">
+          <thead>
+            <tr>
+              <th class="qty">#</th>
+              <th>Carta</th>
+              <th class="yg-cat-col">Starter</th>
+              <th class="yg-cat-col">Extender</th>
+              <th class="yg-cat-col">Handtrap</th>
+              <th class="yg-cat-col">Board Breaker</th>
+              <th class="yg-cat-col">Brick</th>
+            </tr>
+          </thead>
+          <tbody id="cardRows"></tbody>
+        </table>
+      </div>
+
+      <h2 class="yg-section-title">3 · Consistencia (mano de 5)</h2>
+      <div class="yg-stats" id="statsGrid"></div>
+
+      <h2 class="yg-section-title">4 · Simulador de manos</h2>
+      <div class="yg-actions" style="margin-bottom:.5rem;">
+        <button class="btn btn-primary" id="drawBtn">Robar mano (5 cartas)</button>
+      </div>
+      <div class="yg-hand" id="handArea"><p class="empty-msg">Presioná "Robar mano" para simular una apertura.</p></div>
+    </div>
+  </div>
+
+  <script>
+    const CATS = [
+      { key:'starter',  label:'Starter' },
+      { key:'extender', label:'Extender' },
+      { key:'handtrap', label:'Handtrap' },
+      { key:'breaker',  label:'Board Breaker' },
+      { key:'brick',    label:'Brick' }
+    ];
+
+    // Auto-deteccion basica de handtraps comunes (se puede desmarcar)
+    const KNOWN_HANDTRAPS = [
+      'ash blossom','maxx','ghost ogre','effect veiler','nibiru','droll','infinite impermanence',
+      'd.d. crow','ghost belle','ghost sister','skull meister','artifact lancea','dimension shifter','gnomaterial','retaliating'
+    ];
+
+    let deck = []; // {name, qty, cats:{}}
+
+    function comb(n,k){ if(k<0||k>n||n<0) return 0; k=Math.min(k,n-k); let r=1; for(let i=0;i<k;i++){ r = r*(n-i)/(i+1); } return r; }
+
+    function autoCats(name){
+      const n = name.toLowerCase();
+      const cats = {};
+      if (KNOWN_HANDTRAPS.some(h => n.includes(h))) cats.handtrap = true;
+      return cats;
+    }
+
+    function parseText(text){
+      const map = new Map();
+      text.split(/\r?\n/).forEach(raw => {
+        let line = raw.trim();
+        if(!line || line.startsWith('#') || line.startsWith('!')) return;
+        let qty, name, m;
+        if ((m = line.match(/^(\d+)\s*[xX]?\s+(.+)$/))) { qty = +m[1]; name = m[2].trim(); }
+        else if ((m = line.match(/^(.+?)\s*[xX]\s*(\d+)$/))) { name = m[1].trim(); qty = +m[2]; }
+        else { qty = 1; name = line; }
+        if(!name) return;
+        const key = name.toLowerCase();
+        if (map.has(key)) map.get(key).qty += qty;
+        else map.set(key, { name, qty, cats: autoCats(name) });
+      });
+      return [...map.values()];
+    }
+
+    async function parseYDK(text){
+      const lines = text.split(/\r?\n/);
+      let section = '';
+      const counts = new Map();
+      for (const raw of lines){
+        const line = raw.trim();
+        if(!line) continue;
+        if(line.startsWith('#main')) { section='main'; continue; }
+        if(line.startsWith('#extra')) { section='extra'; continue; }
+        if(line.startsWith('!side')) { section='side'; continue; }
+        if(line.startsWith('#')) { section=''; continue; }
+        if(section==='main' && /^\d+$/.test(line)) counts.set(line, (counts.get(line)||0)+1);
+      }
+      const ids = [...counts.keys()];
+      if(!ids.length) return [];
+      let names = {};
+      try {
+        const res = await fetch('https://db.ygoprodeck.com/api/v7/cardinfo.php?id=' + ids.join(','));
+        const data = await res.json();
+        (data.data||[]).forEach(c => names[String(c.id)] = c.name);
+      } catch(e) { /* offline: usar IDs */ }
+      return ids.map(id => {
+        const name = names[id] || ('Carta #' + id);
+        return { name, qty: counts.get(id), cats: autoCats(name) };
+      });
+    }
+
+    async function loadDeck(text){
+      const note = document.getElementById('loadNote');
+      note.textContent = 'Procesando...';
+      const isYDK = /#main/i.test(text) || /^#created/im.test(text);
+      deck = isYDK ? await parseYDK(text) : parseText(text);
+      if(!deck.length){ note.textContent = 'No se detectaron cartas. Revisá el formato.'; return; }
+      const total = deck.reduce((s,c)=>s+c.qty,0);
+      note.textContent = `${deck.length} cartas distintas · ${total} en total`;
+      renderTable();
+      document.getElementById('results').style.display = 'block';
+      computeStats();
+    }
+
+    function renderTable(){
+      const tbody = document.getElementById('cardRows');
+      tbody.innerHTML = '';
+      deck.forEach((card, i) => {
+        const tr = document.createElement('tr');
+        let cells = `<td class="qty">${card.qty}</td><td class="yg-cardname">${escapeHtml(card.name)}</td>`;
+        CATS.forEach(cat => {
+          const checked = card.cats[cat.key] ? 'checked' : '';
+          cells += `<td class="yg-cat-col"><input type="checkbox" class="cat-chk" data-i="${i}" data-cat="${cat.key}" ${checked}></td>`;
+        });
+        tr.innerHTML = cells;
+        tbody.appendChild(tr);
+      });
+      tbody.querySelectorAll('.cat-chk').forEach(chk => {
+        chk.addEventListener('change', e => {
+          const i = +e.target.dataset.i, cat = e.target.dataset.cat;
+          deck[i].cats[cat] = e.target.checked;
+          computeStats();
+        });
+      });
+    }
+
+    function catCount(key){ return deck.reduce((s,c)=> s + (c.cats[key] ? c.qty : 0), 0); }
+
+    function computeStats(){
+      const N = deck.reduce((s,c)=>s+c.qty,0);
+      const H = 5;
+      const grid = document.getElementById('statsGrid');
+      grid.innerHTML = '';
+      if(N < H){ grid.innerHTML = '<p class="empty-msg">El deck necesita al menos 5 cartas.</p>'; return; }
+
+      const totalCard = (label, val, sub, cls='') =>
+        `<div class="stat-card ${cls}"><span class="lbl">${label}</span><span class="val">${val}</span><div class="sub">${sub}</div></div>`;
+
+      let html = totalCard('Tamaño del deck', N, 'cartas en el Main Deck');
+
+      const defs = [
+        { key:'starter',  label:'Abrir con Starter' },
+        { key:'extender', label:'Abrir con Extender' },
+        { key:'handtrap', label:'Abrir con Handtrap' },
+        { key:'breaker',  label:'Abrir con Board Breaker' }
+      ];
+      defs.forEach(d => {
+        const K = catCount(d.key);
+        const pAtLeast1 = K ? (1 - comb(N-K, H)/comb(N, H)) : 0;
+        const expected = (H*K/N);
+        const cls = pAtLeast1>=0.85 ? 'good' : pAtLeast1>=0.6 ? 'warn' : 'bad';
+        html += totalCard(d.label, (pAtLeast1*100).toFixed(1)+'%',
+          `${K} copias · ~${expected.toFixed(2)} por mano`, K?cls:'');
+      });
+
+      // Starter count expectation already; brick risk = mano sin ningun starter
+      const S = catCount('starter');
+      const pNoStarter = S ? (comb(N-S, H)/comb(N, H)) : 1;
+      const clsBrick = pNoStarter<=0.15 ? 'good' : pNoStarter<=0.4 ? 'warn' : 'bad';
+      html += totalCard('Mano sin starter', (pNoStarter*100).toFixed(1)+'%', 'riesgo de brick (apertura muerta)', clsBrick);
+
+      // Cartas marcadas como Brick
+      const B = catCount('brick');
+      const pBrick1 = B ? (1 - comb(N-B, H)/comb(N, H)) : 0;
+      html += totalCard('Robar ≥1 Brick', (pBrick1*100).toFixed(1)+'%', `${B} cartas marcadas como brick`, B? (pBrick1<=0.3?'good':pBrick1<=0.55?'warn':'bad') : '');
+
+      grid.innerHTML = html;
+    }
+
+    function drawHand(){
+      const pool = [];
+      deck.forEach(c => { for(let k=0;k<c.qty;k++) pool.push(c); });
+      // Fisher-Yates
+      for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
+      const hand = pool.slice(0,5);
+      const area = document.getElementById('handArea');
+      area.innerHTML = '';
+      hand.forEach(c => {
+        const tags = CATS.filter(cat => c.cats[cat.key]);
+        const tagHtml = tags.length
+          ? tags.map(cat => `<span class="tag ${cat.key}">${cat.label}</span>`).join('')
+          : '<span class="tag none">sin clasificar</span>';
+        const div = document.createElement('div');
+        div.className = 'hand-card';
+        div.innerHTML = `<div class="hc-name">${escapeHtml(c.name)}</div><div class="hc-tags">${tagHtml}</div>`;
+        area.appendChild(div);
+      });
+    }
+
+    function escapeHtml(s){ return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+    document.getElementById('loadBtn').addEventListener('click', () => loadDeck(document.getElementById('deckInput').value));
+    document.getElementById('drawBtn').addEventListener('click', drawHand);
+    document.getElementById('ydkFile').addEventListener('change', e => {
+      const file = e.target.files[0]; if(!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => { document.getElementById('deckInput').value = ev.target.result; loadDeck(ev.target.result); };
+      reader.readAsText(file);
+    });
+  </script>
+</body>
+</html>
