@@ -67,6 +67,12 @@
     .stat-card .sub { font-size:.76rem; color:var(--muted); margin-top:.2rem; }
     .stat-card.good .val { color:#9ad17a; } .stat-card.warn .val { color:#e0b24a; } .stat-card.bad .val { color:#e08a4a; }
 
+    .hand-size-group { display:inline-flex; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+    .hs-btn { background:var(--card); color:var(--muted); border:none; padding:.5rem .9rem; font-family:var(--mono); font-size:.82rem; cursor:pointer; transition:all .15s; }
+    .hs-btn + .hs-btn { border-left:1px solid var(--border); }
+    .hs-btn:hover { color:var(--accent2); }
+    .hs-btn.active { background:var(--gold-grad); color:#1a1305; font-weight:600; }
+
     .yg-toggle { display:flex; align-items:center; gap:.6rem; font-size:.85rem; color:var(--muted); cursor:pointer; }
     .yg-toggle input { width:16px; height:16px; accent-color:#d4af37; }
 
@@ -74,6 +80,10 @@
     .chart-box { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.2rem; }
     .chart-box h4 { font-size:.9rem; margin-bottom:.8rem; color:var(--text); }
     @media (max-width:760px){ .charts-grid { grid-template-columns:1fr; } }
+
+    /* move load section to the bottom once a deck is loaded */
+    body.has-results .yg-wrap { display:flex; flex-direction:column; }
+    body.has-results .yg-load { order:99; margin-top:3rem; padding-top:2rem; border-top:1px solid var(--border); }
 
     /* two-column layout when results are visible */
     .yg-layout { display:block; }
@@ -96,11 +106,11 @@
     .panel-section-title { font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em;
       color:var(--muted); margin:1.1rem 0 .5rem; font-family:var(--mono); border-bottom:1px solid var(--border); padding-bottom:.3rem; }
     .panel-section-title:first-child { margin-top:0; }
-    .yg-stats-panel { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
-    .stat-card-sm { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:.65rem .75rem; }
-    .stat-card-sm .lbl { font-family:var(--mono); font-size:.58rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); display:block; margin-bottom:.2rem; }
-    .stat-card-sm .val { font-size:1.2rem; font-weight:700; font-family:var(--mono); color:var(--accent2); }
-    .stat-card-sm .sub { font-size:.6rem; color:var(--muted); margin-top:.1rem; }
+    .yg-stats-panel { display:grid; grid-template-columns:1fr 1fr; gap:.4rem; }
+    .stat-card-sm { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:.45rem .55rem; }
+    .stat-card-sm .lbl { font-family:var(--mono); font-size:.54rem; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); display:block; margin-bottom:.12rem; }
+    .stat-card-sm .val { font-size:1rem; font-weight:700; font-family:var(--mono); color:var(--accent2); }
+    .stat-card-sm .sub { font-size:.55rem; color:var(--muted); margin-top:.08rem; }
     .stat-card-sm.good .val { color:#9ad17a; } .stat-card-sm.warn .val { color:#e0b24a; } .stat-card-sm.bad .val { color:#e08a4a; }
     /* mobile: panel goes below the table as full-width block */
     @media (max-width:900px){
@@ -141,27 +151,33 @@
       probá planes de sideo (Game 2), visualizá gráficos y compará varios decks. Todo corre en tu navegador.
     </p>
 
-    <h2 class="yg-section-title">1 · Cargar decklist</h2>
-    <div class="yg-input-grid">
-      <textarea id="deckInput" placeholder="Pegá tu decklist o código .ydk aquí..."></textarea>
-      <div class="yg-formats">
-        Formatos aceptados:<br>
-        &bull; <b>3 Ash Blossom &amp; Joyous Spring</b> &nbsp;(cantidad + nombre)<br>
-        &bull; <b>Ash Blossom &amp; Joyous Spring x3</b> &nbsp;(nombre + xcantidad)<br>
-        &bull; <b>.ydk</b> &nbsp;(archivo o texto pegado — separa main/extra/side y obtiene nombres de YGOPRODeck)
+    <div class="yg-load">
+      <h2 class="yg-section-title">1 · Cargar decklist</h2>
+      <div class="yg-input-grid">
+        <textarea id="deckInput" placeholder="Pegá tu decklist o código .ydk aquí..."></textarea>
+        <div class="yg-formats">
+          Formatos aceptados:<br>
+          &bull; <b>3 Ash Blossom &amp; Joyous Spring</b> &nbsp;(cantidad + nombre)<br>
+          &bull; <b>Ash Blossom &amp; Joyous Spring x3</b> &nbsp;(nombre + xcantidad)<br>
+          &bull; <b>.ydk</b> &nbsp;(archivo o texto pegado — separa main/extra/side y obtiene nombres de YGOPRODeck)
+        </div>
       </div>
-    </div>
-    <div class="yg-actions">
-      <select class="yg-select" id="formatSel">
-        <option value="auto">Detectar formato automáticamente</option>
-        <option value="ydk">Forzar código .ydk</option>
-        <option value="text">Forzar lista de texto</option>
-      </select>
-      <input class="yg-text" id="deckName" type="text" placeholder="Nombre del deck (ej. Snake-Eye)" />
-      <button class="btn btn-primary" id="loadBtn">Cargar deck</button>
-      <label class="yg-file-label" for="ydkFile">&#128193; Subir archivo .ydk</label>
-      <input type="file" id="ydkFile" accept=".ydk,.txt" />
-      <span class="yg-note" id="loadNote"></span>
+      <div class="yg-actions">
+        <select class="yg-select" id="formatSel">
+          <option value="auto">Detectar formato automáticamente</option>
+          <option value="ydk">Forzar código .ydk</option>
+          <option value="text">Forzar lista de texto</option>
+        </select>
+        <input class="yg-text" id="deckName" type="text" placeholder="Nombre del deck (ej. Snake-Eye)" />
+        <div class="hand-size-group" title="Cartas en la mano de apertura">
+          <button type="button" class="hs-btn active" data-hs="5">Mano de 5</button>
+          <button type="button" class="hs-btn" data-hs="6">Mano de 6</button>
+        </div>
+        <button class="btn btn-primary" id="loadBtn">Cargar deck</button>
+        <label class="yg-file-label" for="ydkFile">&#128193; Subir archivo .ydk</label>
+        <input type="file" id="ydkFile" accept=".ydk,.txt" />
+        <span class="yg-note" id="loadNote"></span>
+      </div>
     </div>
 
     <div class="yg-layout">
@@ -202,7 +218,6 @@
             <h2 class="yg-section-title">4 · Gráficos</h2>
             <div class="charts-grid">
               <div class="chart-box"><h4>Distribución de categorías (Main)</h4><canvas id="catChartInline"></canvas></div>
-              <div class="chart-box"><h4>Consistencia de apertura</h4><canvas id="consChartInline"></canvas></div>
             </div>
           </div>
 
@@ -213,6 +228,7 @@
               <option value="g2">Configuración Game 2 (post-sideo)</option>
             </select>
             <button class="btn btn-primary" id="drawBtn">Robar mano (5 cartas)</button>
+            <span class="yg-note" id="handSimNote"></span>
           </div>
           <div class="yg-hand" id="handArea"><p class="empty-msg">Presioná "Robar mano" para simular una apertura.</p></div>
 
@@ -237,14 +253,11 @@
 
       <!-- RIGHT STICKY PANEL: stats + charts -->
       <aside class="yg-right-panel">
-        <p class="panel-section-title">Consistencia · Mano de 5</p>
+        <p class="panel-section-title" id="panelConsTitle">Consistencia · Mano de 5</p>
         <div class="yg-stats-panel" id="statsGrid"></div>
 
         <p class="panel-section-title" style="margin-top:1.4rem;">Distribución de categorías</p>
         <div class="chart-box" style="padding:.8rem;"><canvas id="catChart"></canvas></div>
-
-        <p class="panel-section-title" style="margin-top:1rem;">Consistencia de apertura</p>
-        <div class="chart-box" style="padding:.8rem;"><canvas id="consChart"></canvas></div>
       </aside>
 
     </div><!-- /.yg-layout -->
@@ -367,8 +380,15 @@
       }));
     }
 
+    function handSize(){ const b=document.querySelector('.hs-btn.active'); return b?(parseInt(b.dataset.hs)||5):5; }
+    function updateHandLabels(){
+      const H=handSize();
+      document.getElementById('drawBtn').textContent=`Robar mano (${H} cartas)`;
+      document.getElementById('panelConsTitle').textContent=`Consistencia · Mano de ${H}`;
+    }
+
     function metricsFor(cards){
-      const N=cards.reduce((s,c)=>s+c.copies,0); const H=5;
+      const N=cards.reduce((s,c)=>s+c.copies,0); const H=handSize();
       const K=key=>cards.reduce((s,c)=>s+(c.cats[key]?c.copies:0),0);
       const pAtLeast=key=>{ const k=K(key); return (N>=H&&k)?(1-comb(N-k,H)/comb(N,H)):0; };
       const pAtLeast2=key=>{ const k=K(key); if(N<H||k<2) return 0; return 1 - comb(N-k,H)/comb(N,H) - k*comb(N-k,H-1)/comb(N,H); };
@@ -397,7 +417,7 @@
       const m1=metricsFor(g1Cards());
       const m2=sideo?metricsFor(g2Cards()):null;
       const grid=document.getElementById('statsGrid'); grid.innerHTML='';
-      if(m1.N<5){ grid.innerHTML='<p class="empty-msg">El Main Deck necesita al menos 5 cartas.</p>'; return; }
+      if(m1.N<handSize()){ grid.innerHTML='<p class="empty-msg">El Main Deck necesita al menos '+handSize()+' cartas.</p>'; return; }
       const pct=v=>(v*100).toFixed(1)+'%';
       const cls=v=>v>=0.85?'good':v>=0.6?'warn':'bad';
       const clsB=v=>v<=0.15?'good':v<=0.4?'warn':'bad';
@@ -432,18 +452,6 @@
             backgroundColor:['#9ad17a','#7ab8d1','#d17a9a','#c9a227','#e08a4a','#4a463c'], borderColor:'#0e0d0b', borderWidth:2 }] },
         options:{ plugins:{ legend:{ position:'bottom', labels:{ font:{size:11}, padding:10 } } } }
       });
-
-      // consistency bar (G1 vs G2)
-      const labels=['Starter','Extender','Handtrap','Breaker','No-brick'];
-      const d1=[m1.starter,m1.extender,m1.handtrap,m1.breaker,1-m1.brickRisk].map(v=>+(v*100).toFixed(1));
-      const datasets=[{ label:'Game 1', data:d1, backgroundColor:'rgba(212,175,55,.75)', borderColor:'#d4af37', borderWidth:1 }];
-      if(m2){ const d2=[m2.starter,m2.extender,m2.handtrap,m2.breaker,1-m2.brickRisk].map(v=>+(v*100).toFixed(1));
-        datasets.push({ label:'Game 2 (post-sideo)', data:d2, backgroundColor:'rgba(122,184,209,.6)', borderColor:'#7ab8d1', borderWidth:1 }); }
-      if(charts.cons) charts.cons.destroy();
-      charts.cons=new Chart(document.getElementById('consChart'),{
-        type:'bar', data:{ labels, datasets },
-        options:{ scales:{ y:{ beginAtZero:true, max:100, ticks:{ callback:v=>v+'%' } } }, plugins:{ legend:{ display:!!m2, position:'bottom' } } }
-      });
     }
 
     function drawHand(){
@@ -452,9 +460,10 @@
                              : deck.filter(c=>c.zone==='main').map(c=>({name:c.name,copies:c.count,cats:c.cats}));
       const pool=[]; src.forEach(c=>{ for(let k=0;k<c.copies;k++) pool.push(c); });
       const area=document.getElementById('handArea');
-      if(pool.length<5){ area.innerHTML='<p class="empty-msg">No hay suficientes cartas en esta configuración.</p>'; return; }
+      const H=handSize();
+      if(pool.length<H){ area.innerHTML='<p class="empty-msg">No hay suficientes cartas en esta configuración.</p>'; return; }
       for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
-      const hand=pool.slice(0,5);
+      const hand=pool.slice(0,H);
       area.innerHTML='';
       hand.forEach(c=>{
         const tags=CATS.filter(cat=>c.cats[cat.key]);
@@ -556,8 +565,15 @@
     document.getElementById('drawBtn').addEventListener('click',drawHand);
     document.getElementById('saveCompBtn').addEventListener('click',saveForComparison);
     document.getElementById('sideoToggle').addEventListener('change',e=>{ document.body.classList.toggle('sideo',e.target.checked); refresh(); });
+    document.querySelectorAll('.hs-btn').forEach(b=>b.addEventListener('click',()=>{
+      document.querySelectorAll('.hs-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); updateHandLabels(); refresh();
+    }));
     document.getElementById('ydkFile').addEventListener('change',e=>{
       const file=e.target.files[0]; if(!file) return;
+      const baseName=file.name.replace(/\.(ydk|txt)$/i,'').trim();
+      const nameInput=document.getElementById('deckName');
+      if(!nameInput.value.trim() && baseName) nameInput.value=baseName;
       const reader=new FileReader();
       reader.onload=ev=>{ document.getElementById('deckInput').value=ev.target.result; document.getElementById('formatSel').value='ydk'; loadDeck(ev.target.result); };
       reader.readAsText(file);
