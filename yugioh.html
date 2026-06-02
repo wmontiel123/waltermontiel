@@ -138,6 +138,9 @@
     .comp-table th:first-child, .comp-table td:first-child { text-align:left; }
     .comp-table thead th { background:var(--bg3); font-family:var(--mono); font-size:.7rem; text-transform:uppercase; color:var(--muted); }
     .del-deck { cursor:pointer; color:#e08a4a; font-size:.75rem; font-family:var(--mono); }
+    .deck-color { width:18px; height:18px; padding:0; border:1px solid var(--border); border-radius:4px; background:none; cursor:pointer; vertical-align:middle; margin-right:.45rem; }
+    .deck-color::-webkit-color-swatch-wrapper { padding:0; }
+    .deck-color::-webkit-color-swatch { border:none; border-radius:3px; }
     .empty-msg { color:var(--muted); font-size:.95rem; padding:1rem 0; }
   </style>
 </head>
@@ -480,13 +483,21 @@
       { bg:'rgba(209,122,154,.25)', border:'#d17a9a' },
       { bg:'rgba(201,162,39,.25)', border:'#c9a227' },
     ];
+    function hexToRgba(hex, a){
+      const m=/^#?([0-9a-f]{6})$/i.exec(hex);
+      if(!m) return hex;
+      const n=parseInt(m[1],16);
+      return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;
+    }
 
     function saveForComparison(){
       const m=metricsFor(g1Cards());
       if(m.N<5){ document.getElementById('compNote').textContent='Cargá un deck válido primero.'; return; }
       const name=(document.getElementById('deckName').value.trim()||deckName||'Deck '+(savedDecks.length+1));
+      const prev=savedDecks.find(d=>d.name===name);
+      const color=(prev&&prev.color)||DECK_COLORS[savedDecks.filter(d=>d.name!==name).length%DECK_COLORS.length].border;
       savedDecks=savedDecks.filter(d=>d.name!==name);
-      savedDecks.push({ name, N:m.N, starter2:m.starter2, handtrap2:m.handtrap2, breaker:m.breaker, brickRisk:m.brickRisk, soloHT:m.soloHT });
+      savedDecks.push({ name, color, N:m.N, starter2:m.starter2, handtrap2:m.handtrap2, breaker:m.breaker, brickRisk:m.brickRisk, soloHT:m.soloHT });
       persist(); renderComparison();
       document.getElementById('compNote').textContent='"'+name+'" guardado.';
     }
@@ -498,18 +509,19 @@
       const rows=document.getElementById('compRows'); rows.innerHTML='';
       const pct=v=>(v*100).toFixed(1)+'%';
       savedDecks.forEach((d,i)=>{
-        const col=DECK_COLORS[i%DECK_COLORS.length];
-        const dot=`<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${col.border};margin-right:.4rem;"></span>`;
+        const color=d.color||DECK_COLORS[i%DECK_COLORS.length].border;
+        const swatch=`<input type="color" class="deck-color" data-i="${i}" value="${color}" title="Cambiar color del deck">`;
         const tr=document.createElement('tr');
-        tr.innerHTML=`<td>${dot}${escapeHtml(d.name)}</td><td>${d.N}</td><td>${pct(d.starter2)}</td><td>${pct(d.handtrap2)}</td><td>${pct(d.breaker)}</td><td>${pct(d.brickRisk)}</td><td>${pct(d.soloHT)}</td><td><span class="del-deck" data-i="${i}">quitar</span></td>`;
+        tr.innerHTML=`<td>${swatch}${escapeHtml(d.name)}</td><td>${d.N}</td><td>${pct(d.starter2)}</td><td>${pct(d.handtrap2)}</td><td>${pct(d.breaker)}</td><td>${pct(d.brickRisk)}</td><td>${pct(d.soloHT)}</td><td><span class="del-deck" data-i="${i}">quitar</span></td>`;
         rows.appendChild(tr);
       });
       rows.querySelectorAll('.del-deck').forEach(b=>b.addEventListener('click',e=>{ savedDecks.splice(+e.target.dataset.i,1); persist(); renderComparison(); }));
+      rows.querySelectorAll('.deck-color').forEach(inp=>inp.addEventListener('input',e=>{ savedDecks[+e.target.dataset.i].color=e.target.value; persist(); renderComparison(); }));
 
       // radar chart - 5 axes
       const radarLabels=['≥2 Starters','≥2 Handtraps','≥1 Breaker','Brick risk','Solo HTs'];
       const datasets=savedDecks.map((d,i)=>{
-        const col=DECK_COLORS[i%DECK_COLORS.length];
+        const border=d.color||DECK_COLORS[i%DECK_COLORS.length].border;
         return {
           label: d.name,
           data: [
@@ -519,10 +531,10 @@
             +(d.brickRisk*100).toFixed(1),
             +(d.soloHT*100).toFixed(1)
           ],
-          backgroundColor: col.bg,
-          borderColor: col.border,
+          backgroundColor: hexToRgba(border, 0.25),
+          borderColor: border,
           borderWidth: 2,
-          pointBackgroundColor: col.border,
+          pointBackgroundColor: border,
           pointRadius: 4,
           pointHoverRadius: 6
         };
