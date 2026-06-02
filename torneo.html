@@ -123,6 +123,13 @@
         </div>
         <button class="btn btn-outline" id="cfgToggle" data-i18n="cfg.btn">⚙ Configurar puntaje</button>
       </div>
+      <div class="tn-actions" id="roundsRow">
+        <div class="cfg-field" style="flex-direction:row; align-items:center; gap:.6rem;">
+          <label data-i18n="rounds.label" style="font-family:var(--mono); font-size:.78rem; color:var(--muted);">Rondas (Suizo)</label>
+          <input class="tn-text" type="number" id="roundsInput" min="1" max="20" value="3" style="width:70px; text-align:center;">
+        </div>
+        <span class="tn-sub" id="roundsHint" style="margin:0; font-size:.8rem;"></span>
+      </div>
       <div class="cfg-box" id="cfgBox">
         <div class="cfg-row">
           <div class="cfg-field"><label data-i18n="cfg.win">Victoria</label><input type="number" id="cfgWin" value="3"></div>
@@ -182,6 +189,8 @@
         standings: "Tabla de posiciones", bracket: "Llave de eliminación",
         "round.title": "Ronda actual", "round.empty": "Generá la primera ronda con \"Siguiente ronda\".",
         "tbl.player": "Jugador", "tbl.pts": "Pts", "tbl.rec": "V-D-E", "tbl.bh": "BH", "tbl.act": "",
+        "rounds.label": "Rondas (Suizo)", "rounds.hint": "Sugerido: {n} rondas para {p} jugadores",
+        roundLblSwissTotal: "{fmt} · Ronda {n} de {total}",
         roundN: "Ronda {n}", drop: "drop", undrop: "reactivar", bye: "BYE",
         vs: "vs", win: "Gana", draw: "Empate",
         needPlayers: "Cargá al menos 2 participantes.",
@@ -206,6 +215,8 @@
         standings: "Standings", bracket: "Elimination bracket",
         "round.title": "Current round", "round.empty": "Generate the first round with \"Next round\".",
         "tbl.player": "Player", "tbl.pts": "Pts", "tbl.rec": "W-L-D", "tbl.bh": "BH", "tbl.act": "",
+        "rounds.label": "Rounds (Swiss)", "rounds.hint": "Suggested: {n} rounds for {p} players",
+        roundLblSwissTotal: "{fmt} · Round {n} of {total}",
         roundN: "Round {n}", drop: "drop", undrop: "re-enter", bye: "BYE",
         vs: "vs", win: "Win", draw: "Draw",
         needPlayers: "Load at least 2 participants.",
@@ -235,10 +246,25 @@
 
     /* ---------- setup ---------- */
     let setupFmt='swiss';
+    function suggestRounds(p){ return Math.max(1, Math.ceil(Math.log2(Math.max(2,p)))); }
+    function playerCount(){ return document.getElementById('players').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).length; }
+    function updateRoundsUI(){
+      const isSwiss=setupFmt==='swiss';
+      document.getElementById('roundsRow').style.display=isSwiss?'flex':'none';
+      const p=playerCount();
+      if(isSwiss && p>=2){
+        const sug=suggestRounds(p);
+        document.getElementById('roundsHint').textContent=t('rounds.hint',{n:sug,p:p});
+        const inp=document.getElementById('roundsInput');
+        if(!inp.dataset.touched) inp.value=sug;
+      } else { document.getElementById('roundsHint').textContent=''; }
+    }
     document.querySelectorAll('.fmt-btn').forEach(b=>b.addEventListener('click',()=>{
       document.querySelectorAll('.fmt-btn').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active'); setupFmt=b.dataset.fmt;
+      b.classList.add('active'); setupFmt=b.dataset.fmt; updateRoundsUI();
     }));
+    document.getElementById('players').addEventListener('input',updateRoundsUI);
+    document.getElementById('roundsInput').addEventListener('input',e=>{ e.target.dataset.touched='1'; });
     document.getElementById('cfgToggle').addEventListener('click',()=>document.getElementById('cfgBox').classList.toggle('open'));
 
     document.getElementById('startBtn').addEventListener('click',()=>{
@@ -249,6 +275,7 @@
       TS.cfg={ win:+document.getElementById('cfgWin').value||0, draw:+document.getElementById('cfgDraw').value||0,
                loss:+document.getElementById('cfgLoss').value||0, bye:+document.getElementById('cfgBye').value||0 };
       names.forEach(n=>TS.players.push({ id:TS.nextId++, name:n, dropped:false }));
+      TS.totalRounds = Math.max(1, +document.getElementById('roundsInput').value || suggestRounds(names.length));
       if(TS.fmt==='elim') buildBracket();
       save(); showRunning();
     });
@@ -333,13 +360,17 @@
     /* ---------- render ---------- */
     function render(){
       if(!TS){ return; }
+      if(TS.fmt==='swiss' && !TS.totalRounds) TS.totalRounds=suggestRounds(TS.players.length);
       const fmtName = TS.fmt==='swiss'? t('fmtSwiss') : t('fmtElim');
       if(TS.fmt==='swiss'){
-        document.getElementById('roundLbl').textContent = t('roundLbl',{fmt:fmtName, n:TS.rounds.length});
+        document.getElementById('roundLbl').textContent = t('roundLblSwissTotal',{fmt:fmtName, n:TS.rounds.length, total:TS.totalRounds});
         document.getElementById('leftTitle').textContent = t('standings');
         document.getElementById('standingsWrap').classList.remove('hidden');
         document.getElementById('bracketWrap').classList.add('hidden');
         renderStandings(); renderSwissRound();
+        const done=TS.rounds.length>=TS.totalRounds;
+        document.getElementById('nextBtn').disabled=done;
+        document.getElementById('nextBtn').style.opacity=done?'.45':'';
         document.getElementById('nextBtn').classList.remove('hidden');
         document.getElementById('addBtn').classList.remove('hidden');
         document.getElementById('addName').classList.remove('hidden');
@@ -437,6 +468,7 @@
     /* ---------- toolbar ---------- */
     document.getElementById('nextBtn').addEventListener('click',()=>{
       if(TS.fmt!=='swiss') return;
+      if(TS.rounds.length>=TS.totalRounds){ flash(t('finished')); return; }
       // require all results in last round
       if(TS.rounds.length){
         const last=TS.rounds[TS.rounds.length-1];
@@ -460,10 +492,10 @@
     let flashTimer=null;
     function flash(msg){ const el=document.getElementById('toast'); el.textContent=msg; clearTimeout(flashTimer); flashTimer=setTimeout(()=>{ el.textContent=''; }, 3500); }
 
-    document.addEventListener('langchange',()=>{ if(TS) render(); });
+    document.addEventListener('langchange',()=>{ if(TS) render(); updateRoundsUI(); });
 
     load();
-    if(TS){ showRunning(); }
+    if(TS){ showRunning(); } else { updateRoundsUI(); }
   </script>
   <script src="demo-i18n.js"></script>
 </body>
