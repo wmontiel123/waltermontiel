@@ -54,76 +54,76 @@
 <body>
 
   <div class="demo-wrap">
-    <a href="proyectos.html" class="demo-back">&larr; Volver a Demos</a>
+    <a href="proyectos.html" class="demo-back" data-i18n="back">&larr; Volver a Demos</a>
 
-    <p class="demo-eyebrow">RPA · AUTOMATIZACIÓN</p>
-    <h1 class="demo-title"><span>Automatización de Compras</span></h1>
-    <p class="demo-lead">
+    <p class="demo-eyebrow" data-i18n="eyebrow">RPA · AUTOMATIZACIÓN</p>
+    <h1 class="demo-title"><span data-i18n="title">Automatización de Compras</span></h1>
+    <p class="demo-lead" data-i18n-html="lead">
       Una automatización que convierte una simple lista de compras en un carrito listo para pagar.
       El usuario solo envía qué quiere comprar y el bot se encarga del resto: lee la lista, identifica
       cada producto, lo busca en la tienda y arma el pedido automáticamente.
       <strong>La lista de compras se puede recibir por mensaje, correo electrónico o WhatsApp.</strong>
     </p>
 
-    <h2 class="demo-section-title">Canales de entrada</h2>
+    <h2 class="demo-section-title" data-i18n="ch.title">Canales de entrada</h2>
     <div class="channels">
       <div class="channel">
         <span class="channel-icon">&#128172;</span>
-        <h3>Mensaje</h3>
-        <p>Envía la lista por mensaje de texto (SMS) y el bot la procesa al instante.</p>
+        <h3 data-i18n="ch1.h">Mensaje</h3>
+        <p data-i18n="ch1.p">Envía la lista por mensaje de texto (SMS) y el bot la procesa al instante.</p>
       </div>
       <div class="channel">
         <span class="channel-icon">&#9993;</span>
-        <h3>Correo</h3>
-        <p>Manda un email con los productos; el sistema lee el cuerpo del correo automáticamente.</p>
+        <h3 data-i18n="ch2.h">Correo</h3>
+        <p data-i18n="ch2.p">Manda un email con los productos; el sistema lee el cuerpo del correo automáticamente.</p>
       </div>
       <div class="channel">
         <span class="channel-icon">&#128241;</span>
-        <h3>WhatsApp</h3>
-        <p>Escribe la lista por WhatsApp y recibe la confirmación del carrito por el mismo chat.</p>
+        <h3 data-i18n="ch3.h">WhatsApp</h3>
+        <p data-i18n="ch3.p">Escribe la lista por WhatsApp y recibe la confirmación del carrito por el mismo chat.</p>
       </div>
     </div>
 
-    <h2 class="demo-section-title">¿Cómo funciona?</h2>
+    <h2 class="demo-section-title" data-i18n="how.title">¿Cómo funciona?</h2>
     <ol class="steps">
       <li class="step">
         <div class="step-num">1</div>
         <div class="step-body">
-          <h4>Recepción de la lista</h4>
-          <p>El usuario envía su lista de compras por mensaje, correo o WhatsApp — el canal que le resulte más cómodo.</p>
+          <h4 data-i18n="s1.h">Recepción de la lista</h4>
+          <p data-i18n="s1.p">El usuario envía su lista de compras por mensaje, correo o WhatsApp — el canal que le resulte más cómodo.</p>
         </div>
       </li>
       <li class="step">
         <div class="step-num">2</div>
         <div class="step-body">
-          <h4>Interpretación inteligente</h4>
-          <p>El bot lee y normaliza el texto: separa cada ítem, detecta cantidades y reconoce los productos aunque estén escritos de forma informal.</p>
+          <h4 data-i18n="s2.h">Interpretación inteligente</h4>
+          <p data-i18n="s2.p">El bot lee y normaliza el texto: separa cada ítem, detecta cantidades y reconoce los productos aunque estén escritos de forma informal.</p>
         </div>
       </li>
       <li class="step">
         <div class="step-num">3</div>
         <div class="step-body">
-          <h4>Búsqueda en la tienda</h4>
-          <p>Busca cada producto en el catálogo de la tienda y selecciona la mejor coincidencia disponible.</p>
+          <h4 data-i18n="s3.h">Búsqueda en la tienda</h4>
+          <p data-i18n="s3.p">Busca cada producto en el catálogo de la tienda y selecciona la mejor coincidencia disponible.</p>
         </div>
       </li>
       <li class="step">
         <div class="step-num">4</div>
         <div class="step-body">
-          <h4>Armado del carrito</h4>
-          <p>Agrega automáticamente todos los productos al carrito con sus cantidades, dejando el pedido listo para confirmar.</p>
+          <h4 data-i18n="s4.h">Armado del carrito</h4>
+          <p data-i18n="s4.p">Agrega automáticamente todos los productos al carrito con sus cantidades, dejando el pedido listo para confirmar.</p>
         </div>
       </li>
       <li class="step">
         <div class="step-num">5</div>
         <div class="step-body">
-          <h4>Confirmación al usuario</h4>
-          <p>Devuelve un resumen del pedido por el mismo canal, indicando los productos encontrados y los que requieren revisión.</p>
+          <h4 data-i18n="s5.h">Confirmación al usuario</h4>
+          <p data-i18n="s5.p">Devuelve un resumen del pedido por el mismo canal, indicando los productos encontrados y los que requieren revisión.</p>
         </div>
       </li>
     </ol>
 
-    <h2 class="demo-section-title">Demostración</h2>
+    <h2 class="demo-section-title" data-i18n="demo.title">Demostración</h2>
     <div class="demo-stage">
       <div class="demo-stage-bar">
         <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
@@ -139,13 +139,59 @@
     </div>
 
     <div class="tech-tags">
-      <span>Python</span><span>RPA</span><span>WhatsApp API</span><span>Email Parsing</span><span>Web Automation</span><span>NLP</span>
+      <span>Python</span><span>RPA</span><span>WhatsApp API</span><span data-i18n="t.parse">Email Parsing</span><span data-i18n="t.web">Web Automation</span><span>NLP</span>
     </div>
 
     <div class="demo-cta">
-      <a href="index.html#contact" class="btn btn-primary">Contactarme</a>
+      <a href="index.html#contact" class="btn btn-primary" data-i18n="cta">Contactarme</a>
     </div>
   </div>
+
+  <script>
+    window.PAGE_I18N = {
+      es: {
+        _title: "CoolStuff — Automatización de Compras | Walter Montiel",
+        back: "← Volver a Demos",
+        eyebrow: "RPA · AUTOMATIZACIÓN",
+        title: "Automatización de Compras",
+        lead: "Una automatización que convierte una simple lista de compras en un carrito listo para pagar. El usuario solo envía qué quiere comprar y el bot se encarga del resto: lee la lista, identifica cada producto, lo busca en la tienda y arma el pedido automáticamente. <strong>La lista de compras se puede recibir por mensaje, correo electrónico o WhatsApp.</strong>",
+        "ch.title": "Canales de entrada",
+        "ch1.h": "Mensaje", "ch1.p": "Envía la lista por mensaje de texto (SMS) y el bot la procesa al instante.",
+        "ch2.h": "Correo", "ch2.p": "Manda un email con los productos; el sistema lee el cuerpo del correo automáticamente.",
+        "ch3.h": "WhatsApp", "ch3.p": "Escribe la lista por WhatsApp y recibe la confirmación del carrito por el mismo chat.",
+        "how.title": "¿Cómo funciona?",
+        "s1.h": "Recepción de la lista", "s1.p": "El usuario envía su lista de compras por mensaje, correo o WhatsApp — el canal que le resulte más cómodo.",
+        "s2.h": "Interpretación inteligente", "s2.p": "El bot lee y normaliza el texto: separa cada ítem, detecta cantidades y reconoce los productos aunque estén escritos de forma informal.",
+        "s3.h": "Búsqueda en la tienda", "s3.p": "Busca cada producto en el catálogo de la tienda y selecciona la mejor coincidencia disponible.",
+        "s4.h": "Armado del carrito", "s4.p": "Agrega automáticamente todos los productos al carrito con sus cantidades, dejando el pedido listo para confirmar.",
+        "s5.h": "Confirmación al usuario", "s5.p": "Devuelve un resumen del pedido por el mismo canal, indicando los productos encontrados y los que requieren revisión.",
+        "demo.title": "Demostración",
+        "t.parse": "Email Parsing", "t.web": "Web Automation",
+        cta: "Contactarme"
+      },
+      en: {
+        _title: "CoolStuff — Shopping Automation | Walter Montiel",
+        back: "← Back to Demos",
+        eyebrow: "RPA · AUTOMATION",
+        title: "Shopping Automation",
+        lead: "An automation that turns a simple shopping list into a cart ready to pay. The user just sends what they want to buy and the bot handles the rest: it reads the list, identifies each product, searches for it in the store, and builds the order automatically. <strong>The shopping list can be received via text message, email, or WhatsApp.</strong>",
+        "ch.title": "Input channels",
+        "ch1.h": "Text message", "ch1.p": "Send the list by SMS and the bot processes it instantly.",
+        "ch2.h": "Email", "ch2.p": "Send an email with the products; the system reads the message body automatically.",
+        "ch3.h": "WhatsApp", "ch3.p": "Write the list on WhatsApp and get the cart confirmation in the same chat.",
+        "how.title": "How does it work?",
+        "s1.h": "Receiving the list", "s1.p": "The user sends their shopping list via text, email, or WhatsApp — whichever channel is most convenient.",
+        "s2.h": "Smart interpretation", "s2.p": "The bot reads and normalizes the text: it splits each item, detects quantities, and recognizes products even when written informally.",
+        "s3.h": "Store search", "s3.p": "It searches for each product in the store's catalog and picks the best available match.",
+        "s4.h": "Building the cart", "s4.p": "It automatically adds every product to the cart with its quantities, leaving the order ready to confirm.",
+        "s5.h": "User confirmation", "s5.p": "It returns an order summary through the same channel, showing the products found and those that need review.",
+        "demo.title": "Demo",
+        "t.parse": "Email Parsing", "t.web": "Web Automation",
+        cta: "Get in touch"
+      }
+    };
+  </script>
+  <script src="demo-i18n.js"></script>
 
 </body>
 </html>

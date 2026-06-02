@@ -178,19 +178,19 @@
 <body>
 
   <div class="yg-wrap">
-    <a href="proyectos.html" class="yg-back">&larr; Volver a Demos</a>
-    <h1 class="yg-title">Analizador de Decks <span>Yu-Gi-Oh!</span></h1>
-    <p class="yg-sub">
+    <a href="proyectos.html" class="yg-back" data-i18n="back">&larr; Volver a Demos</a>
+    <h1 class="yg-title"><span data-i18n="title1">Analizador de Decks</span> <span>Yu-Gi-Oh!</span></h1>
+    <p class="yg-sub" data-i18n-html="sub">
       Cargá tu decklist y trabajá por pestañas: <b>Análisis</b> (consistencia y simulador),
       <b>Combos</b> (probabilidad exacta de combos multi-carta), <b>1ro vs 2do</b> (plan según el dado),
       <b>Comparar</b> decks y <b>Matchups</b> (tu win-rate en torneos). Todo corre en tu navegador.
     </p>
 
     <div class="yg-load">
-      <h2 class="yg-section-title">1 · Cargar decklist</h2>
+      <h2 class="yg-section-title" data-i18n="load.title">1 · Cargar decklist</h2>
       <div class="yg-input-grid">
-        <textarea id="deckInput" placeholder="Pegá tu decklist o código .ydk aquí..."></textarea>
-        <div class="yg-formats">
+        <textarea id="deckInput" placeholder="Pegá tu decklist o código .ydk aquí..." data-i18n-ph="load.placeholder"></textarea>
+        <div class="yg-formats" data-i18n-html="load.formats">
           Formatos aceptados:<br>
           &bull; <b>3 Ash Blossom &amp; Joyous Spring</b> &nbsp;(cantidad + nombre)<br>
           &bull; <b>Ash Blossom &amp; Joyous Spring x3</b> &nbsp;(nombre + xcantidad)<br>
@@ -199,13 +199,13 @@
       </div>
       <div class="yg-actions">
         <select class="yg-select" id="formatSel">
-          <option value="auto">Detectar formato automáticamente</option>
-          <option value="ydk">Forzar código .ydk</option>
-          <option value="text">Forzar lista de texto</option>
+          <option value="auto" data-i18n="fmt.auto">Detectar formato automáticamente</option>
+          <option value="ydk" data-i18n="fmt.ydk">Forzar código .ydk</option>
+          <option value="text" data-i18n="fmt.text">Forzar lista de texto</option>
         </select>
-        <input class="yg-text" id="deckName" type="text" placeholder="Nombre del deck (ej. Snake-Eye)" />
-        <button class="btn btn-primary" id="loadBtn">Cargar deck</button>
-        <label class="yg-file-label" for="ydkFile">&#128193; Subir archivo .ydk</label>
+        <input class="yg-text" id="deckName" type="text" placeholder="Nombre del deck (ej. Snake-Eye)" data-i18n-ph="load.deckname" />
+        <button class="btn btn-primary" id="loadBtn" data-i18n="load.btn">Cargar deck</button>
+        <label class="yg-file-label" for="ydkFile" data-i18n="load.upload">&#128193; Subir archivo .ydk</label>
         <input type="file" id="ydkFile" accept=".ydk,.txt" />
         <span class="yg-note" id="loadNote"></span>
       </div>
@@ -218,20 +218,20 @@
 
           <!-- TAB BAR -->
           <div class="yg-tabs">
-            <button class="yg-tab active" data-tab="analisis">📋 Análisis</button>
-            <button class="yg-tab" data-tab="combos">🎯 Combos</button>
-            <button class="yg-tab" data-tab="firstsecond">🎲 1ro vs 2do</button>
-            <button class="yg-tab" data-tab="comparar">📊 Comparar</button>
-            <button class="yg-tab" data-tab="matchups">🏆 Matchups</button>
+            <button class="yg-tab active" data-tab="analisis"><span data-i18n="tab.analisis">📋 Análisis</span></button>
+            <button class="yg-tab" data-tab="combos"><span data-i18n="tab.combos">🎯 Combos</span></button>
+            <button class="yg-tab" data-tab="firstsecond"><span data-i18n="tab.firstsecond">🎲 1ro vs 2do</span></button>
+            <button class="yg-tab" data-tab="comparar"><span data-i18n="tab.comparar">📊 Comparar</span></button>
+            <button class="yg-tab" data-tab="matchups"><span data-i18n="tab.matchups">🏆 Matchups</span></button>
           </div>
 
           <!-- ===== TAB: ANÁLISIS ===== -->
           <section class="tab-panel" data-panel="analisis">
-            <h2 class="yg-section-title">Clasificar cartas</h2>
+            <h2 class="yg-section-title" data-i18n="an.classify">Clasificar cartas</h2>
             <div class="yg-actions" style="margin:.2rem 0 1rem;">
-              <label class="yg-toggle"><input type="checkbox" id="sideoToggle"> Modo post-sideo (mostrar columna Game 2)</label>
+              <label class="yg-toggle"><input type="checkbox" id="sideoToggle"> <span data-i18n="an.sideo">Modo post-sideo (mostrar columna Game 2)</span></label>
             </div>
-            <p class="yg-sub" style="margin-bottom:1rem;">
+            <p class="yg-sub" style="margin-bottom:1rem;" data-i18n-html="an.help">
               Asigná la <b>zona</b> (Main / Extra / Side) y marcá las categorías. Solo el Main Deck cuenta para la consistencia.
               En modo post-sideo, ajustá las copias de cada carta en el Main para tu plan de Game 2.
             </p>
@@ -240,9 +240,9 @@
                 <thead>
                   <tr>
                     <th class="qty">#</th>
-                    <th>Carta</th>
-                    <th>Zona</th>
-                    <th class="g2col">G2 Main</th>
+                    <th data-i18n="th.card">Carta</th>
+                    <th data-i18n="th.zone">Zona</th>
+                    <th class="g2col" data-i18n="th.g2">G2 Main</th>
                     <th class="yg-cat-col">Starter</th>
                     <th class="yg-cat-col">Extender</th>
                     <th class="yg-cat-col">Handtrap</th>
@@ -256,118 +256,118 @@
 
             <!-- Stats & charts shown inline on mobile / narrow screens -->
             <div class="inline-panel-only">
-              <h2 class="yg-section-title">Consistencia (mano de 5)</h2>
+              <h2 class="yg-section-title" data-i18n="an.consistency">Consistencia (mano de 5)</h2>
               <div class="yg-stats" id="statsGridInline"></div>
-              <h2 class="yg-section-title">Gráficos</h2>
+              <h2 class="yg-section-title" data-i18n="an.charts">Gráficos</h2>
               <div class="charts-grid">
-                <div class="chart-box"><h4>Distribución de categorías (Main)</h4><canvas id="catChartInline"></canvas></div>
+                <div class="chart-box"><h4 data-i18n="an.dist">Distribución de categorías (Main)</h4><canvas id="catChartInline"></canvas></div>
               </div>
             </div>
 
-            <h2 class="yg-section-title">Simulador de manos</h2>
+            <h2 class="yg-section-title" data-i18n="an.sim">Simulador de manos</h2>
             <div class="yg-actions" style="margin-bottom:.5rem;">
               <select class="yg-select" id="simConfig">
-                <option value="g1">Configuración Game 1 (pre-sideo)</option>
-                <option value="g2">Configuración Game 2 (post-sideo)</option>
+                <option value="g1" data-i18n="sim.g1">Configuración Game 1 (pre-sideo)</option>
+                <option value="g2" data-i18n="sim.g2">Configuración Game 2 (post-sideo)</option>
               </select>
-              <button class="btn btn-primary" id="draw5Btn" data-hs="5">Robar mano de 5</button>
-              <button class="btn btn-primary" id="draw6Btn" data-hs="6">Robar mano de 6</button>
+              <button class="btn btn-primary" id="draw5Btn" data-hs="5" data-i18n="sim.draw5">Robar mano de 5</button>
+              <button class="btn btn-primary" id="draw6Btn" data-hs="6" data-i18n="sim.draw6">Robar mano de 6</button>
               <span class="yg-note" id="handSimNote"></span>
             </div>
-            <div class="yg-hand" id="handArea"><p class="empty-msg">Presioná "Robar mano de 5" o "Robar mano de 6" para simular una apertura.</p></div>
+            <div class="yg-hand" id="handArea"><p class="empty-msg" data-i18n="sim.empty">Presioná "Robar mano de 5" o "Robar mano de 6" para simular una apertura.</p></div>
           </section>
 
           <!-- ===== TAB: COMBOS ===== -->
           <section class="tab-panel" data-panel="combos" hidden>
-            <h2 class="yg-section-title">Probabilidad de combos</h2>
-            <p class="yg-sub" style="margin-bottom:1.2rem;">
+            <h2 class="yg-section-title" data-i18n="cb.title">Probabilidad de combos</h2>
+            <p class="yg-sub" style="margin-bottom:1.2rem;" data-i18n-html="cb.help">
               Definí combos de varias cartas y calculá la probabilidad <b>exacta</b> de abrirlos en tu mano inicial.
               Elegí cartas concretas o categorías enteras (ej. "cualquier starter") y la cantidad mínima de cada una.
             </p>
             <div class="yg-actions" style="margin-bottom:1rem;">
-              <input class="yg-text" id="comboName" type="text" placeholder="Nombre del combo (ej. Engine completo)" style="min-width:220px;">
-              <button class="btn btn-outline" id="addComboBtn">+ Nuevo combo</button>
+              <input class="yg-text" id="comboName" type="text" placeholder="Nombre del combo (ej. Engine completo)" data-i18n-ph="cb.nameph" style="min-width:220px;">
+              <button class="btn btn-outline" id="addComboBtn" data-i18n="cb.add">+ Nuevo combo</button>
               <span class="yg-note" id="comboNote"></span>
             </div>
             <div id="comboList"></div>
-            <div id="comboEmpty" class="empty-msg">Creá un combo para empezar. Cada combo es un conjunto de requisitos que deben cumplirse a la vez en la mano.</div>
+            <div id="comboEmpty" class="empty-msg" data-i18n="cb.empty">Creá un combo para empezar. Cada combo es un conjunto de requisitos que deben cumplirse a la vez en la mano.</div>
           </section>
 
           <!-- ===== TAB: 1RO VS 2DO ===== -->
           <section class="tab-panel" data-panel="firstsecond" hidden>
-            <h2 class="yg-section-title">Yendo primero vs yendo segundo</h2>
-            <p class="yg-sub" style="margin-bottom:1.2rem;">
+            <h2 class="yg-section-title" data-i18n="fs.title">Yendo primero vs yendo segundo</h2>
+            <p class="yg-sub" style="margin-bottom:1.2rem;" data-i18n-html="fs.help">
               Yendo <b>primero</b> robás 5 cartas y querés establecer board (starters/extenders, evitar bricks).
               Yendo <b>segundo</b> robás 6 cartas y dependés de interacción (handtraps + board breakers).
               Acá tenés las métricas relevantes de cada plan, lado a lado.
             </p>
             <div class="fs-grid">
               <div class="fs-col">
-                <h4 class="fs-head">🥇 Yendo primero <span>(5 cartas)</span></h4>
+                <h4 class="fs-head" data-i18n-html="fs.first">🥇 Yendo primero <span>(5 cartas)</span></h4>
                 <div class="yg-stats-panel" id="fsFirstStats"></div>
               </div>
               <div class="fs-col">
-                <h4 class="fs-head">🥈 Yendo segundo <span>(6 cartas)</span></h4>
+                <h4 class="fs-head" data-i18n-html="fs.second">🥈 Yendo segundo <span>(6 cartas)</span></h4>
                 <div class="yg-stats-panel" id="fsSecondStats"></div>
               </div>
             </div>
-            <div class="chart-box" style="margin-top:1.4rem;"><h4>Comparativa 1ro vs 2do</h4><canvas id="fsChart" style="max-height:380px;"></canvas></div>
+            <div class="chart-box" style="margin-top:1.4rem;"><h4 data-i18n="fs.chart">Comparativa 1ro vs 2do</h4><canvas id="fsChart" style="max-height:380px;"></canvas></div>
           </section>
 
           <!-- ===== TAB: COMPARAR ===== -->
           <section class="tab-panel" data-panel="comparar" hidden>
-            <h2 class="yg-section-title">Comparar decks</h2>
+            <h2 class="yg-section-title" data-i18n="cmp.title">Comparar decks</h2>
             <div class="yg-actions" style="margin-bottom:.5rem;">
-              <button class="btn btn-outline" id="saveCompBtn">Guardar este deck para comparar</button>
+              <button class="btn btn-outline" id="saveCompBtn" data-i18n="cmp.save">Guardar este deck para comparar</button>
               <span class="yg-note" id="compNote"></span>
             </div>
-            <div id="compEmpty" class="empty-msg">Aún no guardaste decks para comparar.</div>
+            <div id="compEmpty" class="empty-msg" data-i18n="cmp.empty">Aún no guardaste decks para comparar.</div>
             <div id="compWrap" style="display:none;">
               <div class="comp-table-wrap">
                 <table class="comp-table">
-                  <thead><tr><th>Deck</th><th>Main</th><th>≥2 Starters</th><th>≥2 Handtraps</th><th>≥1 Breaker</th><th>Brick risk</th><th>Solo HTs</th><th></th></tr></thead>
+                  <thead><tr><th data-i18n="cmp.h.deck">Deck</th><th>Main</th><th data-i18n="cmp.h.s2">≥2 Starters</th><th data-i18n="cmp.h.h2">≥2 Handtraps</th><th data-i18n="cmp.h.b1">≥1 Breaker</th><th data-i18n="cmp.h.brick">Brick risk</th><th data-i18n="cmp.h.solo">Solo HTs</th><th></th></tr></thead>
                   <tbody id="compRows"></tbody>
                 </table>
               </div>
-              <div class="chart-box" style="margin-top:1.2rem;"><h4>Comparativa de consistencia</h4><canvas id="compChart" style="max-height:420px;"></canvas></div>
+              <div class="chart-box" style="margin-top:1.2rem;"><h4 data-i18n="cmp.chart">Comparativa de consistencia</h4><canvas id="compChart" style="max-height:420px;"></canvas></div>
             </div>
           </section>
 
           <!-- ===== TAB: MATCHUPS ===== -->
           <section class="tab-panel" data-panel="matchups" hidden>
-            <h2 class="yg-section-title">Registro de matchups</h2>
-            <p class="yg-sub" style="margin-bottom:1.2rem;">
+            <h2 class="yg-section-title" data-i18n="mu.title">Registro de matchups</h2>
+            <p class="yg-sub" style="margin-bottom:1.2rem;" data-i18n="mu.help">
               Registrá cada juego de tus torneos: deck rival, si fuiste primero o segundo y el resultado.
               El analizador te muestra tu win-rate global, por rival y por elección del dado.
             </p>
             <div class="yg-actions" style="margin-bottom:1rem; align-items:flex-end;">
-              <input class="yg-text" id="muOpp" type="text" placeholder="Deck rival (ej. Snake-Eye)" style="min-width:200px;">
+              <input class="yg-text" id="muOpp" type="text" placeholder="Deck rival (ej. Snake-Eye)" data-i18n-ph="mu.oppph" style="min-width:200px;">
               <select class="yg-select" id="muGoing">
-                <option value="first">Fui primero</option>
-                <option value="second">Fui segundo</option>
+                <option value="first" data-i18n="mu.first">Fui primero</option>
+                <option value="second" data-i18n="mu.second">Fui segundo</option>
               </select>
               <select class="yg-select" id="muResult">
-                <option value="win">Gané</option>
-                <option value="loss">Perdí</option>
+                <option value="win" data-i18n="mu.won">Gané</option>
+                <option value="loss" data-i18n="mu.lost">Perdí</option>
               </select>
-              <button class="btn btn-primary" id="addMatchBtn">Registrar juego</button>
+              <button class="btn btn-primary" id="addMatchBtn" data-i18n="mu.register">Registrar juego</button>
             </div>
             <div class="yg-stats-panel" id="muSummary" style="margin-bottom:1.4rem;"></div>
-            <h4 class="fs-head" style="margin-bottom:.6rem;">Win-rate por rival</h4>
+            <h4 class="fs-head" style="margin-bottom:.6rem;" data-i18n="mu.byopp">Win-rate por rival</h4>
             <div class="comp-table-wrap" id="muByOppWrap" style="display:none; margin-bottom:1.4rem;">
               <table class="comp-table">
-                <thead><tr><th>Deck rival</th><th>Juegos</th><th>Ganados</th><th>Win-rate</th><th>1ro</th><th>2do</th></tr></thead>
+                <thead><tr><th data-i18n="mu.h.opp">Deck rival</th><th data-i18n="mu.h.games">Juegos</th><th data-i18n="mu.h.wins">Ganados</th><th data-i18n="mu.h.wr">Win-rate</th><th data-i18n="mu.h.first">1ro</th><th data-i18n="mu.h.second">2do</th></tr></thead>
                 <tbody id="muByOppRows"></tbody>
               </table>
             </div>
-            <h4 class="fs-head" style="margin-bottom:.6rem;">Historial</h4>
+            <h4 class="fs-head" style="margin-bottom:.6rem;" data-i18n="mu.history">Historial</h4>
             <div class="comp-table-wrap" id="muLogWrap" style="display:none;">
               <table class="comp-table">
-                <thead><tr><th>#</th><th>Rival</th><th>Dado</th><th>Resultado</th><th></th></tr></thead>
+                <thead><tr><th>#</th><th data-i18n="mu.h.opp2">Rival</th><th data-i18n="mu.h.die">Dado</th><th data-i18n="mu.h.result">Resultado</th><th></th></tr></thead>
                 <tbody id="muLogRows"></tbody>
               </table>
             </div>
-            <div id="muEmpty" class="empty-msg">Todavía no registraste juegos.</div>
+            <div id="muEmpty" class="empty-msg" data-i18n="mu.empty">Todavía no registraste juegos.</div>
           </section>
 
         </div>
@@ -379,7 +379,7 @@
         <p class="panel-section-title" id="panelConsTitle">Consistencia · Mano de 5</p>
         <div class="yg-stats-panel" id="statsGrid"></div>
 
-        <p class="panel-section-title" style="margin-top:1.4rem;">Distribución de categorías</p>
+        <p class="panel-section-title" style="margin-top:1.4rem;" data-i18n="rp.dist">Distribución de categorías</p>
         <div class="chart-box" style="padding:.8rem;"><canvas id="catChart"></canvas></div>
       </aside>
 
@@ -398,6 +398,116 @@
       'ash blossom','maxx','ghost ogre','effect veiler','nibiru','droll','infinite impermanence',
       'd.d. crow','ghost belle','ghost sister','skull meister','artifact lancea','dimension shifter','retaliating'
     ];
+
+    /* ---- translations (static + dynamic) ---- */
+    const T = {
+      es: {
+        _title: "Analizador de Decks Yu-Gi-Oh | Walter Montiel",
+        back: "← Volver a Demos", title1: "Analizador de Decks",
+        sub: "Cargá tu decklist y trabajá por pestañas: <b>Análisis</b> (consistencia y simulador), <b>Combos</b> (probabilidad exacta de combos multi-carta), <b>1ro vs 2do</b> (plan según el dado), <b>Comparar</b> decks y <b>Matchups</b> (tu win-rate en torneos). Todo corre en tu navegador.",
+        "load.title": "1 · Cargar decklist",
+        "load.placeholder": "Pegá tu decklist o código .ydk aquí...",
+        "load.formats": "Formatos aceptados:<br>&bull; <b>3 Ash Blossom &amp; Joyous Spring</b> &nbsp;(cantidad + nombre)<br>&bull; <b>Ash Blossom &amp; Joyous Spring x3</b> &nbsp;(nombre + xcantidad)<br>&bull; <b>.ydk</b> &nbsp;(archivo o texto pegado — separa main/extra/side y obtiene nombres de YGOPRODeck)",
+        "fmt.auto": "Detectar formato automáticamente", "fmt.ydk": "Forzar código .ydk", "fmt.text": "Forzar lista de texto",
+        "load.deckname": "Nombre del deck (ej. Snake-Eye)", "load.btn": "Cargar deck", "load.upload": "📁 Subir archivo .ydk",
+        "tab.analisis": "📋 Análisis", "tab.combos": "🎯 Combos", "tab.firstsecond": "🎲 1ro vs 2do", "tab.comparar": "📊 Comparar", "tab.matchups": "🏆 Matchups",
+        "an.classify": "Clasificar cartas", "an.sideo": "Modo post-sideo (mostrar columna Game 2)",
+        "an.help": "Asigná la <b>zona</b> (Main / Extra / Side) y marcá las categorías. Solo el Main Deck cuenta para la consistencia. En modo post-sideo, ajustá las copias de cada carta en el Main para tu plan de Game 2.",
+        "th.card": "Carta", "th.zone": "Zona", "th.g2": "G2 Main",
+        "an.consistency": "Consistencia (mano de 5)", "an.charts": "Gráficos", "an.dist": "Distribución de categorías (Main)", "an.sim": "Simulador de manos",
+        "sim.g1": "Configuración Game 1 (pre-sideo)", "sim.g2": "Configuración Game 2 (post-sideo)",
+        "sim.draw5": "Robar mano de 5", "sim.draw6": "Robar mano de 6",
+        "sim.empty": "Presioná \"Robar mano de 5\" o \"Robar mano de 6\" para simular una apertura.",
+        "cb.title": "Probabilidad de combos",
+        "cb.help": "Definí combos de varias cartas y calculá la probabilidad <b>exacta</b> de abrirlos en tu mano inicial. Elegí cartas concretas o categorías enteras (ej. \"cualquier starter\") y la cantidad mínima de cada una.",
+        "cb.nameph": "Nombre del combo (ej. Engine completo)", "cb.add": "+ Nuevo combo",
+        "cb.empty": "Creá un combo para empezar. Cada combo es un conjunto de requisitos que deben cumplirse a la vez en la mano.",
+        "fs.title": "Yendo primero vs yendo segundo",
+        "fs.help": "Yendo <b>primero</b> robás 5 cartas y querés establecer board (starters/extenders, evitar bricks). Yendo <b>segundo</b> robás 6 cartas y dependés de interacción (handtraps + board breakers). Acá tenés las métricas relevantes de cada plan, lado a lado.",
+        "fs.first": "🥇 Yendo primero <span>(5 cartas)</span>", "fs.second": "🥈 Yendo segundo <span>(6 cartas)</span>", "fs.chart": "Comparativa 1ro vs 2do",
+        "cmp.title": "Comparar decks", "cmp.save": "Guardar este deck para comparar", "cmp.empty": "Aún no guardaste decks para comparar.",
+        "cmp.h.deck": "Deck", "cmp.h.s2": "≥2 Starters", "cmp.h.h2": "≥2 Handtraps", "cmp.h.b1": "≥1 Breaker", "cmp.h.brick": "Brick risk", "cmp.h.solo": "Solo HTs", "cmp.chart": "Comparativa de consistencia",
+        "mu.title": "Registro de matchups",
+        "mu.help": "Registrá cada juego de tus torneos: deck rival, si fuiste primero o segundo y el resultado. El analizador te muestra tu win-rate global, por rival y por elección del dado.",
+        "mu.oppph": "Deck rival (ej. Snake-Eye)", "mu.first": "Fui primero", "mu.second": "Fui segundo", "mu.won": "Gané", "mu.lost": "Perdí", "mu.register": "Registrar juego",
+        "mu.byopp": "Win-rate por rival", "mu.h.opp": "Deck rival", "mu.h.games": "Juegos", "mu.h.wins": "Ganados", "mu.h.wr": "Win-rate", "mu.h.first": "1ro", "mu.h.second": "2do",
+        "mu.history": "Historial", "mu.h.opp2": "Rival", "mu.h.die": "Dado", "mu.h.result": "Resultado", "mu.empty": "Todavía no registraste juegos.",
+        "rp.dist": "Distribución de categorías", "rp.cons": "Consistencia · Mano de {n}",
+        "st.size": "Tamaño Main", "st.sizesub": "cartas main deck", "st.sizesubG2": "G2: {n} cartas",
+        "st.s1": "≥1 Starter", "st.e1": "≥1 Extender", "st.h1": "≥1 Handtrap", "st.b1": "≥1 Breaker", "st.brick": "Brick risk", "st.solo": "Solo HTs",
+        "st.copies": "{n} copias", "st.nostarter": "sin starter en mano", "st.noengine": "mano sin engine", "st.g2": "G2: {v}", "st.need": "El Main Deck necesita al menos {n} cartas.",
+        "ch.otros": "Otros", "hand.none": "sin clasificar", "hand.notenough": "No hay suficientes cartas en esta configuración.",
+        "fs.needs": "El Main Deck necesita al menos 6 cartas.",
+        "fs.s.start": "arrancar el plan", "fs.s.double": "doble inicio", "fs.s.extend": "extender el board", "fs.s.brick": "mano sin starter",
+        "fs.s.interrupt": "interrumpir rival", "fs.s.doubleint": "doble interacción", "fs.s.break": "romper su board", "fs.s.noengine": "mano sin engine",
+        "fs.ds1": "Yendo primero (5)", "fs.ds2": "Yendo segundo (6)",
+        "lbl.s1": "≥1 Starter", "lbl.h1": "≥1 Handtrap", "lbl.b1": "≥1 Breaker", "lbl.nobrick": "No-brick", "lbl.s2": "≥2 Starters", "lbl.h2": "≥2 Handtraps", "lbl.brick": "Brick risk", "lbl.solo": "Solo HTs",
+        "cb.atleast": "al menos", "cb.kind.cat": "categoría", "cb.kind.card": "carta exacta", "cb.any": "cualquier {cat}",
+        "cb.addreq": "+ requisito", "cb.delcombo": "eliminar combo", "cb.est": "estimado · mano de {n}", "cb.delreq": "Quitar requisito", "cb.defname": "Combo {n}",
+        "mu.unknown": "Desconocido", "mu.s.games": "Juegos", "mu.s.wr": "Win-rate", "mu.s.global": "global", "mu.s.first": "Yendo 1ro", "mu.s.second": "Yendo 2do",
+        "mu.won2": "Ganó", "mu.lost2": "Perdió", "mu.remove": "quitar", "mu.die.first": "1ro", "mu.die.second": "2do",
+        "cmp.saved": "\"{n}\" guardado.", "cmp.invalid": "Cargá un deck válido primero.", "cmp.defname": "Deck {n}", "cmp.colortitle": "Cambiar color del deck",
+        "ld.processing": "Procesando...", "ld.none": "No se detectaron cartas. Revisá el formato.", "ld.summary": "Main {m} · Extra {e} · Side {s}",
+        "cat.starter": "Starter", "cat.extender": "Extender", "cat.handtrap": "Handtrap", "cat.breaker": "Board Breaker", "cat.brick": "Brick"
+      },
+      en: {
+        _title: "Yu-Gi-Oh Deck Analyzer | Walter Montiel",
+        back: "← Back to Demos", title1: "Deck Analyzer",
+        sub: "Load your decklist and work in tabs: <b>Analysis</b> (consistency and simulator), <b>Combos</b> (exact probability of multi-card combos), <b>1st vs 2nd</b> (plan based on the die roll), <b>Compare</b> decks, and <b>Matchups</b> (your tournament win-rate). Everything runs in your browser.",
+        "load.title": "1 · Load decklist",
+        "load.placeholder": "Paste your decklist or .ydk code here...",
+        "load.formats": "Accepted formats:<br>&bull; <b>3 Ash Blossom &amp; Joyous Spring</b> &nbsp;(quantity + name)<br>&bull; <b>Ash Blossom &amp; Joyous Spring x3</b> &nbsp;(name + xquantity)<br>&bull; <b>.ydk</b> &nbsp;(file or pasted text — separates main/extra/side and fetches names from YGOPRODeck)",
+        "fmt.auto": "Detect format automatically", "fmt.ydk": "Force .ydk code", "fmt.text": "Force text list",
+        "load.deckname": "Deck name (e.g. Snake-Eye)", "load.btn": "Load deck", "load.upload": "📁 Upload .ydk file",
+        "tab.analisis": "📋 Analysis", "tab.combos": "🎯 Combos", "tab.firstsecond": "🎲 1st vs 2nd", "tab.comparar": "📊 Compare", "tab.matchups": "🏆 Matchups",
+        "an.classify": "Classify cards", "an.sideo": "Post-side mode (show Game 2 column)",
+        "an.help": "Assign the <b>zone</b> (Main / Extra / Side) and check the categories. Only the Main Deck counts for consistency. In post-side mode, adjust each card's copies in the Main for your Game 2 plan.",
+        "th.card": "Card", "th.zone": "Zone", "th.g2": "G2 Main",
+        "an.consistency": "Consistency (5-card hand)", "an.charts": "Charts", "an.dist": "Category distribution (Main)", "an.sim": "Hand simulator",
+        "sim.g1": "Game 1 setup (pre-side)", "sim.g2": "Game 2 setup (post-side)",
+        "sim.draw5": "Draw 5-card hand", "sim.draw6": "Draw 6-card hand",
+        "sim.empty": "Press \"Draw 5-card hand\" or \"Draw 6-card hand\" to simulate an opening.",
+        "cb.title": "Combo probability",
+        "cb.help": "Define multi-card combos and compute the <b>exact</b> probability of opening them in your starting hand. Pick specific cards or whole categories (e.g. \"any starter\") and the minimum count of each.",
+        "cb.nameph": "Combo name (e.g. Full engine)", "cb.add": "+ New combo",
+        "cb.empty": "Create a combo to start. Each combo is a set of requirements that must all be met in the hand at once.",
+        "fs.title": "Going first vs going second",
+        "fs.help": "Going <b>first</b> you draw 5 cards and want to establish a board (starters/extenders, avoid bricks). Going <b>second</b> you draw 6 cards and rely on interaction (handtraps + board breakers). Here are the relevant metrics of each plan, side by side.",
+        "fs.first": "🥇 Going first <span>(5 cards)</span>", "fs.second": "🥈 Going second <span>(6 cards)</span>", "fs.chart": "1st vs 2nd comparison",
+        "cmp.title": "Compare decks", "cmp.save": "Save this deck to compare", "cmp.empty": "You haven't saved any decks to compare yet.",
+        "cmp.h.deck": "Deck", "cmp.h.s2": "≥2 Starters", "cmp.h.h2": "≥2 Handtraps", "cmp.h.b1": "≥1 Breaker", "cmp.h.brick": "Brick risk", "cmp.h.solo": "Solo HTs", "cmp.chart": "Consistency comparison",
+        "mu.title": "Matchup log",
+        "mu.help": "Log every game from your tournaments: opponent deck, whether you went first or second, and the result. The analyzer shows your global win-rate, per opponent, and by die roll.",
+        "mu.oppph": "Opponent deck (e.g. Snake-Eye)", "mu.first": "Went first", "mu.second": "Went second", "mu.won": "Won", "mu.lost": "Lost", "mu.register": "Log game",
+        "mu.byopp": "Win-rate by opponent", "mu.h.opp": "Opponent deck", "mu.h.games": "Games", "mu.h.wins": "Wins", "mu.h.wr": "Win-rate", "mu.h.first": "1st", "mu.h.second": "2nd",
+        "mu.history": "History", "mu.h.opp2": "Opponent", "mu.h.die": "Die", "mu.h.result": "Result", "mu.empty": "You haven't logged any games yet.",
+        "rp.dist": "Category distribution", "rp.cons": "Consistency · {n}-card hand",
+        "st.size": "Main size", "st.sizesub": "cards in main deck", "st.sizesubG2": "G2: {n} cards",
+        "st.s1": "≥1 Starter", "st.e1": "≥1 Extender", "st.h1": "≥1 Handtrap", "st.b1": "≥1 Breaker", "st.brick": "Brick risk", "st.solo": "Solo HTs",
+        "st.copies": "{n} copies", "st.nostarter": "no starter in hand", "st.noengine": "hand with no engine", "st.g2": "G2: {v}", "st.need": "The Main Deck needs at least {n} cards.",
+        "ch.otros": "Other", "hand.none": "unclassified", "hand.notenough": "Not enough cards in this configuration.",
+        "fs.needs": "The Main Deck needs at least 6 cards.",
+        "fs.s.start": "start the plan", "fs.s.double": "double opener", "fs.s.extend": "extend the board", "fs.s.brick": "hand with no starter",
+        "fs.s.interrupt": "interrupt opponent", "fs.s.doubleint": "double interaction", "fs.s.break": "break their board", "fs.s.noengine": "hand with no engine",
+        "fs.ds1": "Going first (5)", "fs.ds2": "Going second (6)",
+        "lbl.s1": "≥1 Starter", "lbl.h1": "≥1 Handtrap", "lbl.b1": "≥1 Breaker", "lbl.nobrick": "No-brick", "lbl.s2": "≥2 Starters", "lbl.h2": "≥2 Handtraps", "lbl.brick": "Brick risk", "lbl.solo": "Solo HTs",
+        "cb.atleast": "at least", "cb.kind.cat": "category", "cb.kind.card": "exact card", "cb.any": "any {cat}",
+        "cb.addreq": "+ requirement", "cb.delcombo": "delete combo", "cb.est": "estimate · {n}-card hand", "cb.delreq": "Remove requirement", "cb.defname": "Combo {n}",
+        "mu.unknown": "Unknown", "mu.s.games": "Games", "mu.s.wr": "Win-rate", "mu.s.global": "global", "mu.s.first": "Going 1st", "mu.s.second": "Going 2nd",
+        "mu.won2": "Won", "mu.lost2": "Lost", "mu.remove": "remove", "mu.die.first": "1st", "mu.die.second": "2nd",
+        "cmp.saved": "\"{n}\" saved.", "cmp.invalid": "Load a valid deck first.", "cmp.defname": "Deck {n}", "cmp.colortitle": "Change deck color",
+        "ld.processing": "Processing...", "ld.none": "No cards detected. Check the format.", "ld.summary": "Main {m} · Extra {e} · Side {s}",
+        "cat.starter": "Starter", "cat.extender": "Extender", "cat.handtrap": "Handtrap", "cat.breaker": "Board Breaker", "cat.brick": "Brick"
+      }
+    };
+    window.PAGE_I18N = T;
+    function curLang(){ return (document.documentElement.lang==='en') ? 'en' : 'es'; }
+    function t(key, vals){
+      const d=T[curLang()]||T.es; let s=(d[key]!=null)?d[key]:key;
+      if(vals) Object.keys(vals).forEach(k=>{ s=s.replace('{'+k+'}', vals[k]); });
+      return s;
+    }
+    function catLabel(key){ return t('cat.'+key); }
 
     let deck = [];          // {name, count, zone, cats:{}, g2}
     let deckName = '';
@@ -456,16 +566,16 @@
 
     async function loadDeck(text){
       const note=document.getElementById('loadNote');
-      note.textContent='Procesando...';
+      note.textContent=t('ld.processing');
       const fmt=document.getElementById('formatSel').value;
       const isYDK = fmt==='ydk' || (fmt==='auto' && (/#main/i.test(text)||/^#created/im.test(text)));
       deck = isYDK ? await parseYDK(text) : parseText(text);
-      if(!deck.length){ note.textContent='No se detectaron cartas. Revisá el formato.'; return; }
-      deckName = document.getElementById('deckName').value.trim() || 'Deck sin nombre';
+      if(!deck.length){ note.textContent=t('ld.none'); return; }
+      deckName = document.getElementById('deckName').value.trim() || 'Deck';
       const main=deck.filter(c=>c.zone==='main').reduce((s,c)=>s+c.count,0);
       const extra=deck.filter(c=>c.zone==='extra').reduce((s,c)=>s+c.count,0);
       const side=deck.filter(c=>c.zone==='side').reduce((s,c)=>s+c.count,0);
-      note.textContent=`Main ${main} · Extra ${extra} · Side ${side}`;
+      note.textContent=t('ld.summary',{m:main,e:extra,s:side});
       renderTable();
       document.getElementById('results').style.display='block';
       document.body.classList.add('has-results');
@@ -506,7 +616,7 @@
     let currentHandSize = 5;
     function handSize(){ return currentHandSize; }
     function updateHandLabels(){
-      document.getElementById('panelConsTitle').textContent=`Consistencia · Mano de ${currentHandSize}`;
+      document.getElementById('panelConsTitle').textContent=t('rp.cons',{n:currentHandSize});
     }
 
     function metricsFor(cards, handOverride){
@@ -559,21 +669,21 @@
       const m1=metricsFor(g1Cards());
       const m2=sideo?metricsFor(g2Cards()):null;
       const grid=document.getElementById('statsGrid'); grid.innerHTML='';
-      if(m1.N<handSize()){ grid.innerHTML='<p class="empty-msg">El Main Deck necesita al menos '+handSize()+' cartas.</p>'; return; }
+      if(m1.N<handSize()){ grid.innerHTML='<p class="empty-msg">'+t('st.need',{n:handSize()})+'</p>'; return; }
       const pct=v=>(v*100).toFixed(1)+'%';
       const cls=v=>v>=0.85?'good':v>=0.6?'warn':'bad';
       const clsB=v=>v<=0.15?'good':v<=0.4?'warn':'bad';
       const card=(label,v1,v2,sub,clsf)=>{
-        const g2=(sideo&&v2!=null)?`<div class="sub" style="color:var(--accent2);font-size:.65rem;">G2: ${pct(v2)}</div>`:'';
+        const g2=(sideo&&v2!=null)?`<div class="sub" style="color:var(--accent2);font-size:.65rem;">${t('st.g2',{v:pct(v2)})}</div>`:'';
         return `<div class="stat-card-sm ${clsf?clsf(v1):''}"><span class="lbl">${label}</span><span class="val">${pct(v1)}</span><div class="sub">${sub}</div>${g2}</div>`;
       };
-      let html=`<div class="stat-card-sm"><span class="lbl">Tamaño Main</span><span class="val">${m1.N}</span><div class="sub">${sideo&&m2?`G2: ${m2.N} cartas`:'cartas main deck'}</div></div>`;
-      html+=card('≥1 Starter',   m1.starter,   m2&&m2.starter,   `${m1.counts.starter} copias`,   cls);
-      html+=card('≥1 Extender',  m1.extender,  m2&&m2.extender,  `${m1.counts.extender} copias`,  cls);
-      html+=card('≥1 Handtrap',  m1.handtrap,  m2&&m2.handtrap,  `${m1.counts.handtrap} copias`,  cls);
-      html+=card('≥1 Breaker',   m1.breaker,   m2&&m2.breaker,   `${m1.counts.breaker} copias`,   cls);
-      html+=card('Brick risk',   m1.brickRisk, m2&&m2.brickRisk, 'sin starter en mano',           clsB);
-      html+=card('Solo HTs',     m1.soloHT,    m2&&m2.soloHT,    'mano sin engine',               clsB);
+      let html=`<div class="stat-card-sm"><span class="lbl">${t('st.size')}</span><span class="val">${m1.N}</span><div class="sub">${sideo&&m2?t('st.sizesubG2',{n:m2.N}):t('st.sizesub')}</div></div>`;
+      html+=card(t('st.s1'),    m1.starter,   m2&&m2.starter,   t('st.copies',{n:m1.counts.starter}),  cls);
+      html+=card(t('st.e1'),    m1.extender,  m2&&m2.extender,  t('st.copies',{n:m1.counts.extender}), cls);
+      html+=card(t('st.h1'),    m1.handtrap,  m2&&m2.handtrap,  t('st.copies',{n:m1.counts.handtrap}), cls);
+      html+=card(t('st.b1'),    m1.breaker,   m2&&m2.breaker,   t('st.copies',{n:m1.counts.breaker}),  cls);
+      html+=card(t('st.brick'), m1.brickRisk, m2&&m2.brickRisk, t('st.nostarter'),                     clsB);
+      html+=card(t('st.solo'),  m1.soloHT,    m2&&m2.soloHT,    t('st.noengine'),                      clsB);
       grid.innerHTML=html;
     }
 
@@ -589,7 +699,7 @@
       if(charts.cat) charts.cat.destroy();
       charts.cat=new Chart(document.getElementById('catChart'),{
         type:'doughnut',
-        data:{ labels:['Starter','Extender','Handtrap','Breaker','Brick','Otros'],
+        data:{ labels:[catLabel('starter'),catLabel('extender'),catLabel('handtrap'),'Breaker',catLabel('brick'),t('ch.otros')],
           datasets:[{ data:[cc.starter,cc.extender,cc.handtrap,cc.breaker,cc.brick,unclass],
             backgroundColor:['#9ad17a','#7ab8d1','#d17a9a','#c9a227','#e08a4a','#4a463c'], borderColor:'#0e0d0b', borderWidth:2 }] },
         options:{ plugins:{ legend:{ position:'bottom', labels:{ font:{size:11}, padding:10 } } } }
@@ -603,13 +713,13 @@
       const pool=[]; src.forEach(c=>{ for(let k=0;k<c.copies;k++) pool.push(c); });
       const area=document.getElementById('handArea');
       const H=handSize();
-      if(pool.length<H){ area.innerHTML='<p class="empty-msg">No hay suficientes cartas en esta configuración.</p>'; return; }
+      if(pool.length<H){ area.innerHTML='<p class="empty-msg">'+t('hand.notenough')+'</p>'; return; }
       for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
       const hand=pool.slice(0,H);
       area.innerHTML='';
       hand.forEach(c=>{
         const tags=CATS.filter(cat=>c.cats[cat.key]);
-        const tagHtml=tags.length?tags.map(cat=>`<span class="tag ${cat.key}">${cat.label}</span>`).join(''):'<span class="tag none">sin clasificar</span>';
+        const tagHtml=tags.length?tags.map(cat=>`<span class="tag ${cat.key}">${catLabel(cat.key)}</span>`).join(''):`<span class="tag none">${t('hand.none')}</span>`;
         const div=document.createElement('div'); div.className='hand-card';
         div.innerHTML=`<div class="hc-name">${escapeHtml(c.name)}</div><div class="hc-tags">${tagHtml}</div>`;
         area.appendChild(div);
@@ -635,14 +745,14 @@
 
     function saveForComparison(){
       const m=metricsFor(g1Cards());
-      if(m.N<5){ document.getElementById('compNote').textContent='Cargá un deck válido primero.'; return; }
-      const name=(document.getElementById('deckName').value.trim()||deckName||'Deck '+(savedDecks.length+1));
+      if(m.N<5){ document.getElementById('compNote').textContent=t('cmp.invalid'); return; }
+      const name=(document.getElementById('deckName').value.trim()||deckName||t('cmp.defname',{n:savedDecks.length+1}));
       const prev=savedDecks.find(d=>d.name===name);
       const color=(prev&&prev.color)||DECK_COLORS[savedDecks.filter(d=>d.name!==name).length%DECK_COLORS.length].border;
       savedDecks=savedDecks.filter(d=>d.name!==name);
       savedDecks.push({ name, color, N:m.N, starter2:m.starter2, handtrap2:m.handtrap2, breaker:m.breaker, brickRisk:m.brickRisk, soloHT:m.soloHT });
       persist(); renderComparison();
-      document.getElementById('compNote').textContent='"'+name+'" guardado.';
+      document.getElementById('compNote').textContent=t('cmp.saved',{n:name});
     }
 
     function renderComparison(){
@@ -653,16 +763,16 @@
       const pct=v=>(v*100).toFixed(1)+'%';
       savedDecks.forEach((d,i)=>{
         const color=d.color||DECK_COLORS[i%DECK_COLORS.length].border;
-        const swatch=`<input type="color" class="deck-color" data-i="${i}" value="${color}" title="Cambiar color del deck">`;
+        const swatch=`<input type="color" class="deck-color" data-i="${i}" value="${color}" title="${t('cmp.colortitle')}">`;
         const tr=document.createElement('tr');
-        tr.innerHTML=`<td>${swatch}${escapeHtml(d.name)}</td><td>${d.N}</td><td>${pct(d.starter2)}</td><td>${pct(d.handtrap2)}</td><td>${pct(d.breaker)}</td><td>${pct(d.brickRisk)}</td><td>${pct(d.soloHT)}</td><td><span class="del-deck" data-i="${i}">quitar</span></td>`;
+        tr.innerHTML=`<td>${swatch}${escapeHtml(d.name)}</td><td>${d.N}</td><td>${pct(d.starter2)}</td><td>${pct(d.handtrap2)}</td><td>${pct(d.breaker)}</td><td>${pct(d.brickRisk)}</td><td>${pct(d.soloHT)}</td><td><span class="del-deck" data-i="${i}">${t('mu.remove')}</span></td>`;
         rows.appendChild(tr);
       });
       rows.querySelectorAll('.del-deck').forEach(b=>b.addEventListener('click',e=>{ savedDecks.splice(+e.target.dataset.i,1); persist(); renderComparison(); }));
       rows.querySelectorAll('.deck-color').forEach(inp=>inp.addEventListener('input',e=>{ savedDecks[+e.target.dataset.i].color=e.target.value; persist(); renderComparison(); }));
 
       // radar chart - 5 axes
-      const radarLabels=['≥2 Starters','≥2 Handtraps','≥1 Breaker','Brick risk','Solo HTs'];
+      const radarLabels=[t('lbl.s2'),t('lbl.h2'),t('lbl.b1'),t('lbl.brick'),t('lbl.solo')];
       const datasets=savedDecks.map((d,i)=>{
         const border=d.color||DECK_COLORS[i%DECK_COLORS.length].border;
         return {
@@ -718,7 +828,7 @@
       const second=document.getElementById('fsSecondStats');
       const cards=g1Cards();
       const N=cards.reduce((s,c)=>s+c.copies,0);
-      if(N<6){ first.innerHTML=second.innerHTML='<p class="empty-msg">El Main Deck necesita al menos 6 cartas.</p>'; if(charts.fs){charts.fs.destroy(); charts.fs=null;} return; }
+      if(N<6){ first.innerHTML=second.innerHTML='<p class="empty-msg">'+t('fs.needs')+'</p>'; if(charts.fs){charts.fs.destroy(); charts.fs=null;} return; }
       const m5=metricsFor(cards,5), m6=metricsFor(cards,6);
       const pct=v=>(v*100).toFixed(1)+'%';
       const cls=v=>v>=0.85?'good':v>=0.6?'warn':'bad';
@@ -726,26 +836,26 @@
       const c=(label,v,sub,clsf)=>`<div class="stat-card-sm ${clsf?clsf(v):''}"><span class="lbl">${label}</span><span class="val">${pct(v)}</span><div class="sub">${sub}</div></div>`;
       // going first (5): set up board, avoid bricks
       first.innerHTML =
-        c('≥1 Starter', m5.starter, 'arrancar el plan', cls)+
-        c('≥2 Starters', m5.starter2, 'doble inicio', cls)+
-        c('≥1 Extender', m5.extender, 'extender el board', cls)+
-        c('Brick risk', m5.brickRisk, 'mano sin starter', clsB);
+        c(t('lbl.s1'), m5.starter, t('fs.s.start'), cls)+
+        c(t('lbl.s2'), m5.starter2, t('fs.s.double'), cls)+
+        c(t('st.e1'), m5.extender, t('fs.s.extend'), cls)+
+        c(t('lbl.brick'), m5.brickRisk, t('fs.s.brick'), clsB);
       // going second (6): interaction, breakers
       second.innerHTML =
-        c('≥1 Handtrap', m6.handtrap, 'interrumpir rival', cls)+
-        c('≥2 Handtraps', m6.handtrap2, 'doble interacción', cls)+
-        c('≥1 Breaker', m6.breaker, 'romper su board', cls)+
-        c('Solo HTs', m6.soloHT, 'mano sin engine', clsB);
+        c(t('lbl.h1'), m6.handtrap, t('fs.s.interrupt'), cls)+
+        c(t('lbl.h2'), m6.handtrap2, t('fs.s.doubleint'), cls)+
+        c(t('lbl.b1'), m6.breaker, t('fs.s.break'), cls)+
+        c(t('lbl.solo'), m6.soloHT, t('fs.s.noengine'), clsB);
       // chart
-      const labels=['≥1 Starter','≥1 Handtrap','≥1 Breaker','No-brick','≥2 Starters'];
+      const labels=[t('lbl.s1'),t('lbl.h1'),t('lbl.b1'),t('lbl.nobrick'),t('lbl.s2')];
       const d5=[m5.starter,m5.handtrap,m5.breaker,1-m5.brickRisk,m5.starter2].map(v=>+(v*100).toFixed(1));
       const d6=[m6.starter,m6.handtrap,m6.breaker,1-m6.brickRisk,m6.starter2].map(v=>+(v*100).toFixed(1));
       if(charts.fs) charts.fs.destroy();
       charts.fs=new Chart(document.getElementById('fsChart'),{
         type:'bar',
         data:{ labels, datasets:[
-          { label:'Yendo primero (5)', data:d5, backgroundColor:'rgba(212,175,55,.8)', borderColor:'#d4af37', borderWidth:1 },
-          { label:'Yendo segundo (6)', data:d6, backgroundColor:'rgba(122,184,209,.7)', borderColor:'#7ab8d1', borderWidth:1 }
+          { label:t('fs.ds1'), data:d5, backgroundColor:'rgba(212,175,55,.8)', borderColor:'#d4af37', borderWidth:1 },
+          { label:t('fs.ds2'), data:d6, backgroundColor:'rgba(122,184,209,.7)', borderColor:'#7ab8d1', borderWidth:1 }
         ]},
         options:{ scales:{ y:{ beginAtZero:true, max:100, ticks:{ callback:v=>v+'%' } } }, plugins:{ legend:{ position:'bottom' } } }
       });
@@ -758,7 +868,7 @@
     function mainCardNames(){ return deck.filter(c=>c.zone==='main').map(c=>c.name); }
 
     function addCombo(){
-      const name=(document.getElementById('comboName').value.trim())||('Combo '+(combos.length+1));
+      const name=(document.getElementById('comboName').value.trim())||t('cb.defname',{n:combos.length+1});
       combos.push({ name, reqs:[{ type:'cat', value:'starter', min:1 }] });
       document.getElementById('comboName').value='';
       persistCombos(); renderCombos();
@@ -807,17 +917,17 @@
         const card=document.createElement('div'); card.className='combo-card';
         let reqHtml='';
         combo.reqs.forEach((r,ri)=>{
-          const catOpts=CATS.map(c=>`<option value="${c.key}" ${r.type==='cat'&&r.value===c.key?'selected':''}>cualquier ${c.label}</option>`).join('');
+          const catOpts=CATS.map(c=>`<option value="${c.key}" ${r.type==='cat'&&r.value===c.key?'selected':''}>${t('cb.any',{cat:catLabel(c.key)})}</option>`).join('');
           const cardOpts=names.map(n=>`<option value="${escapeHtml(n)}" ${r.type==='card'&&r.value.toLowerCase()===n.toLowerCase()?'selected':''}>${escapeHtml(n)}</option>`).join('');
           reqHtml+=`<div class="req-row" data-ci="${ci}" data-ri="${ri}">
-            <span style="font-family:var(--mono);font-size:.74rem;color:var(--muted);">al menos</span>
+            <span style="font-family:var(--mono);font-size:.74rem;color:var(--muted);">${t('cb.atleast')}</span>
             <input type="number" class="req-min" min="1" max="6" value="${r.min}">
             <select class="req-kind">
-              <option value="cat" ${r.type==='cat'?'selected':''}>categoría</option>
-              <option value="card" ${r.type==='card'?'selected':''}>carta exacta</option>
+              <option value="cat" ${r.type==='cat'?'selected':''}>${t('cb.kind.cat')}</option>
+              <option value="card" ${r.type==='card'?'selected':''}>${t('cb.kind.card')}</option>
             </select>
             <select class="req-value">${r.type==='cat'?catOpts:cardOpts}</select>
-            <button class="req-del" title="Quitar requisito">✕</button>
+            <button class="req-del" title="${t('cb.delreq')}">✕</button>
           </div>`;
         });
         card.innerHTML=`
@@ -827,9 +937,9 @@
           </div>
           ${reqHtml}
           <div style="display:flex;gap:.6rem;align-items:center;margin-top:.6rem;">
-            <button class="add-req" data-ci="${ci}">+ requisito</button>
-            <button class="combo-del" data-ci="${ci}">eliminar combo</button>
-            <span style="font-family:var(--mono);font-size:.66rem;color:var(--muted);">estimado · mano de ${H}</span>
+            <button class="add-req" data-ci="${ci}">${t('cb.addreq')}</button>
+            <button class="combo-del" data-ci="${ci}">${t('cb.delcombo')}</button>
+            <span style="font-family:var(--mono);font-size:.66rem;color:var(--muted);">${t('cb.est',{n:H})}</span>
           </div>`;
         list.appendChild(card);
       });
@@ -861,7 +971,7 @@
     function loadMatches(){ try{ matches=JSON.parse(localStorage.getItem('yg_matches'))||[]; }catch(e){ matches=[]; } }
     function persistMatches(){ try{ localStorage.setItem('yg_matches', JSON.stringify(matches)); }catch(e){} }
     function addMatch(){
-      const opp=document.getElementById('muOpp').value.trim()||'Desconocido';
+      const opp=document.getElementById('muOpp').value.trim()||t('mu.unknown');
       const going=document.getElementById('muGoing').value;
       const result=document.getElementById('muResult').value;
       matches.push({ opp, going, result });
@@ -869,16 +979,16 @@
     }
     function renderMatchups(){
       const sum=document.getElementById('muSummary');
-      const pct=(w,t)=>t?((w/t)*100).toFixed(0)+'%':'—';
+      const pct=(w,tot)=>tot?((w/tot)*100).toFixed(0)+'%':'—';
       const total=matches.length, wins=matches.filter(m=>m.result==='win').length;
       const firstG=matches.filter(m=>m.going==='first'), secondG=matches.filter(m=>m.going==='second');
       const fw=firstG.filter(m=>m.result==='win').length, sw=secondG.filter(m=>m.result==='win').length;
       const cls=v=>v==null?'':(v>=0.55?'good':v>=0.45?'warn':'bad');
       sum.innerHTML =
-        `<div class="stat-card-sm"><span class="lbl">Juegos</span><span class="val">${total}</span><div class="sub">${wins}W · ${total-wins}L</div></div>`+
-        `<div class="stat-card-sm ${cls(total?wins/total:null)}"><span class="lbl">Win-rate</span><span class="val">${pct(wins,total)}</span><div class="sub">global</div></div>`+
-        `<div class="stat-card-sm ${cls(firstG.length?fw/firstG.length:null)}"><span class="lbl">Yendo 1ro</span><span class="val">${pct(fw,firstG.length)}</span><div class="sub">${fw}/${firstG.length}</div></div>`+
-        `<div class="stat-card-sm ${cls(secondG.length?sw/secondG.length:null)}"><span class="lbl">Yendo 2do</span><span class="val">${pct(sw,secondG.length)}</span><div class="sub">${sw}/${secondG.length}</div></div>`;
+        `<div class="stat-card-sm"><span class="lbl">${t('mu.s.games')}</span><span class="val">${total}</span><div class="sub">${wins}W · ${total-wins}L</div></div>`+
+        `<div class="stat-card-sm ${cls(total?wins/total:null)}"><span class="lbl">${t('mu.s.wr')}</span><span class="val">${pct(wins,total)}</span><div class="sub">${t('mu.s.global')}</div></div>`+
+        `<div class="stat-card-sm ${cls(firstG.length?fw/firstG.length:null)}"><span class="lbl">${t('mu.s.first')}</span><span class="val">${pct(fw,firstG.length)}</span><div class="sub">${fw}/${firstG.length}</div></div>`+
+        `<div class="stat-card-sm ${cls(secondG.length?sw/secondG.length:null)}"><span class="lbl">${t('mu.s.second')}</span><span class="val">${pct(sw,secondG.length)}</span><div class="sub">${sw}/${secondG.length}</div></div>`;
 
       const byOppWrap=document.getElementById('muByOppWrap'), logWrap=document.getElementById('muLogWrap'), empty=document.getElementById('muEmpty');
       if(!total){ byOppWrap.style.display='none'; logWrap.style.display='none'; empty.style.display='block'; return; }
@@ -901,9 +1011,9 @@
       const logRows=document.getElementById('muLogRows'); logRows.innerHTML='';
       matches.slice().reverse().forEach((m,ri)=>{
         const realIdx=matches.length-1-ri;
-        const res=m.result==='win'?'<span style="color:#9ad17a;">Ganó</span>':'<span style="color:#e08a4a;">Perdió</span>';
+        const res=m.result==='win'?`<span style="color:#9ad17a;">${t('mu.won2')}</span>`:`<span style="color:#e08a4a;">${t('mu.lost2')}</span>`;
         const tr=document.createElement('tr');
-        tr.innerHTML=`<td>${realIdx+1}</td><td>${escapeHtml(m.opp)}</td><td>${m.going==='first'?'1ro':'2do'}</td><td>${res}</td><td><span class="del-deck" data-i="${realIdx}">quitar</span></td>`;
+        tr.innerHTML=`<td>${realIdx+1}</td><td>${escapeHtml(m.opp)}</td><td>${m.going==='first'?t('mu.die.first'):t('mu.die.second')}</td><td>${res}</td><td><span class="del-deck" data-i="${realIdx}">${t('mu.remove')}</span></td>`;
         logRows.appendChild(tr);
       });
       logRows.querySelectorAll('.del-deck').forEach(b=>b.addEventListener('click',e=>{ matches.splice(+e.target.dataset.i,1); persistMatches(); renderMatchups(); }));
@@ -934,7 +1044,15 @@
       reader.readAsText(file);
     });
 
+    // re-render dynamic (JS-generated) content when the language changes
+    document.addEventListener('langchange', ()=>{
+      updateHandLabels();
+      if(document.body.classList.contains('has-results')) renderTab(currentTab);
+      renderComparison();
+    });
+
     loadSaved(); loadCombos(); loadMatches(); renderComparison();
   </script>
+  <script src="demo-i18n.js"></script>
 </body>
 </html>

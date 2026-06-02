@@ -37,9 +37,9 @@
 <body>
 
   <div class="demos-header">
-    <a href="index.html" class="demos-back">&larr; Volver al portfolio</a>
-    <h1 class="demos-title">Demos &amp; <span>Proyectos</span></h1>
-    <p class="demos-sub">Una selección de automatizaciones y soluciones. Hacé clic en una tarjeta para ver el detalle y la demostración.</p>
+    <a href="index.html" class="demos-back" data-i18n="back">&larr; Volver al portfolio</a>
+    <h1 class="demos-title"><span data-i18n="title1">Demos</span> &amp; <span data-i18n="title2">Proyectos</span></h1>
+    <p class="demos-sub" data-i18n="sub">Una selección de automatizaciones y soluciones. Hacé clic en una tarjeta para ver el detalle y la demostración.</p>
   </div>
 
   <div class="demos-grid">
@@ -47,39 +47,39 @@
     <a href="coolstuff.html" class="project-card">
       <div class="project-thumb">&#128722;</div>
       <div class="project-body">
-        <h2 class="project-name">Automatización de Compras</h2>
-        <p class="project-desc">
+        <h2 class="project-name" data-i18n="c1.name">Automatización de Compras</h2>
+        <p class="project-desc" data-i18n="c1.desc">
           Bot que recibe tu lista de compras por mensaje, correo o WhatsApp, la interpreta automáticamente,
           busca los productos en la tienda y arma el carrito listo para confirmar.
         </p>
         <div class="project-tags">
           <span>RPA</span><span>WhatsApp</span><span>Email</span><span>Python</span>
         </div>
-        <span class="project-cta">Ver detalle &amp; demo &rarr;</span>
+        <span class="project-cta" data-i18n="c1.cta">Ver detalle &amp; demo &rarr;</span>
       </div>
     </a>
 
     <a href="yugioh.html" class="project-card">
       <div class="project-thumb">&#127183;</div>
       <div class="project-body">
-        <h2 class="project-name">Analizador de Decks Yu-Gi-Oh!</h2>
-        <p class="project-desc">
+        <h2 class="project-name" data-i18n="c2.name">Analizador de Decks Yu-Gi-Oh!</h2>
+        <p class="project-desc" data-i18n="c2.desc">
           Cargá una decklist (texto o .ydk), clasificá zona y categoría de cada carta, calculá la consistencia
           para manos de 5, probá planes de sideo (Game 2), mirá gráficos y compará varios decks. Incluye simulador de manos.
         </p>
         <div class="project-tags">
-          <span>JavaScript</span><span>Chart.js</span><span>Probabilidad</span><span>YGOPRODeck API</span>
+          <span>JavaScript</span><span>Chart.js</span><span data-i18n="c2.tag">Probabilidad</span><span>YGOPRODeck API</span>
         </div>
-        <span class="project-cta">Abrir herramienta &rarr;</span>
+        <span class="project-cta" data-i18n="c2.cta">Abrir herramienta &rarr;</span>
       </div>
     </a>
 
     <div class="project-card soon">
       <div class="project-thumb">&#129302;</div>
       <div class="project-body">
-        <span class="badge-soon">Próximamente</span>
-        <h2 class="project-name">Más demos en camino</h2>
-        <p class="project-desc">
+        <span class="badge-soon" data-i18n="soon.badge">Próximamente</span>
+        <h2 class="project-name" data-i18n="soon.name">Más demos en camino</h2>
+        <p class="project-desc" data-i18n="soon.desc">
           Estoy preparando más demostraciones de automatizaciones y proyectos de análisis de datos.
           Volvé pronto para verlas.
         </p>
@@ -87,6 +87,44 @@
     </div>
 
   </div>
+
+  <script>
+    window.PAGE_I18N = {
+      es: {
+        _title: "Walter Montiel — Demos & Proyectos",
+        back: "← Volver al portfolio",
+        title1: "Demos", title2: "Proyectos",
+        sub: "Una selección de automatizaciones y soluciones. Hacé clic en una tarjeta para ver el detalle y la demostración.",
+        "c1.name": "Automatización de Compras",
+        "c1.desc": "Bot que recibe tu lista de compras por mensaje, correo o WhatsApp, la interpreta automáticamente, busca los productos en la tienda y arma el carrito listo para confirmar.",
+        "c1.cta": "Ver detalle & demo →",
+        "c2.name": "Analizador de Decks Yu-Gi-Oh!",
+        "c2.desc": "Cargá una decklist (texto o .ydk), clasificá zona y categoría de cada carta, calculá la consistencia para manos de 5, probá planes de sideo (Game 2), mirá gráficos y compará varios decks. Incluye simulador de manos.",
+        "c2.tag": "Probabilidad",
+        "c2.cta": "Abrir herramienta →",
+        "soon.badge": "Próximamente",
+        "soon.name": "Más demos en camino",
+        "soon.desc": "Estoy preparando más demostraciones de automatizaciones y proyectos de análisis de datos. Volvé pronto para verlas."
+      },
+      en: {
+        _title: "Walter Montiel — Demos & Projects",
+        back: "← Back to portfolio",
+        title1: "Demos", title2: "Projects",
+        sub: "A selection of automations and solutions. Click a card to see the details and the demo.",
+        "c1.name": "Shopping Automation",
+        "c1.desc": "A bot that receives your shopping list via text, email or WhatsApp, interprets it automatically, finds the products in the store, and builds the cart ready to confirm.",
+        "c1.cta": "View details & demo →",
+        "c2.name": "Yu-Gi-Oh! Deck Analyzer",
+        "c2.desc": "Load a decklist (text or .ydk), classify each card's zone and category, compute consistency for 5-card hands, test side plans (Game 2), view charts, and compare multiple decks. Includes a hand simulator.",
+        "c2.tag": "Probability",
+        "c2.cta": "Open tool →",
+        "soon.badge": "Coming soon",
+        "soon.name": "More demos on the way",
+        "soon.desc": "I'm preparing more automation demos and data-analysis projects. Check back soon."
+      }
+    };
+  </script>
+  <script src="demo-i18n.js"></script>
 
 </body>
 </html>
