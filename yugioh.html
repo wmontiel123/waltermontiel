@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
-    .yg-wrap { max-width: 1100px; margin: 0 auto; padding: 7.5rem 2rem 5rem; }
+    .yg-wrap { max-width: 1400px; margin: 0 auto; padding: 7.5rem 2rem 5rem; }
     .yg-back { font-family: var(--mono); font-size: .82rem; color: var(--muted); display:inline-block; margin-bottom: 1.5rem; }
     .yg-back:hover { color: var(--accent2); }
     .yg-title { font-size: clamp(1.9rem, 5vw, 3rem); font-weight: 700; margin-bottom: .5rem; }
@@ -75,6 +75,41 @@
     .chart-box h4 { font-size:.9rem; margin-bottom:.8rem; color:var(--text); }
     @media (max-width:760px){ .charts-grid { grid-template-columns:1fr; } }
 
+    /* two-column layout when results are visible */
+    .yg-layout { display:block; }
+    .yg-left { min-width:0; }
+    .yg-right-panel {
+      display:none;
+      width:360px; flex-shrink:0;
+      position:sticky; top:5.5rem;
+      height:calc(100vh - 6.5rem);
+      overflow-y:auto; overflow-x:hidden;
+      padding-right:.5rem;
+      scrollbar-width:thin;
+      scrollbar-color:rgba(212,175,55,.3) transparent;
+    }
+    .yg-right-panel::-webkit-scrollbar { width:6px; }
+    .yg-right-panel::-webkit-scrollbar-thumb { background:rgba(212,175,55,.3); border-radius:999px; }
+    body.has-results .yg-layout { display:flex; gap:2rem; align-items:flex-start; }
+    body.has-results .yg-left { flex:1; min-width:0; }
+    body.has-results .yg-right-panel { display:block; }
+    .panel-section-title { font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em;
+      color:var(--muted); margin:1.1rem 0 .5rem; font-family:var(--mono); border-bottom:1px solid var(--border); padding-bottom:.3rem; }
+    .panel-section-title:first-child { margin-top:0; }
+    .yg-stats-panel { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
+    .stat-card-sm { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:.65rem .75rem; }
+    .stat-card-sm .lbl { font-family:var(--mono); font-size:.58rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); display:block; margin-bottom:.2rem; }
+    .stat-card-sm .val { font-size:1.2rem; font-weight:700; font-family:var(--mono); color:var(--accent2); }
+    .stat-card-sm .sub { font-size:.6rem; color:var(--muted); margin-top:.1rem; }
+    .stat-card-sm.good .val { color:#9ad17a; } .stat-card-sm.warn .val { color:#e0b24a; } .stat-card-sm.bad .val { color:#e08a4a; }
+    /* mobile: panel goes below the table as full-width block */
+    @media (max-width:900px){
+      body.has-results .yg-layout { display:block; }
+      body.has-results .yg-right-panel { display:block; width:100%; position:static; height:auto; overflow:visible; margin-top:2rem; }
+      .inline-panel-only { display:none !important; }
+    }
+    @media (min-width:901px){ .inline-panel-only { display:none !important; } }
+
     .yg-hand { display:flex; flex-wrap:wrap; gap:.7rem; margin-top:1.2rem; }
     .hand-card { background: var(--card); border:1px solid var(--border); border-radius:10px; padding:.7rem .9rem; min-width:150px; flex:1 1 160px; max-width:220px; }
     .hand-card .hc-name { font-size:.85rem; font-weight:500; margin-bottom:.4rem; }
@@ -129,69 +164,90 @@
       <span class="yg-note" id="loadNote"></span>
     </div>
 
-    <div id="results" style="display:none;">
-      <h2 class="yg-section-title">2 · Clasificar cartas</h2>
-      <div class="yg-actions" style="margin:.2rem 0 1rem;">
-        <label class="yg-toggle"><input type="checkbox" id="sideoToggle"> Modo post-sideo (mostrar columna Game 2)</label>
-      </div>
-      <p class="yg-sub" style="margin-bottom:1rem;">
-        Asigná la <b>zona</b> (Main / Extra / Side) y marcá las categorías. Solo el Main Deck cuenta para la consistencia.
-        En modo post-sideo, ajustá las copias de cada carta en el Main para tu plan de Game 2.
-      </p>
-      <div class="yg-table-wrap">
-        <table class="yg-table">
-          <thead>
-            <tr>
-              <th class="qty">#</th>
-              <th>Carta</th>
-              <th>Zona</th>
-              <th class="g2col">G2 Main</th>
-              <th class="yg-cat-col">Starter</th>
-              <th class="yg-cat-col">Extender</th>
-              <th class="yg-cat-col">Handtrap</th>
-              <th class="yg-cat-col">Breaker</th>
-              <th class="yg-cat-col">Brick</th>
-            </tr>
-          </thead>
-          <tbody id="cardRows"></tbody>
-        </table>
-      </div>
+    <div class="yg-layout">
+      <div class="yg-left">
 
-      <h2 class="yg-section-title">3 · Consistencia (mano de 5)</h2>
-      <div class="yg-stats" id="statsGrid"></div>
+        <div id="results" style="display:none;">
+          <h2 class="yg-section-title">2 · Clasificar cartas</h2>
+          <div class="yg-actions" style="margin:.2rem 0 1rem;">
+            <label class="yg-toggle"><input type="checkbox" id="sideoToggle"> Modo post-sideo (mostrar columna Game 2)</label>
+          </div>
+          <p class="yg-sub" style="margin-bottom:1rem;">
+            Asigná la <b>zona</b> (Main / Extra / Side) y marcá las categorías. Solo el Main Deck cuenta para la consistencia.
+            En modo post-sideo, ajustá las copias de cada carta en el Main para tu plan de Game 2.
+          </p>
+          <div class="yg-table-wrap">
+            <table class="yg-table">
+              <thead>
+                <tr>
+                  <th class="qty">#</th>
+                  <th>Carta</th>
+                  <th>Zona</th>
+                  <th class="g2col">G2 Main</th>
+                  <th class="yg-cat-col">Starter</th>
+                  <th class="yg-cat-col">Extender</th>
+                  <th class="yg-cat-col">Handtrap</th>
+                  <th class="yg-cat-col">Breaker</th>
+                  <th class="yg-cat-col">Brick</th>
+                </tr>
+              </thead>
+              <tbody id="cardRows"></tbody>
+            </table>
+          </div>
 
-      <h2 class="yg-section-title">4 · Gráficos</h2>
-      <div class="charts-grid">
-        <div class="chart-box"><h4>Distribución de categorías (Main)</h4><canvas id="catChart"></canvas></div>
-        <div class="chart-box"><h4>Consistencia de apertura</h4><canvas id="consChart"></canvas></div>
-      </div>
+          <!-- Stats & charts shown inline on mobile / narrow screens -->
+          <div class="inline-panel-only">
+            <h2 class="yg-section-title">3 · Consistencia (mano de 5)</h2>
+            <div class="yg-stats" id="statsGridInline"></div>
+            <h2 class="yg-section-title">4 · Gráficos</h2>
+            <div class="charts-grid">
+              <div class="chart-box"><h4>Distribución de categorías (Main)</h4><canvas id="catChartInline"></canvas></div>
+              <div class="chart-box"><h4>Consistencia de apertura</h4><canvas id="consChartInline"></canvas></div>
+            </div>
+          </div>
 
-      <h2 class="yg-section-title">5 · Simulador de manos</h2>
-      <div class="yg-actions" style="margin-bottom:.5rem;">
-        <select class="yg-select" id="simConfig">
-          <option value="g1">Configuración Game 1 (pre-sideo)</option>
-          <option value="g2">Configuración Game 2 (post-sideo)</option>
-        </select>
-        <button class="btn btn-primary" id="drawBtn">Robar mano (5 cartas)</button>
-      </div>
-      <div class="yg-hand" id="handArea"><p class="empty-msg">Presioná "Robar mano" para simular una apertura.</p></div>
+          <h2 class="yg-section-title">5 · Simulador de manos</h2>
+          <div class="yg-actions" style="margin-bottom:.5rem;">
+            <select class="yg-select" id="simConfig">
+              <option value="g1">Configuración Game 1 (pre-sideo)</option>
+              <option value="g2">Configuración Game 2 (post-sideo)</option>
+            </select>
+            <button class="btn btn-primary" id="drawBtn">Robar mano (5 cartas)</button>
+          </div>
+          <div class="yg-hand" id="handArea"><p class="empty-msg">Presioná "Robar mano" para simular una apertura.</p></div>
 
-      <h2 class="yg-section-title">6 · Comparar decks</h2>
-      <div class="yg-actions" style="margin-bottom:.5rem;">
-        <button class="btn btn-outline" id="saveCompBtn">Guardar este deck para comparar</button>
-        <span class="yg-note" id="compNote"></span>
-      </div>
-      <div id="compEmpty" class="empty-msg">Aún no guardaste decks para comparar.</div>
-      <div id="compWrap" style="display:none;">
-        <div class="comp-table-wrap">
-          <table class="comp-table">
-            <thead><tr><th>Deck</th><th>Main</th><th>≥1 Starter</th><th>≥1 Handtrap</th><th>≥1 Extender</th><th>Brick risk</th><th></th></tr></thead>
-            <tbody id="compRows"></tbody>
-          </table>
+          <h2 class="yg-section-title">6 · Comparar decks</h2>
+          <div class="yg-actions" style="margin-bottom:.5rem;">
+            <button class="btn btn-outline" id="saveCompBtn">Guardar este deck para comparar</button>
+            <span class="yg-note" id="compNote"></span>
+          </div>
+          <div id="compEmpty" class="empty-msg">Aún no guardaste decks para comparar.</div>
+          <div id="compWrap" style="display:none;">
+            <div class="comp-table-wrap">
+              <table class="comp-table">
+                <thead><tr><th>Deck</th><th>Main</th><th>≥2 Starters</th><th>≥2 Handtraps</th><th>≥1 Breaker</th><th>Brick risk</th><th>Solo HTs</th><th></th></tr></thead>
+                <tbody id="compRows"></tbody>
+              </table>
+            </div>
+            <div class="chart-box" style="margin-top:1.2rem;"><h4>Comparativa de consistencia</h4><canvas id="compChart" style="max-height:420px;"></canvas></div>
+          </div>
         </div>
-        <div class="chart-box" style="margin-top:1.2rem;"><h4>Comparativa de consistencia</h4><canvas id="compChart"></canvas></div>
-      </div>
-    </div>
+
+      </div><!-- /.yg-left -->
+
+      <!-- RIGHT STICKY PANEL: stats + charts -->
+      <aside class="yg-right-panel">
+        <p class="panel-section-title">Consistencia · Mano de 5</p>
+        <div class="yg-stats-panel" id="statsGrid"></div>
+
+        <p class="panel-section-title" style="margin-top:1.4rem;">Distribución de categorías</p>
+        <div class="chart-box" style="padding:.8rem;"><canvas id="catChart"></canvas></div>
+
+        <p class="panel-section-title" style="margin-top:1rem;">Consistencia de apertura</p>
+        <div class="chart-box" style="padding:.8rem;"><canvas id="consChart"></canvas></div>
+      </aside>
+
+    </div><!-- /.yg-layout -->
   </div>
 
   <script>
@@ -276,6 +332,7 @@
       note.textContent=`Main ${main} · Extra ${extra} · Side ${side}`;
       renderTable();
       document.getElementById('results').style.display='block';
+      document.body.classList.add('has-results');
       refresh();
     }
 
@@ -314,10 +371,20 @@
       const N=cards.reduce((s,c)=>s+c.copies,0); const H=5;
       const K=key=>cards.reduce((s,c)=>s+(c.cats[key]?c.copies:0),0);
       const pAtLeast=key=>{ const k=K(key); return (N>=H&&k)?(1-comb(N-k,H)/comb(N,H)):0; };
+      const pAtLeast2=key=>{ const k=K(key); if(N<H||k<2) return 0; return 1 - comb(N-k,H)/comb(N,H) - k*comb(N-k,H-1)/comb(N,H); };
       const S=K('starter');
       const brickRisk=(N>=H)?(S?comb(N-S,H)/comb(N,H):1):1;
-      return { N, starter:pAtLeast('starter'), extender:pAtLeast('extender'), handtrap:pAtLeast('handtrap'),
-               breaker:pAtLeast('breaker'), brickRisk,
+      // P(solo handtraps sin engine): mano sin starter/extender/breaker pero con >=1 handtrap
+      const engineCount=cards.reduce((s,c)=>s+((c.cats.starter||c.cats.extender||c.cats.breaker)?c.copies:0),0);
+      const ht=K('handtrap');
+      const nonEngine=N-engineCount;
+      const pNoEngine=(N>=H&&nonEngine>=H)?comb(nonEngine,H)/comb(N,H):0;
+      const nonEngineNoHT=nonEngine-ht;
+      const pNoEngineNoHT=(N>=H&&nonEngineNoHT>=0&&nonEngineNoHT<=nonEngine)?(nonEngineNoHT>=H?comb(nonEngineNoHT,H)/comb(N,H):0):0;
+      const soloHT=Math.max(0, pNoEngine-pNoEngineNoHT);
+      return { N, starter:pAtLeast('starter'), starter2:pAtLeast2('starter'),
+               extender:pAtLeast('extender'), handtrap:pAtLeast('handtrap'), handtrap2:pAtLeast2('handtrap'),
+               breaker:pAtLeast('breaker'), brickRisk, soloHT,
                counts:{ starter:K('starter'),extender:K('extender'),handtrap:K('handtrap'),breaker:K('breaker'),brick:K('brick') } };
     }
     function g1Cards(){ return deck.filter(c=>c.zone==='main').map(c=>({copies:c.count,cats:c.cats})); }
@@ -335,15 +402,16 @@
       const cls=v=>v>=0.85?'good':v>=0.6?'warn':'bad';
       const clsB=v=>v<=0.15?'good':v<=0.4?'warn':'bad';
       const card=(label,v1,v2,sub,clsf)=>{
-        const g2 = (sideo&&v2!=null)?` <span class="g2v">→ ${pct(v2)} G2</span>`:'';
-        return `<div class="stat-card ${clsf?clsf(v1):''}"><span class="lbl">${label}</span><span class="val">${pct(v1)}${g2}</span><div class="sub">${sub}</div></div>`;
+        const g2=(sideo&&v2!=null)?`<div class="sub" style="color:var(--accent2);font-size:.65rem;">G2: ${pct(v2)}</div>`:'';
+        return `<div class="stat-card-sm ${clsf?clsf(v1):''}"><span class="lbl">${label}</span><span class="val">${pct(v1)}</span><div class="sub">${sub}</div>${g2}</div>`;
       };
-      let html=`<div class="stat-card"><span class="lbl">Tamaño Main</span><span class="val">${m1.N}${sideo&&m2?` <span class="g2v">→ ${m2.N} G2</span>`:''}</span><div class="sub">cartas en el Main Deck</div></div>`;
-      html+=card('Abrir con Starter', m1.starter, m2&&m2.starter, `${m1.counts.starter} copias`, cls);
-      html+=card('Abrir con Extender', m1.extender, m2&&m2.extender, `${m1.counts.extender} copias`, cls);
-      html+=card('Abrir con Handtrap', m1.handtrap, m2&&m2.handtrap, `${m1.counts.handtrap} copias`, cls);
-      html+=card('Abrir con Board Breaker', m1.breaker, m2&&m2.breaker, `${m1.counts.breaker} copias`, cls);
-      html+=card('Mano sin starter (brick)', m1.brickRisk, m2&&m2.brickRisk, 'riesgo de apertura muerta', clsB);
+      let html=`<div class="stat-card-sm"><span class="lbl">Tamaño Main</span><span class="val">${m1.N}</span><div class="sub">${sideo&&m2?`G2: ${m2.N} cartas`:'cartas main deck'}</div></div>`;
+      html+=card('≥1 Starter',   m1.starter,   m2&&m2.starter,   `${m1.counts.starter} copias`,   cls);
+      html+=card('≥1 Extender',  m1.extender,  m2&&m2.extender,  `${m1.counts.extender} copias`,  cls);
+      html+=card('≥1 Handtrap',  m1.handtrap,  m2&&m2.handtrap,  `${m1.counts.handtrap} copias`,  cls);
+      html+=card('≥1 Breaker',   m1.breaker,   m2&&m2.breaker,   `${m1.counts.breaker} copias`,   cls);
+      html+=card('Brick risk',   m1.brickRisk, m2&&m2.brickRisk, 'sin starter en mano',           clsB);
+      html+=card('Solo HTs',     m1.soloHT,    m2&&m2.soloHT,    'mano sin engine',               clsB);
       grid.innerHTML=html;
     }
 
@@ -400,15 +468,24 @@
     /* ---- comparativa ---- */
     function loadSaved(){ try{ savedDecks=JSON.parse(localStorage.getItem('yg_saved'))||[]; }catch(e){ savedDecks=[]; } }
     function persist(){ try{ localStorage.setItem('yg_saved', JSON.stringify(savedDecks)); }catch(e){} }
+    const DECK_COLORS=[
+      { bg:'rgba(212,175,55,.25)', border:'#d4af37' },
+      { bg:'rgba(122,184,209,.25)', border:'#7ab8d1' },
+      { bg:'rgba(154,209,122,.25)', border:'#9ad17a' },
+      { bg:'rgba(209,122,154,.25)', border:'#d17a9a' },
+      { bg:'rgba(201,162,39,.25)', border:'#c9a227' },
+    ];
+
     function saveForComparison(){
       const m=metricsFor(g1Cards());
       if(m.N<5){ document.getElementById('compNote').textContent='Cargá un deck válido primero.'; return; }
       const name=(document.getElementById('deckName').value.trim()||deckName||'Deck '+(savedDecks.length+1));
       savedDecks=savedDecks.filter(d=>d.name!==name);
-      savedDecks.push({ name, N:m.N, starter:m.starter, handtrap:m.handtrap, extender:m.extender, breaker:m.breaker, brickRisk:m.brickRisk });
+      savedDecks.push({ name, N:m.N, starter2:m.starter2, handtrap2:m.handtrap2, breaker:m.breaker, brickRisk:m.brickRisk, soloHT:m.soloHT });
       persist(); renderComparison();
       document.getElementById('compNote').textContent='"'+name+'" guardado.';
     }
+
     function renderComparison(){
       const wrap=document.getElementById('compWrap'), empty=document.getElementById('compEmpty');
       if(!savedDecks.length){ wrap.style.display='none'; empty.style.display='block'; return; }
@@ -416,21 +493,62 @@
       const rows=document.getElementById('compRows'); rows.innerHTML='';
       const pct=v=>(v*100).toFixed(1)+'%';
       savedDecks.forEach((d,i)=>{
+        const col=DECK_COLORS[i%DECK_COLORS.length];
+        const dot=`<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${col.border};margin-right:.4rem;"></span>`;
         const tr=document.createElement('tr');
-        tr.innerHTML=`<td>${escapeHtml(d.name)}</td><td>${d.N}</td><td>${pct(d.starter)}</td><td>${pct(d.handtrap)}</td><td>${pct(d.extender)}</td><td>${pct(d.brickRisk)}</td><td><span class="del-deck" data-i="${i}">quitar</span></td>`;
+        tr.innerHTML=`<td>${dot}${escapeHtml(d.name)}</td><td>${d.N}</td><td>${pct(d.starter2)}</td><td>${pct(d.handtrap2)}</td><td>${pct(d.breaker)}</td><td>${pct(d.brickRisk)}</td><td>${pct(d.soloHT)}</td><td><span class="del-deck" data-i="${i}">quitar</span></td>`;
         rows.appendChild(tr);
       });
       rows.querySelectorAll('.del-deck').forEach(b=>b.addEventListener('click',e=>{ savedDecks.splice(+e.target.dataset.i,1); persist(); renderComparison(); }));
-      const labels=savedDecks.map(d=>d.name);
+
+      // radar chart - 5 axes
+      const radarLabels=['≥2 Starters','≥2 Handtraps','≥1 Breaker','Brick risk','Solo HTs'];
+      const datasets=savedDecks.map((d,i)=>{
+        const col=DECK_COLORS[i%DECK_COLORS.length];
+        return {
+          label: d.name,
+          data: [
+            +(d.starter2*100).toFixed(1),
+            +(d.handtrap2*100).toFixed(1),
+            +(d.breaker*100).toFixed(1),
+            +(d.brickRisk*100).toFixed(1),
+            +(d.soloHT*100).toFixed(1)
+          ],
+          backgroundColor: col.bg,
+          borderColor: col.border,
+          borderWidth: 2,
+          pointBackgroundColor: col.border,
+          pointRadius: 4,
+          pointHoverRadius: 6
+        };
+      });
+
       if(charts.comp) charts.comp.destroy();
       charts.comp=new Chart(document.getElementById('compChart'),{
-        type:'bar',
-        data:{ labels, datasets:[
-          { label:'≥1 Starter', data:savedDecks.map(d=>+(d.starter*100).toFixed(1)), backgroundColor:'rgba(154,209,122,.75)' },
-          { label:'≥1 Handtrap', data:savedDecks.map(d=>+(d.handtrap*100).toFixed(1)), backgroundColor:'rgba(209,122,154,.75)' },
-          { label:'Brick risk', data:savedDecks.map(d=>+(d.brickRisk*100).toFixed(1)), backgroundColor:'rgba(224,138,74,.75)' }
-        ]},
-        options:{ scales:{ y:{ beginAtZero:true, max:100, ticks:{ callback:v=>v+'%' } } }, plugins:{ legend:{ position:'bottom' } } }
+        type:'radar',
+        data:{ labels:radarLabels, datasets },
+        options:{
+          scales:{
+            r:{
+              min:0, max:100,
+              ticks:{ display:false, stepSize:25 },
+              grid:{ color:'rgba(179,171,152,.15)' },
+              angleLines:{ color:'rgba(179,171,152,.2)' },
+              pointLabels:{
+                color:'#b3ab98',
+                font:{ family:"'JetBrains Mono', monospace", size:11 }
+              }
+            }
+          },
+          plugins:{
+            legend:{
+              display: savedDecks.length>1,
+              position:'bottom',
+              labels:{ color:'#b3ab98', font:{ size:12 }, padding:14, usePointStyle:true, pointStyleWidth:10 }
+            }
+          },
+          elements:{ line:{ tension:0.1 } }
+        }
       });
     }
 
