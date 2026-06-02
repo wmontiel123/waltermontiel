@@ -79,7 +79,12 @@
     .res-btn.sel-p2 { background:rgba(154,209,122,.18); border-color:#9ad17a; color:#9ad17a; }
     .res-btn.sel-draw { background:rgba(224,138,74,.18); border-color:#e08a4a; color:#e08a4a; }
     .match.bye { background:rgba(212,175,55,.06); }
+    .match.rematch { border-color:#e08a4a; box-shadow:0 0 0 1px rgba(224,138,74,.25) inset; }
     .badge-bye { font-family:var(--mono); font-size:.66rem; color:var(--accent2); border:1px solid rgba(212,175,55,.3); border-radius:999px; padding:.1rem .5rem; }
+    .badge-rematch { font-size:.8rem; color:#e08a4a; }
+    .slot-sel { flex:1; min-width:90px; max-width:140px; }
+    .slot-sel.win { border-color:#9ad17a; color:#9ad17a; }
+    .slot-sel.loss { color:var(--muted); }
 
     /* bracket */
     .bracket { display:flex; gap:1.6rem; overflow-x:auto; padding-bottom:1rem; }
@@ -200,7 +205,9 @@
         finished: "Torneo finalizado.",
         confirmReset: "¿Reiniciar el torneo? Se perderá el progreso.",
         rNames: ["Final","Semifinal","Cuartos","Octavos","Ronda de 32","Ronda de 64"],
-        addedMid: "{n} entra desde la próxima ronda."
+        addedMid: "{n} entra desde la próxima ronda (game loss en las rondas perdidas).",
+        rematchAlert: "⚠ Revancha repetida: {list}",
+        editHint: "Podés cambiar los emparejamientos con los selectores. Cambiar un jugador lo intercambia con su posición actual."
       },
       en: {
         _title: "Tournament Generator | Walter Montiel",
@@ -226,7 +233,9 @@
         finished: "Tournament finished.",
         confirmReset: "Reset the tournament? Progress will be lost.",
         rNames: ["Final","Semifinal","Quarterfinal","Round of 16","Round of 32","Round of 64"],
-        addedMid: "{n} joins from the next round."
+        addedMid: "{n} joins from the next round (game loss for missed rounds).",
+        rematchAlert: "⚠ Repeated rematch: {list}",
+        editHint: "You can change the pairings with the selectors. Changing a player swaps them with their current position."
       }
     };
     window.PAGE_I18N = T;
@@ -274,7 +283,7 @@
       TS.fmt=setupFmt;
       TS.cfg={ win:+document.getElementById('cfgWin').value||0, draw:+document.getElementById('cfgDraw').value||0,
                loss:+document.getElementById('cfgLoss').value||0, bye:+document.getElementById('cfgBye').value||0 };
-      names.forEach(n=>TS.players.push({ id:TS.nextId++, name:n, dropped:false }));
+      names.forEach(n=>TS.players.push({ id:TS.nextId++, name:n, dropped:false, joinedRound:0 }));
       TS.totalRounds = Math.max(1, +document.getElementById('roundsInput').value || suggestRounds(names.length));
       if(TS.fmt==='elim') buildBracket();
       save(); showRunning();
@@ -300,6 +309,8 @@
           else if(m.result==='draw'){ stat[m.p1].pts+=TS.cfg.draw; stat[m.p2].pts+=TS.cfg.draw; stat[m.p1].d++; stat[m.p2].d++; }
         });
       });
+      // late joiners: game loss for each round missed before joining
+      TS.players.forEach(p=>{ const jr=p.joinedRound||0; if(jr>0 && stat[p.id]){ stat[p.id].l+=jr; stat[p.id].pts+=TS.cfg.loss*jr; } });
       // Buchholz = sum of opponents' points
       Object.values(stat).forEach(s=>{ s.bh=s.opps.reduce((a,o)=>a+(stat[o]?stat[o].pts:0),0); });
       return Object.values(stat).sort((a,b)=> b.pts-a.pts || b.bh-a.bh || b.w-a.w);
@@ -401,30 +412,64 @@
       }));
     }
 
+    function isRematch(a,b){
+      const cur=TS.rounds[TS.rounds.length-1].num;
+      return TS.rounds.some(rr=>rr.num<cur && rr.matches.some(x=>(x.p1===a&&x.p2===b)||(x.p1===b&&x.p2===a)));
+    }
+    function roundPlayerOptions(selId){
+      // all active players + current participants of the round
+      const r=TS.rounds[TS.rounds.length-1];
+      const inRound=new Set(); r.matches.forEach(m=>{ inRound.add(m.p1); inRound.add(m.p2); }); if(r.bye!=null) inRound.add(r.bye);
+      const ids=TS.players.filter(p=>!p.dropped || inRound.has(p.id)).map(p=>p.id);
+      return ids.map(id=>`<option value="${id}" ${id===selId?'selected':''}>${esc(pName(id))}</option>`).join('');
+    }
     function renderSwissRound(){
       const wrap=document.getElementById('roundWrap');
       if(!TS.rounds.length){ wrap.innerHTML='<p class="empty-msg">'+t('round.empty')+'</p>'; return; }
       const r=TS.rounds[TS.rounds.length-1];
-      let html=`<p style="font-family:var(--mono);color:var(--muted);font-size:.78rem;margin-bottom:.7rem;">${t('roundN',{n:r.num})}</p>`;
+      let html=`<p style="font-family:var(--mono);color:var(--muted);font-size:.78rem;margin-bottom:.4rem;">${t('roundN',{n:r.num})}</p>`;
+      html+=`<p class="empty-msg" style="font-size:.72rem;padding:0 0 .7rem;">${t('editHint')}</p>`;
       r.matches.forEach((m,i)=>{
         const c1=m.result==='p1'?'win':(m.result==='p2'?'loss':'');
         const c2=m.result==='p2'?'win':(m.result==='p1'?'loss':'');
-        html+=`<div class="match"><span class="mtable">${i+1}</span>
-          <span class="pname ${c1}">${esc(pName(m.p1))}</span>
+        const rm=isRematch(m.p1,m.p2);
+        html+=`<div class="match ${rm?'rematch':''}"><span class="mtable">${i+1}</span>
+          <select class="tn-select slot-sel ${c1}" data-r="${i}" data-slot="p1">${roundPlayerOptions(m.p1)}</select>
           <span class="vs">${t('vs')}</span>
-          <span class="pname ${c2}" style="text-align:right;">${esc(pName(m.p2))}</span>
+          <select class="tn-select slot-sel ${c2}" data-r="${i}" data-slot="p2">${roundPlayerOptions(m.p2)}</select>
+          ${rm?`<span class="badge-rematch">⚠</span>`:''}
           <span class="res-btns">
             <button class="res-btn ${m.result==='p1'?'sel-p1':''}" data-r="${i}" data-v="p1">${esc(shortName(m.p1))}</button>
             <button class="res-btn ${m.result==='draw'?'sel-draw':''}" data-r="${i}" data-v="draw">${t('draw')}</button>
             <button class="res-btn ${m.result==='p2'?'sel-p2':''}" data-r="${i}" data-v="p2">${esc(shortName(m.p2))}</button>
           </span></div>`;
       });
-      if(r.bye!=null){ html+=`<div class="match bye"><span class="pname">${esc(pName(r.bye))}</span><span class="badge-bye">${t('bye')}</span></div>`; }
+      if(r.bye!=null){ html+=`<div class="match bye"><select class="tn-select slot-sel" data-slot="bye">${roundPlayerOptions(r.bye)}</select><span class="badge-bye">${t('bye')}</span></div>`; }
       wrap.innerHTML=html;
       wrap.querySelectorAll('.res-btn').forEach(b=>b.addEventListener('click',()=>{
-        const r=TS.rounds[TS.rounds.length-1]; const m=r.matches[+b.dataset.r];
+        const rr=TS.rounds[TS.rounds.length-1]; const m=rr.matches[+b.dataset.r];
         m.result = (m.result===b.dataset.v) ? null : b.dataset.v; save(); render();
       }));
+      wrap.querySelectorAll('.slot-sel').forEach(sel=>sel.addEventListener('change',e=>{
+        setSlot(e.target.dataset.slot, e.target.dataset.r!=null?+e.target.dataset.r:null, +e.target.value);
+      }));
+    }
+    function setSlot(slot, mi, newId){
+      const r=TS.rounds[TS.rounds.length-1];
+      const cur = (slot==='bye') ? r.bye : r.matches[mi][slot];
+      if(cur===newId) return;
+      // locate where newId currently is
+      let loc=null;
+      if(r.bye===newId) loc={bye:true};
+      r.matches.forEach((m,j)=>{ if(m.p1===newId) loc={j,slot:'p1'}; if(m.p2===newId) loc={j,slot:'p2'}; });
+      // place newId in target, move cur to newId's old spot
+      if(slot==='bye') r.bye=newId; else { r.matches[mi][slot]=newId; r.matches[mi].result=null; }
+      if(loc){ if(loc.bye) r.bye=cur; else { r.matches[loc.j][loc.slot]=cur; r.matches[loc.j].result=null; } }
+      save();
+      // alert on any repeated rematch in this round
+      const dups=r.matches.filter(m=>isRematch(m.p1,m.p2)).map(m=>pName(m.p1)+' vs '+pName(m.p2));
+      render();
+      if(dups.length) flash(t('rematchAlert',{list:dups.join(', ')}), true);
     }
     function shortName(id){ const n=pName(id); return n.length>10?n.slice(0,9)+'…':n; }
 
@@ -478,7 +523,7 @@
     });
     document.getElementById('addBtn').addEventListener('click',()=>{
       const name=document.getElementById('addName').value.trim(); if(!name) return;
-      TS.players.push({ id:TS.nextId++, name, dropped:false });
+      TS.players.push({ id:TS.nextId++, name, dropped:false, joinedRound:(TS.fmt==='swiss'?TS.rounds.length:0) });
       document.getElementById('addName').value='';
       flash(t('addedMid',{n:name})); save(); render();
     });
@@ -490,7 +535,7 @@
       document.getElementById('setup').classList.remove('hidden');
     });
     let flashTimer=null;
-    function flash(msg){ const el=document.getElementById('toast'); el.textContent=msg; clearTimeout(flashTimer); flashTimer=setTimeout(()=>{ el.textContent=''; }, 3500); }
+    function flash(msg, warn){ const el=document.getElementById('toast'); el.textContent=msg; el.style.color=warn?'#e08a4a':'var(--accent2)'; clearTimeout(flashTimer); flashTimer=setTimeout(()=>{ el.textContent=''; }, warn?6000:3500); }
 
     document.addEventListener('langchange',()=>{ if(TS) render(); updateRoundsUI(); });
 
