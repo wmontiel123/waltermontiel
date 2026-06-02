@@ -55,6 +55,13 @@ a:hover { color: var(--accent); }
   letter-spacing: .02em; transition: color .2s;
 }
 .nav-links a:hover { color: var(--text); }
+.nav-links a.nav-demos {
+  color: var(--accent); font-weight: 600;
+  border: 1px solid rgba(212,175,55,.35); border-radius: 999px;
+  padding: .15rem .8rem;
+}
+.nav-links a.nav-demos:hover { background: rgba(212,175,55,.12); color: var(--accent2); }
+.nav-links a.nav-demos::after { content: " \2197"; font-size: .75em; }
 .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
 .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--muted); border-radius: 2px; transition: .3s; }
 

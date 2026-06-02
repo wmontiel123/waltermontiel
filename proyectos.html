@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Walter Montiel — Demos &amp; Proyectos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .demos-header { max-width: 1100px; margin: 0 auto; padding: 8rem 2rem 2rem; }
+    .demos-back { font-family: var(--mono); font-size: .82rem; color: var(--muted); display: inline-block; margin-bottom: 1.5rem; }
+    .demos-back:hover { color: var(--accent2); }
+    .demos-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; margin-bottom: .6rem; }
+    .demos-title span { background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .demos-sub { color: var(--muted); max-width: 560px; font-size: 1.05rem; }
+    .demos-grid { max-width: 1100px; margin: 2rem auto; padding: 0 2rem 6rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.6rem; }
+    .project-card {
+      display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden; transition: border-color .2s, box-shadow .2s, transform .2s; color: var(--text);
+    }
+    .project-card:hover { border-color: rgba(212,175,55,.45); box-shadow: 0 14px 40px rgba(212,175,55,.12); transform: translateY(-3px); color: var(--text); }
+    .project-thumb { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 3.4rem;
+      background: radial-gradient(circle at 50% 40%, rgba(212,175,55,.18), transparent 70%); border-bottom: 1px solid var(--border); }
+    .project-body { padding: 1.5rem; display: flex; flex-direction: column; gap: .7rem; flex: 1; }
+    .project-name { font-size: 1.15rem; font-weight: 600; }
+    .project-desc { color: var(--muted); font-size: .92rem; line-height: 1.65; flex: 1; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .3rem; }
+    .project-tags span { font-size: .7rem; font-family: var(--mono); background: rgba(212,175,55,.08); color: var(--accent2); border: 1px solid rgba(212,175,55,.2); padding: .18rem .55rem; border-radius: 4px; }
+    .project-cta { margin-top: .8rem; font-family: var(--mono); font-size: .82rem; color: var(--accent); font-weight: 600; }
+    .project-card.soon { opacity: .55; }
+    .project-card.soon:hover { transform: none; box-shadow: none; border-color: var(--border); }
+    .badge-soon { font-family: var(--mono); font-size: .68rem; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: .1rem .5rem; align-self: flex-start; }
+  </style>
+</head>
+<body>
+
+  <div class="demos-header">
+    <a href="index.html" class="demos-back">&larr; Volver al portfolio</a>
+    <h1 class="demos-title">Demos &amp; <span>Proyectos</span></h1>
+    <p class="demos-sub">Una selección de automatizaciones y soluciones. Hacé clic en una tarjeta para ver el detalle y la demostración.</p>
+  </div>
+
+  <div class="demos-grid">
+
+    <a href="coolstuff.html" class="project-card">
+      <div class="project-thumb">&#128722;</div>
+      <div class="project-body">
+        <h2 class="project-name">CoolStuff — Automatización de Compras</h2>
+        <p class="project-desc">
+          Bot que recibe tu lista de compras por mensaje, correo o WhatsApp, la interpreta automáticamente,
+          busca los productos en la tienda y arma el carrito listo para confirmar.
+        </p>
+        <div class="project-tags">
+          <span>RPA</span><span>WhatsApp</span><span>Email</span><span>Python</span>
+        </div>
+        <span class="project-cta">Ver detalle &amp; demo &rarr;</span>
+      </div>
+    </a>
+
+    <div class="project-card soon">
+      <div class="project-thumb">&#129302;</div>
+      <div class="project-body">
+        <span class="badge-soon">Próximamente</span>
+        <h2 class="project-name">Más demos en camino</h2>
+        <p class="project-desc">
+          Estoy preparando más demostraciones de automatizaciones y proyectos de análisis de datos.
+          Volvé pronto para verlas.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CoolStuff — Automatización de Compras | Walter Montiel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .demo-wrap { max-width: 880px; margin: 0 auto; padding: 7.5rem 2rem 5rem; }
+    .demo-back { font-family: var(--mono); font-size: .82rem; color: var(--muted); display: inline-block; margin-bottom: 2rem; }
+    .demo-back:hover { color: var(--accent2); }
+    .demo-eyebrow { font-family: var(--mono); color: var(--accent2); font-size: .85rem; letter-spacing: .08em; margin-bottom: .6rem; }
+    .demo-title { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; line-height: 1.1; margin-bottom: 1rem; }
+    .demo-title span { background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .demo-lead { color: var(--muted); font-size: 1.15rem; line-height: 1.8; margin-bottom: 2.5rem; }
+    .demo-lead strong { color: var(--text); }
+
+    .channels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 3rem; }
+    .channel { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.4rem; text-align: center; transition: border-color .2s; }
+    .channel:hover { border-color: rgba(212,175,55,.4); }
+    .channel-icon { font-size: 2.2rem; display: block; margin-bottom: .6rem; }
+    .channel h3 { font-size: 1rem; margin-bottom: .3rem; }
+    .channel p { color: var(--muted); font-size: .85rem; line-height: 1.55; }
+
+    .demo-section-title { font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1.5rem; position: relative; display: inline-block; }
+    .demo-section-title::after { content: ''; display: block; height: 3px; width: 55%; background: linear-gradient(90deg, var(--accent), transparent); margin-top: .35rem; border-radius: 2px; }
+
+    .steps { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+    .step { display: flex; gap: 1.1rem; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; }
+    .step-num { flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-weight: 700; color: #1a1305; background: var(--gold-grad); }
+    .step-body h4 { font-size: 1rem; margin-bottom: .25rem; }
+    .step-body p { color: var(--muted); font-size: .92rem; line-height: 1.6; }
+
+    .demo-stage { margin: 1rem 0 2rem; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: var(--card); }
+    .demo-stage-bar { display: flex; align-items: center; gap: .5rem; padding: .7rem 1rem; background: var(--bg3); border-bottom: 1px solid var(--border); }
+    .demo-stage-bar .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .demo-stage-bar .red { background: #ff5f57; } .demo-stage-bar .yellow { background: #febc2e; } .demo-stage-bar .green { background: #28c840; }
+    .demo-stage-bar span { font-family: var(--mono); font-size: .78rem; color: var(--muted); margin-left: .4rem; }
+    .demo-placeholder { aspect-ratio: 16/9; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .8rem; color: var(--muted);
+      background: radial-gradient(circle at 50% 45%, rgba(212,175,55,.12), transparent 70%); }
+    .demo-placeholder .play { font-size: 3rem; }
+    .demo-placeholder p { font-size: .9rem; }
+    .demo-placeholder .pixhint { font-family: 'Press Start 2P', var(--mono); font-size: .55rem; color: var(--accent2); opacity: .7; }
+
+    .tech-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+    .tech-tags span { font-size: .78rem; font-family: var(--mono); background: rgba(212,175,55,.08); color: var(--accent2); border: 1px solid rgba(212,175,55,.2); padding: .25rem .7rem; border-radius: 5px; }
+
+    .demo-cta { margin-top: 3rem; text-align: center; }
+
+    @media (max-width: 640px) { .channels { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <div class="demo-wrap">
+    <a href="proyectos.html" class="demo-back">&larr; Volver a Demos</a>
+
+    <p class="demo-eyebrow">RPA · AUTOMATIZACIÓN</p>
+    <h1 class="demo-title">CoolStuff — <span>Automatización de Compras</span></h1>
+    <p class="demo-lead">
+      Una automatización que convierte una simple lista de compras en un carrito listo para pagar.
+      El usuario solo envía qué quiere comprar y el bot se encarga del resto: lee la lista, identifica
+      cada producto, lo busca en la tienda y arma el pedido automáticamente.
+      <strong>La lista de compras se puede recibir por mensaje, correo electrónico o WhatsApp.</strong>
+    </p>
+
+    <h2 class="demo-section-title">Canales de entrada</h2>
+    <div class="channels">
+      <div class="channel">
+        <span class="channel-icon">&#128172;</span>
+        <h3>Mensaje</h3>
+        <p>Envía la lista por mensaje de texto (SMS) y el bot la procesa al instante.</p>
+      </div>
+      <div class="channel">
+        <span class="channel-icon">&#9993;</span>
+        <h3>Correo</h3>
+        <p>Manda un email con los productos; el sistema lee el cuerpo del correo automáticamente.</p>
+      </div>
+      <div class="channel">
+        <span class="channel-icon">&#128241;</span>
+        <h3>WhatsApp</h3>
+        <p>Escribe la lista por WhatsApp y recibe la confirmación del carrito por el mismo chat.</p>
+      </div>
+    </div>
+
+    <h2 class="demo-section-title">¿Cómo funciona?</h2>
+    <ol class="steps">
+      <li class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Recepción de la lista</h4>
+          <p>El usuario envía su lista de compras por mensaje, correo o WhatsApp — el canal que le resulte más cómodo.</p>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Interpretación inteligente</h4>
+          <p>El bot lee y normaliza el texto: separa cada ítem, detecta cantidades y reconoce los productos aunque estén escritos de forma informal.</p>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Búsqueda en la tienda</h4>
+          <p>Busca cada producto en el catálogo de CoolStuff y selecciona la mejor coincidencia disponible.</p>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>Armado del carrito</h4>
+          <p>Agrega automáticamente todos los productos al carrito con sus cantidades, dejando el pedido listo para confirmar.</p>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h4>Confirmación al usuario</h4>
+          <p>Devuelve un resumen del pedido por el mismo canal, indicando los productos encontrados y los que requieren revisión.</p>
+        </div>
+      </li>
+    </ol>
+
+    <h2 class="demo-section-title">Demostración</h2>
+    <div class="demo-stage">
+      <div class="demo-stage-bar">
+        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+        <span>coolstuff-demo.mp4</span>
+      </div>
+      <div class="demo-placeholder">
+        <span class="play">&#9654;</span>
+        <p>La demostración en video estará disponible aquí.</p>
+        <span class="pixhint">demo loading...</span>
+      </div>
+    </div>
+
+    <div class="tech-tags">
+      <span>Python</span><span>RPA</span><span>WhatsApp API</span><span>Email Parsing</span><span>Web Automation</span><span>NLP</span>
+    </div>
+
+    <div class="demo-cta">
+      <a href="index.html#contact" class="btn btn-primary">Contactarme</a>
+    </div>
+  </div>
+
+</body>
+</html>
