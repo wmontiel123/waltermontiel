@@ -102,7 +102,7 @@
     .yg-right-panel::-webkit-scrollbar-thumb { background:rgba(212,175,55,.3); border-radius:999px; }
     body.has-results .yg-layout { display:flex; gap:2rem; align-items:flex-start; }
     body.has-results .yg-left { flex:1; min-width:0; }
-    body.has-results .yg-right-panel { display:block; }
+    body.has-results.tab-analisis .yg-right-panel { display:block; }
     .panel-section-title { font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em;
       color:var(--muted); margin:1.1rem 0 .5rem; font-family:var(--mono); border-bottom:1px solid var(--border); padding-bottom:.3rem; }
     .panel-section-title:first-child { margin-top:0; }
@@ -115,7 +115,7 @@
     /* mobile: panel goes below the table as full-width block */
     @media (max-width:900px){
       body.has-results .yg-layout { display:block; }
-      body.has-results .yg-right-panel { display:block; width:100%; position:static; height:auto; overflow:visible; margin-top:2rem; }
+      body.has-results.tab-analisis .yg-right-panel { display:block; width:100%; position:static; height:auto; overflow:visible; margin-top:2rem; }
       .inline-panel-only { display:none !important; }
     }
     @media (min-width:901px){ .inline-panel-only { display:none !important; } }
@@ -145,6 +145,34 @@
     .deck-color::-webkit-color-swatch-wrapper { padding:0; }
     .deck-color::-webkit-color-swatch { border:none; border-radius:3px; }
     .empty-msg { color:var(--muted); font-size:.95rem; padding:1rem 0; }
+
+    /* tabs */
+    .yg-tabs { display:flex; flex-wrap:wrap; gap:.4rem; border-bottom:1px solid var(--border); margin-bottom:1.5rem; }
+    .yg-tab { background:none; border:none; border-bottom:2px solid transparent; color:var(--muted); padding:.6rem .9rem;
+      font-family:var(--mono); font-size:.82rem; cursor:pointer; transition:all .15s; margin-bottom:-1px; white-space:nowrap; }
+    .yg-tab:hover { color:var(--accent2); }
+    .yg-tab.active { color:var(--accent2); border-bottom-color:var(--accent); }
+    .tab-panel[hidden] { display:none; }
+
+    .fs-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; }
+    @media (max-width:640px){ .fs-grid { grid-template-columns:1fr; } }
+    .fs-col { background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:1rem; }
+    .fs-head { font-size:.95rem; margin-bottom:.8rem; color:var(--text); }
+    .fs-head span { color:var(--muted); font-weight:400; font-size:.78rem; }
+
+    /* combos */
+    .combo-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1rem 1.1rem; margin-bottom:1rem; }
+    .combo-card .combo-top { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:.7rem; }
+    .combo-card .combo-title { font-weight:600; font-size:.95rem; }
+    .combo-prob { font-family:var(--mono); font-size:1.3rem; font-weight:700; color:var(--accent2); }
+    .combo-prob.good { color:#9ad17a; } .combo-prob.warn { color:#e0b24a; } .combo-prob.bad { color:#e08a4a; }
+    .req-row { display:flex; flex-wrap:wrap; gap:.5rem; align-items:center; margin-bottom:.5rem; }
+    .req-row select, .req-row input { background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:.35rem .5rem; font-family:var(--mono); font-size:.78rem; }
+    .req-row .req-min { width:54px; text-align:center; }
+    .req-del, .combo-del { cursor:pointer; color:#e08a4a; font-size:.72rem; font-family:var(--mono); background:none; border:none; }
+    .add-req { background:none; border:1px dashed var(--border); color:var(--muted); border-radius:6px; padding:.3rem .7rem; font-family:var(--mono); font-size:.74rem; cursor:pointer; }
+    .add-req:hover { border-color:var(--accent); color:var(--accent2); }
+    .win-rate-big { font-size:1.4rem; }
   </style>
 </head>
 <body>
@@ -153,8 +181,9 @@
     <a href="proyectos.html" class="yg-back">&larr; Volver a Demos</a>
     <h1 class="yg-title">Analizador de Decks <span>Yu-Gi-Oh!</span></h1>
     <p class="yg-sub">
-      Cargá tu decklist, clasificá cada carta y su zona, calculá la consistencia para manos de 5 cartas,
-      probá planes de sideo (Game 2), visualizá gráficos y compará varios decks. Todo corre en tu navegador.
+      Cargá tu decklist y trabajá por pestañas: <b>Análisis</b> (consistencia y simulador),
+      <b>Combos</b> (probabilidad exacta de combos multi-carta), <b>1ro vs 2do</b> (plan según el dado),
+      <b>Comparar</b> decks y <b>Matchups</b> (tu win-rate en torneos). Todo corre en tu navegador.
     </p>
 
     <div class="yg-load">
@@ -185,76 +214,167 @@
     <div class="yg-layout">
       <div class="yg-left">
 
-        <div id="results" style="display:none;">
-          <h2 class="yg-section-title">2 · Clasificar cartas</h2>
-          <div class="yg-actions" style="margin:.2rem 0 1rem;">
-            <label class="yg-toggle"><input type="checkbox" id="sideoToggle"> Modo post-sideo (mostrar columna Game 2)</label>
-          </div>
-          <p class="yg-sub" style="margin-bottom:1rem;">
-            Asigná la <b>zona</b> (Main / Extra / Side) y marcá las categorías. Solo el Main Deck cuenta para la consistencia.
-            En modo post-sideo, ajustá las copias de cada carta en el Main para tu plan de Game 2.
-          </p>
-          <div class="yg-table-wrap">
-            <table class="yg-table">
-              <thead>
-                <tr>
-                  <th class="qty">#</th>
-                  <th>Carta</th>
-                  <th>Zona</th>
-                  <th class="g2col">G2 Main</th>
-                  <th class="yg-cat-col">Starter</th>
-                  <th class="yg-cat-col">Extender</th>
-                  <th class="yg-cat-col">Handtrap</th>
-                  <th class="yg-cat-col">Breaker</th>
-                  <th class="yg-cat-col">Brick</th>
-                </tr>
-              </thead>
-              <tbody id="cardRows"></tbody>
-            </table>
+        <div id="results" style="display:none;" data-tab="analisis">
+
+          <!-- TAB BAR -->
+          <div class="yg-tabs">
+            <button class="yg-tab active" data-tab="analisis">📋 Análisis</button>
+            <button class="yg-tab" data-tab="combos">🎯 Combos</button>
+            <button class="yg-tab" data-tab="firstsecond">🎲 1ro vs 2do</button>
+            <button class="yg-tab" data-tab="comparar">📊 Comparar</button>
+            <button class="yg-tab" data-tab="matchups">🏆 Matchups</button>
           </div>
 
-          <!-- Stats & charts shown inline on mobile / narrow screens -->
-          <div class="inline-panel-only">
-            <h2 class="yg-section-title">3 · Consistencia (mano de 5)</h2>
-            <div class="yg-stats" id="statsGridInline"></div>
-            <h2 class="yg-section-title">4 · Gráficos</h2>
-            <div class="charts-grid">
-              <div class="chart-box"><h4>Distribución de categorías (Main)</h4><canvas id="catChartInline"></canvas></div>
+          <!-- ===== TAB: ANÁLISIS ===== -->
+          <section class="tab-panel" data-panel="analisis">
+            <h2 class="yg-section-title">Clasificar cartas</h2>
+            <div class="yg-actions" style="margin:.2rem 0 1rem;">
+              <label class="yg-toggle"><input type="checkbox" id="sideoToggle"> Modo post-sideo (mostrar columna Game 2)</label>
             </div>
-          </div>
-
-          <h2 class="yg-section-title">5 · Simulador de manos</h2>
-          <div class="yg-actions" style="margin-bottom:.5rem;">
-            <select class="yg-select" id="simConfig">
-              <option value="g1">Configuración Game 1 (pre-sideo)</option>
-              <option value="g2">Configuración Game 2 (post-sideo)</option>
-            </select>
-            <button class="btn btn-primary" id="draw5Btn" data-hs="5">Robar mano de 5</button>
-            <button class="btn btn-primary" id="draw6Btn" data-hs="6">Robar mano de 6</button>
-            <span class="yg-note" id="handSimNote"></span>
-          </div>
-          <div class="yg-hand" id="handArea"><p class="empty-msg">Presioná "Robar mano de 5" o "Robar mano de 6" para simular una apertura.</p></div>
-
-          <h2 class="yg-section-title">6 · Comparar decks</h2>
-          <div class="yg-actions" style="margin-bottom:.5rem;">
-            <button class="btn btn-outline" id="saveCompBtn">Guardar este deck para comparar</button>
-            <span class="yg-note" id="compNote"></span>
-          </div>
-          <div id="compEmpty" class="empty-msg">Aún no guardaste decks para comparar.</div>
-          <div id="compWrap" style="display:none;">
-            <div class="comp-table-wrap">
-              <table class="comp-table">
-                <thead><tr><th>Deck</th><th>Main</th><th>≥2 Starters</th><th>≥2 Handtraps</th><th>≥1 Breaker</th><th>Brick risk</th><th>Solo HTs</th><th></th></tr></thead>
-                <tbody id="compRows"></tbody>
+            <p class="yg-sub" style="margin-bottom:1rem;">
+              Asigná la <b>zona</b> (Main / Extra / Side) y marcá las categorías. Solo el Main Deck cuenta para la consistencia.
+              En modo post-sideo, ajustá las copias de cada carta en el Main para tu plan de Game 2.
+            </p>
+            <div class="yg-table-wrap">
+              <table class="yg-table">
+                <thead>
+                  <tr>
+                    <th class="qty">#</th>
+                    <th>Carta</th>
+                    <th>Zona</th>
+                    <th class="g2col">G2 Main</th>
+                    <th class="yg-cat-col">Starter</th>
+                    <th class="yg-cat-col">Extender</th>
+                    <th class="yg-cat-col">Handtrap</th>
+                    <th class="yg-cat-col">Breaker</th>
+                    <th class="yg-cat-col">Brick</th>
+                  </tr>
+                </thead>
+                <tbody id="cardRows"></tbody>
               </table>
             </div>
-            <div class="chart-box" style="margin-top:1.2rem;"><h4>Comparativa de consistencia</h4><canvas id="compChart" style="max-height:420px;"></canvas></div>
-          </div>
+
+            <!-- Stats & charts shown inline on mobile / narrow screens -->
+            <div class="inline-panel-only">
+              <h2 class="yg-section-title">Consistencia (mano de 5)</h2>
+              <div class="yg-stats" id="statsGridInline"></div>
+              <h2 class="yg-section-title">Gráficos</h2>
+              <div class="charts-grid">
+                <div class="chart-box"><h4>Distribución de categorías (Main)</h4><canvas id="catChartInline"></canvas></div>
+              </div>
+            </div>
+
+            <h2 class="yg-section-title">Simulador de manos</h2>
+            <div class="yg-actions" style="margin-bottom:.5rem;">
+              <select class="yg-select" id="simConfig">
+                <option value="g1">Configuración Game 1 (pre-sideo)</option>
+                <option value="g2">Configuración Game 2 (post-sideo)</option>
+              </select>
+              <button class="btn btn-primary" id="draw5Btn" data-hs="5">Robar mano de 5</button>
+              <button class="btn btn-primary" id="draw6Btn" data-hs="6">Robar mano de 6</button>
+              <span class="yg-note" id="handSimNote"></span>
+            </div>
+            <div class="yg-hand" id="handArea"><p class="empty-msg">Presioná "Robar mano de 5" o "Robar mano de 6" para simular una apertura.</p></div>
+          </section>
+
+          <!-- ===== TAB: COMBOS ===== -->
+          <section class="tab-panel" data-panel="combos" hidden>
+            <h2 class="yg-section-title">Probabilidad de combos</h2>
+            <p class="yg-sub" style="margin-bottom:1.2rem;">
+              Definí combos de varias cartas y calculá la probabilidad <b>exacta</b> de abrirlos en tu mano inicial.
+              Elegí cartas concretas o categorías enteras (ej. "cualquier starter") y la cantidad mínima de cada una.
+            </p>
+            <div class="yg-actions" style="margin-bottom:1rem;">
+              <input class="yg-text" id="comboName" type="text" placeholder="Nombre del combo (ej. Engine completo)" style="min-width:220px;">
+              <button class="btn btn-outline" id="addComboBtn">+ Nuevo combo</button>
+              <span class="yg-note" id="comboNote"></span>
+            </div>
+            <div id="comboList"></div>
+            <div id="comboEmpty" class="empty-msg">Creá un combo para empezar. Cada combo es un conjunto de requisitos que deben cumplirse a la vez en la mano.</div>
+          </section>
+
+          <!-- ===== TAB: 1RO VS 2DO ===== -->
+          <section class="tab-panel" data-panel="firstsecond" hidden>
+            <h2 class="yg-section-title">Yendo primero vs yendo segundo</h2>
+            <p class="yg-sub" style="margin-bottom:1.2rem;">
+              Yendo <b>primero</b> robás 5 cartas y querés establecer board (starters/extenders, evitar bricks).
+              Yendo <b>segundo</b> robás 6 cartas y dependés de interacción (handtraps + board breakers).
+              Acá tenés las métricas relevantes de cada plan, lado a lado.
+            </p>
+            <div class="fs-grid">
+              <div class="fs-col">
+                <h4 class="fs-head">🥇 Yendo primero <span>(5 cartas)</span></h4>
+                <div class="yg-stats-panel" id="fsFirstStats"></div>
+              </div>
+              <div class="fs-col">
+                <h4 class="fs-head">🥈 Yendo segundo <span>(6 cartas)</span></h4>
+                <div class="yg-stats-panel" id="fsSecondStats"></div>
+              </div>
+            </div>
+            <div class="chart-box" style="margin-top:1.4rem;"><h4>Comparativa 1ro vs 2do</h4><canvas id="fsChart" style="max-height:380px;"></canvas></div>
+          </section>
+
+          <!-- ===== TAB: COMPARAR ===== -->
+          <section class="tab-panel" data-panel="comparar" hidden>
+            <h2 class="yg-section-title">Comparar decks</h2>
+            <div class="yg-actions" style="margin-bottom:.5rem;">
+              <button class="btn btn-outline" id="saveCompBtn">Guardar este deck para comparar</button>
+              <span class="yg-note" id="compNote"></span>
+            </div>
+            <div id="compEmpty" class="empty-msg">Aún no guardaste decks para comparar.</div>
+            <div id="compWrap" style="display:none;">
+              <div class="comp-table-wrap">
+                <table class="comp-table">
+                  <thead><tr><th>Deck</th><th>Main</th><th>≥2 Starters</th><th>≥2 Handtraps</th><th>≥1 Breaker</th><th>Brick risk</th><th>Solo HTs</th><th></th></tr></thead>
+                  <tbody id="compRows"></tbody>
+                </table>
+              </div>
+              <div class="chart-box" style="margin-top:1.2rem;"><h4>Comparativa de consistencia</h4><canvas id="compChart" style="max-height:420px;"></canvas></div>
+            </div>
+          </section>
+
+          <!-- ===== TAB: MATCHUPS ===== -->
+          <section class="tab-panel" data-panel="matchups" hidden>
+            <h2 class="yg-section-title">Registro de matchups</h2>
+            <p class="yg-sub" style="margin-bottom:1.2rem;">
+              Registrá cada juego de tus torneos: deck rival, si fuiste primero o segundo y el resultado.
+              El analizador te muestra tu win-rate global, por rival y por elección del dado.
+            </p>
+            <div class="yg-actions" style="margin-bottom:1rem; align-items:flex-end;">
+              <input class="yg-text" id="muOpp" type="text" placeholder="Deck rival (ej. Snake-Eye)" style="min-width:200px;">
+              <select class="yg-select" id="muGoing">
+                <option value="first">Fui primero</option>
+                <option value="second">Fui segundo</option>
+              </select>
+              <select class="yg-select" id="muResult">
+                <option value="win">Gané</option>
+                <option value="loss">Perdí</option>
+              </select>
+              <button class="btn btn-primary" id="addMatchBtn">Registrar juego</button>
+            </div>
+            <div class="yg-stats-panel" id="muSummary" style="margin-bottom:1.4rem;"></div>
+            <h4 class="fs-head" style="margin-bottom:.6rem;">Win-rate por rival</h4>
+            <div class="comp-table-wrap" id="muByOppWrap" style="display:none; margin-bottom:1.4rem;">
+              <table class="comp-table">
+                <thead><tr><th>Deck rival</th><th>Juegos</th><th>Ganados</th><th>Win-rate</th><th>1ro</th><th>2do</th></tr></thead>
+                <tbody id="muByOppRows"></tbody>
+              </table>
+            </div>
+            <h4 class="fs-head" style="margin-bottom:.6rem;">Historial</h4>
+            <div class="comp-table-wrap" id="muLogWrap" style="display:none;">
+              <table class="comp-table">
+                <thead><tr><th>#</th><th>Rival</th><th>Dado</th><th>Resultado</th><th></th></tr></thead>
+                <tbody id="muLogRows"></tbody>
+              </table>
+            </div>
+            <div id="muEmpty" class="empty-msg">Todavía no registraste juegos.</div>
+          </section>
+
         </div>
 
       </div><!-- /.yg-left -->
 
-      <!-- RIGHT STICKY PANEL: stats + charts -->
+      <!-- RIGHT STICKY PANEL: stats + charts (only on Análisis tab) -->
       <aside class="yg-right-panel">
         <p class="panel-section-title" id="panelConsTitle">Consistencia · Mano de 5</p>
         <div class="yg-stats-panel" id="statsGrid"></div>
@@ -349,7 +469,7 @@
       renderTable();
       document.getElementById('results').style.display='block';
       document.body.classList.add('has-results');
-      refresh();
+      setTab('analisis');
     }
 
     function renderTable(){
@@ -389,8 +509,8 @@
       document.getElementById('panelConsTitle').textContent=`Consistencia · Mano de ${currentHandSize}`;
     }
 
-    function metricsFor(cards){
-      const N=cards.reduce((s,c)=>s+c.copies,0); const H=handSize();
+    function metricsFor(cards, handOverride){
+      const N=cards.reduce((s,c)=>s+c.copies,0); const H=handOverride||handSize();
       const K=key=>cards.reduce((s,c)=>s+(c.cats[key]?c.copies:0),0);
       const pAtLeast=key=>{ const k=K(key); return (N>=H&&k)?(1-comb(N-k,H)/comb(N,H)):0; };
       const pAtLeast2=key=>{ const k=K(key); if(N<H||k<2) return 0; return 1 - comb(N-k,H)/comb(N,H) - k*comb(N-k,H-1)/comb(N,H); };
@@ -412,7 +532,27 @@
     function g1Cards(){ return deck.filter(c=>c.zone==='main').map(c=>({copies:c.count,cats:c.cats})); }
     function g2Cards(){ return deck.filter(c=>c.zone!=='extra'&&c.g2>0).map(c=>({copies:c.g2,cats:c.cats})); }
 
-    function refresh(){ computeStats(); drawCharts(); }
+    let currentTab = 'analisis';
+    function setTab(name){
+      currentTab = name;
+      document.getElementById('results').dataset.tab = name;
+      document.querySelectorAll('.yg-tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
+      document.querySelectorAll('.tab-panel').forEach(p=>p.hidden = (p.dataset.panel!==name));
+      document.body.classList.toggle('tab-analisis', name==='analisis');
+      renderTab(name);
+    }
+    function renderTab(name){
+      if(name==='analisis'){ computeStats(); drawCharts(); }
+      else if(name==='firstsecond') renderFirstSecond();
+      else if(name==='combos') renderCombos();
+      else if(name==='comparar') renderComparison();
+      else if(name==='matchups') renderMatchups();
+    }
+    function refresh(){
+      computeStats(); drawCharts();
+      if(currentTab==='firstsecond') renderFirstSecond();
+      if(currentTab==='combos') renderCombos();
+    }
 
     function computeStats(){
       const sideo=document.body.classList.contains('sideo');
@@ -572,6 +712,208 @@
       });
     }
 
+    /* ================= 1RO VS 2DO ================= */
+    function renderFirstSecond(){
+      const first=document.getElementById('fsFirstStats');
+      const second=document.getElementById('fsSecondStats');
+      const cards=g1Cards();
+      const N=cards.reduce((s,c)=>s+c.copies,0);
+      if(N<6){ first.innerHTML=second.innerHTML='<p class="empty-msg">El Main Deck necesita al menos 6 cartas.</p>'; if(charts.fs){charts.fs.destroy(); charts.fs=null;} return; }
+      const m5=metricsFor(cards,5), m6=metricsFor(cards,6);
+      const pct=v=>(v*100).toFixed(1)+'%';
+      const cls=v=>v>=0.85?'good':v>=0.6?'warn':'bad';
+      const clsB=v=>v<=0.15?'good':v<=0.4?'warn':'bad';
+      const c=(label,v,sub,clsf)=>`<div class="stat-card-sm ${clsf?clsf(v):''}"><span class="lbl">${label}</span><span class="val">${pct(v)}</span><div class="sub">${sub}</div></div>`;
+      // going first (5): set up board, avoid bricks
+      first.innerHTML =
+        c('≥1 Starter', m5.starter, 'arrancar el plan', cls)+
+        c('≥2 Starters', m5.starter2, 'doble inicio', cls)+
+        c('≥1 Extender', m5.extender, 'extender el board', cls)+
+        c('Brick risk', m5.brickRisk, 'mano sin starter', clsB);
+      // going second (6): interaction, breakers
+      second.innerHTML =
+        c('≥1 Handtrap', m6.handtrap, 'interrumpir rival', cls)+
+        c('≥2 Handtraps', m6.handtrap2, 'doble interacción', cls)+
+        c('≥1 Breaker', m6.breaker, 'romper su board', cls)+
+        c('Solo HTs', m6.soloHT, 'mano sin engine', clsB);
+      // chart
+      const labels=['≥1 Starter','≥1 Handtrap','≥1 Breaker','No-brick','≥2 Starters'];
+      const d5=[m5.starter,m5.handtrap,m5.breaker,1-m5.brickRisk,m5.starter2].map(v=>+(v*100).toFixed(1));
+      const d6=[m6.starter,m6.handtrap,m6.breaker,1-m6.brickRisk,m6.starter2].map(v=>+(v*100).toFixed(1));
+      if(charts.fs) charts.fs.destroy();
+      charts.fs=new Chart(document.getElementById('fsChart'),{
+        type:'bar',
+        data:{ labels, datasets:[
+          { label:'Yendo primero (5)', data:d5, backgroundColor:'rgba(212,175,55,.8)', borderColor:'#d4af37', borderWidth:1 },
+          { label:'Yendo segundo (6)', data:d6, backgroundColor:'rgba(122,184,209,.7)', borderColor:'#7ab8d1', borderWidth:1 }
+        ]},
+        options:{ scales:{ y:{ beginAtZero:true, max:100, ticks:{ callback:v=>v+'%' } } }, plugins:{ legend:{ position:'bottom' } } }
+      });
+    }
+
+    /* ================= COMBOS ================= */
+    let combos = [];
+    function loadCombos(){ try{ combos=JSON.parse(localStorage.getItem('yg_combos'))||[]; }catch(e){ combos=[]; } }
+    function persistCombos(){ try{ localStorage.setItem('yg_combos', JSON.stringify(combos)); }catch(e){} }
+    function mainCardNames(){ return deck.filter(c=>c.zone==='main').map(c=>c.name); }
+
+    function addCombo(){
+      const name=(document.getElementById('comboName').value.trim())||('Combo '+(combos.length+1));
+      combos.push({ name, reqs:[{ type:'cat', value:'starter', min:1 }] });
+      document.getElementById('comboName').value='';
+      persistCombos(); renderCombos();
+    }
+    // bipartite matching: can we assign `min` distinct cards to each requirement?
+    function comboSatisfied(hand, reqs){
+      const slots=[]; reqs.forEach((r,ri)=>{ for(let k=0;k<r.min;k++) slots.push(ri); });
+      if(!slots.length) return true;
+      if(slots.length>hand.length) return false;
+      const matchOf=new Array(hand.length).fill(-1); // card -> slot
+      const matches=(card,r)=> r.type==='cat' ? !!card.cats[r.value] : card.name.toLowerCase()===r.value.toLowerCase();
+      function tryAssign(si, seen){
+        for(let ci=0;ci<hand.length;ci++){
+          if(matches(hand[ci], reqs[slots[si]]) && !seen[ci]){
+            seen[ci]=true;
+            if(matchOf[ci]===-1 || tryAssign(matchOf[ci], seen)){ matchOf[ci]=si; return true; }
+          }
+        }
+        return false;
+      }
+      for(let si=0;si<slots.length;si++){ if(!tryAssign(si, new Array(hand.length).fill(false))) return false; }
+      return true;
+    }
+    function comboProbability(reqs, H){
+      const pool=[]; deck.filter(c=>c.zone==='main').forEach(c=>{ for(let k=0;k<c.count;k++) pool.push({name:c.name,cats:c.cats}); });
+      if(pool.length<H) return null;
+      const TRIALS=20000; let hit=0;
+      for(let t=0;t<TRIALS;t++){
+        // partial Fisher-Yates for first H
+        for(let i=0;i<H;i++){ const j=i+Math.floor(Math.random()*(pool.length-i)); const tmp=pool[i]; pool[i]=pool[j]; pool[j]=tmp; }
+        if(comboSatisfied(pool.slice(0,H), reqs)) hit++;
+      }
+      return hit/TRIALS;
+    }
+    function renderCombos(){
+      const list=document.getElementById('comboList'); const empty=document.getElementById('comboEmpty');
+      list.innerHTML='';
+      if(!combos.length){ empty.style.display='block'; return; }
+      empty.style.display='none';
+      const names=mainCardNames();
+      const H=handSize();
+      const pct=v=>v==null?'—':(v*100).toFixed(1)+'%';
+      const clsP=v=>v==null?'':(v>=0.6?'good':v>=0.3?'warn':'bad');
+      combos.forEach((combo,ci)=>{
+        const prob=comboProbability(combo.reqs, H);
+        const card=document.createElement('div'); card.className='combo-card';
+        let reqHtml='';
+        combo.reqs.forEach((r,ri)=>{
+          const catOpts=CATS.map(c=>`<option value="${c.key}" ${r.type==='cat'&&r.value===c.key?'selected':''}>cualquier ${c.label}</option>`).join('');
+          const cardOpts=names.map(n=>`<option value="${escapeHtml(n)}" ${r.type==='card'&&r.value.toLowerCase()===n.toLowerCase()?'selected':''}>${escapeHtml(n)}</option>`).join('');
+          reqHtml+=`<div class="req-row" data-ci="${ci}" data-ri="${ri}">
+            <span style="font-family:var(--mono);font-size:.74rem;color:var(--muted);">al menos</span>
+            <input type="number" class="req-min" min="1" max="6" value="${r.min}">
+            <select class="req-kind">
+              <option value="cat" ${r.type==='cat'?'selected':''}>categoría</option>
+              <option value="card" ${r.type==='card'?'selected':''}>carta exacta</option>
+            </select>
+            <select class="req-value">${r.type==='cat'?catOpts:cardOpts}</select>
+            <button class="req-del" title="Quitar requisito">✕</button>
+          </div>`;
+        });
+        card.innerHTML=`
+          <div class="combo-top">
+            <span class="combo-title">${escapeHtml(combo.name)}</span>
+            <span class="combo-prob ${clsP(prob)}">${pct(prob)}</span>
+          </div>
+          ${reqHtml}
+          <div style="display:flex;gap:.6rem;align-items:center;margin-top:.6rem;">
+            <button class="add-req" data-ci="${ci}">+ requisito</button>
+            <button class="combo-del" data-ci="${ci}">eliminar combo</button>
+            <span style="font-family:var(--mono);font-size:.66rem;color:var(--muted);">estimado · mano de ${H}</span>
+          </div>`;
+        list.appendChild(card);
+      });
+      // wire events
+      list.querySelectorAll('.req-min').forEach(inp=>inp.addEventListener('input',e=>{
+        const row=e.target.closest('.req-row'); combos[+row.dataset.ci].reqs[+row.dataset.ri].min=Math.max(1,parseInt(e.target.value)||1); persistCombos(); renderCombos();
+      }));
+      list.querySelectorAll('.req-kind').forEach(sel=>sel.addEventListener('change',e=>{
+        const row=e.target.closest('.req-row'); const r=combos[+row.dataset.ci].reqs[+row.dataset.ri];
+        r.type=e.target.value; r.value = r.type==='cat' ? 'starter' : (mainCardNames()[0]||''); persistCombos(); renderCombos();
+      }));
+      list.querySelectorAll('.req-value').forEach(sel=>sel.addEventListener('change',e=>{
+        const row=e.target.closest('.req-row'); combos[+row.dataset.ci].reqs[+row.dataset.ri].value=e.target.value; persistCombos(); renderCombos();
+      }));
+      list.querySelectorAll('.req-del').forEach(btn=>btn.addEventListener('click',e=>{
+        const row=e.target.closest('.req-row'); const combo=combos[+row.dataset.ci];
+        combo.reqs.splice(+row.dataset.ri,1); if(!combo.reqs.length) combo.reqs.push({type:'cat',value:'starter',min:1}); persistCombos(); renderCombos();
+      }));
+      list.querySelectorAll('.add-req').forEach(btn=>btn.addEventListener('click',e=>{
+        combos[+e.target.dataset.ci].reqs.push({type:'cat',value:'extender',min:1}); persistCombos(); renderCombos();
+      }));
+      list.querySelectorAll('.combo-del').forEach(btn=>btn.addEventListener('click',e=>{
+        combos.splice(+e.target.dataset.ci,1); persistCombos(); renderCombos();
+      }));
+    }
+
+    /* ================= MATCHUPS ================= */
+    let matches = [];
+    function loadMatches(){ try{ matches=JSON.parse(localStorage.getItem('yg_matches'))||[]; }catch(e){ matches=[]; } }
+    function persistMatches(){ try{ localStorage.setItem('yg_matches', JSON.stringify(matches)); }catch(e){} }
+    function addMatch(){
+      const opp=document.getElementById('muOpp').value.trim()||'Desconocido';
+      const going=document.getElementById('muGoing').value;
+      const result=document.getElementById('muResult').value;
+      matches.push({ opp, going, result });
+      persistMatches(); renderMatchups();
+    }
+    function renderMatchups(){
+      const sum=document.getElementById('muSummary');
+      const pct=(w,t)=>t?((w/t)*100).toFixed(0)+'%':'—';
+      const total=matches.length, wins=matches.filter(m=>m.result==='win').length;
+      const firstG=matches.filter(m=>m.going==='first'), secondG=matches.filter(m=>m.going==='second');
+      const fw=firstG.filter(m=>m.result==='win').length, sw=secondG.filter(m=>m.result==='win').length;
+      const cls=v=>v==null?'':(v>=0.55?'good':v>=0.45?'warn':'bad');
+      sum.innerHTML =
+        `<div class="stat-card-sm"><span class="lbl">Juegos</span><span class="val">${total}</span><div class="sub">${wins}W · ${total-wins}L</div></div>`+
+        `<div class="stat-card-sm ${cls(total?wins/total:null)}"><span class="lbl">Win-rate</span><span class="val">${pct(wins,total)}</span><div class="sub">global</div></div>`+
+        `<div class="stat-card-sm ${cls(firstG.length?fw/firstG.length:null)}"><span class="lbl">Yendo 1ro</span><span class="val">${pct(fw,firstG.length)}</span><div class="sub">${fw}/${firstG.length}</div></div>`+
+        `<div class="stat-card-sm ${cls(secondG.length?sw/secondG.length:null)}"><span class="lbl">Yendo 2do</span><span class="val">${pct(sw,secondG.length)}</span><div class="sub">${sw}/${secondG.length}</div></div>`;
+
+      const byOppWrap=document.getElementById('muByOppWrap'), logWrap=document.getElementById('muLogWrap'), empty=document.getElementById('muEmpty');
+      if(!total){ byOppWrap.style.display='none'; logWrap.style.display='none'; empty.style.display='block'; return; }
+      empty.style.display='none'; byOppWrap.style.display='block'; logWrap.style.display='block';
+
+      // by opponent
+      const groups={};
+      matches.forEach(m=>{ (groups[m.opp]=groups[m.opp]||[]).push(m); });
+      const byRows=document.getElementById('muByOppRows'); byRows.innerHTML='';
+      Object.keys(groups).sort().forEach(opp=>{
+        const g=groups[opp]; const w=g.filter(m=>m.result==='win').length;
+        const gf=g.filter(m=>m.going==='first'), gs=g.filter(m=>m.going==='second');
+        const rec=arr=>`${arr.filter(m=>m.result==='win').length}-${arr.filter(m=>m.result==='loss').length}`;
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${escapeHtml(opp)}</td><td>${g.length}</td><td>${w}</td><td>${pct(w,g.length)}</td><td>${rec(gf)}</td><td>${rec(gs)}</td>`;
+        byRows.appendChild(tr);
+      });
+
+      // log (latest first)
+      const logRows=document.getElementById('muLogRows'); logRows.innerHTML='';
+      matches.slice().reverse().forEach((m,ri)=>{
+        const realIdx=matches.length-1-ri;
+        const res=m.result==='win'?'<span style="color:#9ad17a;">Ganó</span>':'<span style="color:#e08a4a;">Perdió</span>';
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${realIdx+1}</td><td>${escapeHtml(m.opp)}</td><td>${m.going==='first'?'1ro':'2do'}</td><td>${res}</td><td><span class="del-deck" data-i="${realIdx}">quitar</span></td>`;
+        logRows.appendChild(tr);
+      });
+      logRows.querySelectorAll('.del-deck').forEach(b=>b.addEventListener('click',e=>{ matches.splice(+e.target.dataset.i,1); persistMatches(); renderMatchups(); }));
+    }
+
+    /* ================= TAB EVENTS ================= */
+    document.querySelectorAll('.yg-tab').forEach(t=>t.addEventListener('click',()=>setTab(t.dataset.tab)));
+    document.getElementById('addComboBtn').addEventListener('click',addCombo);
+    document.getElementById('addMatchBtn').addEventListener('click',addMatch);
+
     document.getElementById('loadBtn').addEventListener('click',()=>loadDeck(document.getElementById('deckInput').value));
     function drawWithSize(H){
       currentHandSize = H;
@@ -592,7 +934,7 @@
       reader.readAsText(file);
     });
 
-    loadSaved(); renderComparison();
+    loadSaved(); loadCombos(); loadMatches(); renderComparison();
   </script>
 </body>
 </html>
