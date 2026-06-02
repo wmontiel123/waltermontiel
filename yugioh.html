@@ -169,10 +169,6 @@
           <option value="text">Forzar lista de texto</option>
         </select>
         <input class="yg-text" id="deckName" type="text" placeholder="Nombre del deck (ej. Snake-Eye)" />
-        <div class="hand-size-group" title="Cartas en la mano de apertura">
-          <button type="button" class="hs-btn active" data-hs="5">Mano de 5</button>
-          <button type="button" class="hs-btn" data-hs="6">Mano de 6</button>
-        </div>
         <button class="btn btn-primary" id="loadBtn">Cargar deck</button>
         <label class="yg-file-label" for="ydkFile">&#128193; Subir archivo .ydk</label>
         <input type="file" id="ydkFile" accept=".ydk,.txt" />
@@ -227,10 +223,11 @@
               <option value="g1">Configuración Game 1 (pre-sideo)</option>
               <option value="g2">Configuración Game 2 (post-sideo)</option>
             </select>
-            <button class="btn btn-primary" id="drawBtn">Robar mano (5 cartas)</button>
+            <button class="btn btn-primary" id="draw5Btn" data-hs="5">Robar mano de 5</button>
+            <button class="btn btn-primary" id="draw6Btn" data-hs="6">Robar mano de 6</button>
             <span class="yg-note" id="handSimNote"></span>
           </div>
-          <div class="yg-hand" id="handArea"><p class="empty-msg">Presioná "Robar mano" para simular una apertura.</p></div>
+          <div class="yg-hand" id="handArea"><p class="empty-msg">Presioná "Robar mano de 5" o "Robar mano de 6" para simular una apertura.</p></div>
 
           <h2 class="yg-section-title">6 · Comparar decks</h2>
           <div class="yg-actions" style="margin-bottom:.5rem;">
@@ -380,11 +377,10 @@
       }));
     }
 
-    function handSize(){ const b=document.querySelector('.hs-btn.active'); return b?(parseInt(b.dataset.hs)||5):5; }
+    let currentHandSize = 5;
+    function handSize(){ return currentHandSize; }
     function updateHandLabels(){
-      const H=handSize();
-      document.getElementById('drawBtn').textContent=`Robar mano (${H} cartas)`;
-      document.getElementById('panelConsTitle').textContent=`Consistencia · Mano de ${H}`;
+      document.getElementById('panelConsTitle').textContent=`Consistencia · Mano de ${currentHandSize}`;
     }
 
     function metricsFor(cards){
@@ -562,13 +558,16 @@
     }
 
     document.getElementById('loadBtn').addEventListener('click',()=>loadDeck(document.getElementById('deckInput').value));
-    document.getElementById('drawBtn').addEventListener('click',drawHand);
+    function drawWithSize(H){
+      currentHandSize = H;
+      updateHandLabels();
+      refresh();      // stats + charts reflect the chosen hand size
+      drawHand();     // draw a sample hand of that size
+    }
+    document.getElementById('draw5Btn').addEventListener('click',()=>drawWithSize(5));
+    document.getElementById('draw6Btn').addEventListener('click',()=>drawWithSize(6));
     document.getElementById('saveCompBtn').addEventListener('click',saveForComparison);
     document.getElementById('sideoToggle').addEventListener('change',e=>{ document.body.classList.toggle('sideo',e.target.checked); refresh(); });
-    document.querySelectorAll('.hs-btn').forEach(b=>b.addEventListener('click',()=>{
-      document.querySelectorAll('.hs-btn').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active'); updateHandLabels(); refresh();
-    }));
     document.getElementById('ydkFile').addEventListener('change',e=>{
       const file=e.target.files[0]; if(!file) return;
       const baseName=file.name.replace(/\.(ydk|txt)$/i,'').trim();
