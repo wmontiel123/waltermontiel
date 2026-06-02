@@ -6,7 +6,7 @@
   <title>Walter Montiel — Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Press+Start+2P&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -16,12 +16,17 @@
     <div class="nav-inner">
       <span class="nav-logo">WM</span>
       <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#experience">Experience</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#education">Education</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="#about" data-i18n="nav.about">About</a></li>
+        <li><a href="#experience" data-i18n="nav.experience">Experience</a></li>
+        <li><a href="#skills" data-i18n="nav.skills">Skills</a></li>
+        <li><a href="#education" data-i18n="nav.education">Education</a></li>
+        <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
       </ul>
+      <div class="lang-switch" id="langSwitch" aria-label="Language selector">
+        <button data-lang="es">ES</button>
+        <button data-lang="en">EN</button>
+        <button data-lang="de">DE</button>
+      </div>
       <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
@@ -31,45 +36,28 @@
   <!-- HERO -->
   <section id="hero">
     <div class="hero-content">
-      <p class="hero-greeting">Hello, I'm</p>
+      <p class="hero-greeting" data-i18n="hero.greeting">Hello, I'm</p>
       <h1 class="hero-name">Walter<br><span>Montiel</span></h1>
       <div class="hero-roles">
-        <span class="role-tag">RPA Developer</span>
-        <span class="role-tag">Data Analyst</span>
-        <span class="role-tag">Software Engineer</span>
+        <span class="role-tag" data-i18n="hero.role1">RPA Developer</span>
+        <span class="role-tag" data-i18n="hero.role2">Data Analyst</span>
+        <span class="role-tag" data-i18n="hero.role3">Software Engineer</span>
       </div>
-      <p class="hero-summary">
+      <p class="hero-summary" data-i18n-html="hero.summary">
         System Analyst with <strong>5+ years in RPA</strong> and <strong>9+ years in software development</strong>,
         delivering automation, data intelligence, and enterprise solutions across Latin America.
       </p>
       <div class="hero-cta">
-        <a href="#experience" class="btn btn-primary">View My Work</a>
-        <a href="#contact" class="btn btn-outline">Get In Touch</a>
+        <a href="#experience" class="btn btn-primary" data-i18n="hero.cta1">View My Work</a>
+        <a href="#contact" class="btn btn-outline" data-i18n="hero.cta2">Get In Touch</a>
       </div>
     </div>
     <div class="hero-visual">
-      <div class="code-block">
-        <div class="code-header">
-          <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-          <span class="code-title">walter.py</span>
-        </div>
-        <pre><code><span class="kw">class</span> <span class="cls">WalterMontiel</span>:
-  role     = <span class="str">"Senior RPA / Data Analyst"</span>
-  location = <span class="str">"Asunción, Paraguay"</span>
-  years_exp = <span class="num">9</span>
-
-  skills = [
-    <span class="str">"Blue Prism"</span>, <span class="str">"Python"</span>,
-    <span class="str">"Power BI"</span>, <span class="str">"SQL Server"</span>,
-    <span class="str">".NET / C#"</span>, <span class="str">"JavaScript"</span>,
-  ]
-
-  <span class="kw">def</span> <span class="fn">solve</span>(self, problem):
-    <span class="kw">return</span> <span class="str">"automated solution"</span></code></pre>
-      </div>
+      <canvas id="pixelCanvas" class="pixel-canvas" aria-hidden="true"></canvas>
+      <p class="pixel-caption" data-i18n="hero.pixelcap">automation, crafted pixel by pixel</p>
     </div>
     <div class="scroll-hint">
-      <span>scroll</span>
+      <span data-i18n="hero.scroll">scroll</span>
       <div class="scroll-line"></div>
     </div>
   </section>
@@ -77,41 +65,41 @@
   <!-- ABOUT -->
   <section id="about">
     <div class="container">
-      <h2 class="section-title">About Me</h2>
+      <h2 class="section-title" data-i18n="about.title">About Me</h2>
       <div class="about-grid">
         <div class="about-text">
-          <p>
+          <p data-i18n-html="about.p1">
             I'm a <strong>System Analyst</strong> based in Asunción, Paraguay, specializing in Robotic Process Automation,
             data analysis, and enterprise software development. Over 9 years I've worked across industries including
             consulting, FMCG, fintech, real estate, and utilities.
           </p>
-          <p>
+          <p data-i18n-html="about.p2">
             My work spans the full lifecycle: from process discovery and automation design to deployment, QA, and training.
             I've led RPA teams, served as Scrum Master, and mentored junior developers — always focused on delivering
             measurable FTE savings and business value.
           </p>
-          <p>
+          <p data-i18n-html="about.p3">
             Fluent in English and Spanish, I collaborate comfortably with international clients and cross-functional teams.
           </p>
           <div class="about-stats">
-            <div class="stat"><span class="stat-num">9+</span><span class="stat-label">Years Experience</span></div>
-            <div class="stat"><span class="stat-num">5+</span><span class="stat-label">Years RPA</span></div>
-            <div class="stat"><span class="stat-num">7</span><span class="stat-label">Companies</span></div>
-            <div class="stat"><span class="stat-num">3</span><span class="stat-label">Languages</span></div>
+            <div class="stat"><span class="stat-num">9+</span><span class="stat-label" data-i18n="about.stat1">Years Experience</span></div>
+            <div class="stat"><span class="stat-num">5+</span><span class="stat-label" data-i18n="about.stat2">Years RPA</span></div>
+            <div class="stat"><span class="stat-num">7</span><span class="stat-label" data-i18n="about.stat3">Companies</span></div>
+            <div class="stat"><span class="stat-num">3</span><span class="stat-label" data-i18n="about.stat4">Languages</span></div>
           </div>
         </div>
         <div class="about-contact-card">
-          <h3>Quick Info</h3>
+          <h3 data-i18n="about.quickinfo">Quick Info</h3>
           <ul>
             <li><span class="icon">&#9993;</span> <a href="mailto:walterlorenzopy@hotmail.com">walterlorenzopy@hotmail.com</a></li>
             <li><span class="icon">&#128222;</span> +595 972 199 660</li>
             <li><span class="icon">&#127759;</span> Asunción, Paraguay (GMT-3)</li>
-            <li><span class="icon">&#128279;</span> <a href="https://linkedin.com/in/walterlorenzomontielvargas" target="_blank">LinkedIn Profile</a></li>
+            <li><span class="icon">&#128279;</span> <a href="https://linkedin.com/in/walterlorenzomontielvargas" target="_blank" data-i18n="about.linkedin">LinkedIn Profile</a></li>
           </ul>
           <div class="lang-badges">
-            <span class="lang-badge">English — Fluent</span>
-            <span class="lang-badge">Spanish — Native</span>
-            <span class="lang-badge">Portuguese — Intermediate</span>
+            <span class="lang-badge" data-i18n="about.lang1">English — Fluent</span>
+            <span class="lang-badge" data-i18n="about.lang2">Spanish — Native</span>
+            <span class="lang-badge" data-i18n="about.lang3">Portuguese — Intermediate</span>
           </div>
         </div>
       </div>
@@ -121,7 +109,7 @@
   <!-- EXPERIENCE -->
   <section id="experience">
     <div class="container">
-      <h2 class="section-title">Experience</h2>
+      <h2 class="section-title" data-i18n="exp.title">Experience</h2>
       <div class="timeline">
 
         <div class="timeline-item">
@@ -129,12 +117,12 @@
           <div class="timeline-card">
             <div class="job-header">
               <div>
-                <h3 class="job-title">Data Analyst / RPA Consultant</h3>
+                <h3 class="job-title" data-i18n="exp.j1.title">Data Analyst / RPA Consultant</h3>
                 <p class="job-company">Dynamus</p>
               </div>
               <span class="job-period">2024 – 2025</span>
             </div>
-            <p class="job-desc">
+            <p class="job-desc" data-i18n="exp.j1.desc">
               Embedded within the ANDE (Administración Nacional de Electricidad) AMI tender project, supporting
               the licitación process for Advanced Metering Infrastructure across Paraguay's national electric utility.
               Delivered data analysis, reporting pipelines, and automation solutions to support the bid evaluation
@@ -151,12 +139,12 @@
           <div class="timeline-card">
             <div class="job-header">
               <div>
-                <h3 class="job-title">Innovation Advisory Supervisor</h3>
+                <h3 class="job-title" data-i18n="exp.j2.title">Innovation Advisory Supervisor</h3>
                 <p class="job-company">Grant Thornton</p>
               </div>
               <span class="job-period">2023</span>
             </div>
-            <p class="job-desc">
+            <p class="job-desc" data-i18n="exp.j2.desc">
               Led innovation initiatives identifying opportunities for process optimization and tech advancement.
               Directed cross-functional teams to develop and implement solutions driving productivity and cost savings.
               Provided strategic recommendations on RPA, IT audit, and cybersecurity; assessed risks of emerging
@@ -176,9 +164,9 @@
                 <h3 class="job-title">RPA Developer</h3>
                 <p class="job-company">EDGE — Client: Tigo Paraguay</p>
               </div>
-              <span class="job-period">~1 year</span>
+              <span class="job-period" data-i18n="exp.j3.period">~1 year</span>
             </div>
-            <p class="job-desc">
+            <p class="job-desc" data-i18n="exp.j3.desc">
               Developed and deployed RPA automation processes for Tigo Paraguay (Millicom), one of the largest
               telecoms in the country. Designed automated workflows to reduce manual operations across
               back-office and operational areas.
@@ -199,7 +187,7 @@
               </div>
               <span class="job-period">2022</span>
             </div>
-            <p class="job-desc">
+            <p class="job-desc" data-i18n="exp.j4.desc">
               Pivotal role in QA during development of a new core CRM for a Real Estate company.
               Led middleware development focused on API creation and integration. Employed .NET Core, C#,
               SQL Integration Services, and VB Script in a Database First architecture.
@@ -215,12 +203,12 @@
           <div class="timeline-card">
             <div class="job-header">
               <div>
-                <h3 class="job-title">Business Solution Analyst</h3>
+                <h3 class="job-title" data-i18n="exp.j5.title">Business Solution Analyst</h3>
                 <p class="job-company">Nestlé Business Services</p>
               </div>
               <span class="job-period">2021 – 2022</span>
             </div>
-            <p class="job-desc">
+            <p class="job-desc" data-i18n-html="exp.j5.desc">
               Lead developer for automation projects improving FTE savings across Nestlé operations.
               Automated repetitive business tasks via Blue Prism, SAP Script, SQL, .NET, and VbScript.
               Also served as <strong>Scrum Master</strong> ensuring framework adherence, and as
@@ -242,7 +230,7 @@
               </div>
               <span class="job-period">2017 – 2021</span>
             </div>
-            <p class="job-desc">
+            <p class="job-desc" data-i18n="exp.j6.desc">
               Lead developer for client automation projects, delivering significant FTE savings through process
               analysis and end-to-end automation. Built support tools using Visual .NET, HTML/CSS/JS, jQuery,
               Azure APIs, Blue Prism, PowerShell, SQL, Python, and R. Also contributed to Data Analysis projects
@@ -265,7 +253,7 @@
               </div>
               <span class="job-period">2016 – 2017</span>
             </div>
-            <p class="job-desc">
+            <p class="job-desc" data-i18n="exp.j7.desc">
               Developed, updated, and maintained accounting and billing software products. Added new reports
               and modules using Visual .Net, ASP .Net, SQL Server, JavaScript, HTML, jQuery, XML,
               Crystal Reports, VB Script, and DevExpress.
@@ -283,21 +271,21 @@
   <!-- SKILLS -->
   <section id="skills">
     <div class="container">
-      <h2 class="section-title">Skills</h2>
+      <h2 class="section-title" data-i18n="skills.title">Skills</h2>
       <div class="skills-grid">
 
         <div class="skill-category">
-          <h3><span class="skill-icon">&#129302;</span> RPA &amp; Automation</h3>
+          <h3><span class="skill-icon">&#129302;</span> <span data-i18n="skills.cat1">RPA &amp; Automation</span></h3>
           <div class="skill-items">
             <div class="skill-item"><span>Blue Prism</span><div class="bar"><div class="fill" style="width:95%"></div></div></div>
-            <div class="skill-item"><span>Process Analysis</span><div class="bar"><div class="fill" style="width:92%"></div></div></div>
+            <div class="skill-item"><span data-i18n="skills.processAnalysis">Process Analysis</span><div class="bar"><div class="fill" style="width:92%"></div></div></div>
             <div class="skill-item"><span>VBA / VbScript</span><div class="bar"><div class="fill" style="width:90%"></div></div></div>
             <div class="skill-item"><span>SAP Automation</span><div class="bar"><div class="fill" style="width:80%"></div></div></div>
           </div>
         </div>
 
         <div class="skill-category">
-          <h3><span class="skill-icon">&#128202;</span> Data &amp; Analytics</h3>
+          <h3><span class="skill-icon">&#128202;</span> <span data-i18n="skills.cat2">Data &amp; Analytics</span></h3>
           <div class="skill-items">
             <div class="skill-item"><span>Power BI</span><div class="bar"><div class="fill" style="width:92%"></div></div></div>
             <div class="skill-item"><span>Python (Pandas/ML)</span><div class="bar"><div class="fill" style="width:85%"></div></div></div>
@@ -308,7 +296,7 @@
         </div>
 
         <div class="skill-category">
-          <h3><span class="skill-icon">&#128187;</span> Software Development</h3>
+          <h3><span class="skill-icon">&#128187;</span> <span data-i18n="skills.cat3">Software Development</span></h3>
           <div class="skill-items">
             <div class="skill-item"><span>Visual .NET / C#</span><div class="bar"><div class="fill" style="width:92%"></div></div></div>
             <div class="skill-item"><span>Python</span><div class="bar"><div class="fill" style="width:88%"></div></div></div>
@@ -319,7 +307,7 @@
         </div>
 
         <div class="skill-category">
-          <h3><span class="skill-icon">&#128451;</span> Databases</h3>
+          <h3><span class="skill-icon">&#128451;</span> <span data-i18n="skills.cat4">Databases</span></h3>
           <div class="skill-items">
             <div class="skill-item"><span>SQL Server</span><div class="bar"><div class="fill" style="width:95%"></div></div></div>
             <div class="skill-item"><span>Oracle SQL</span><div class="bar"><div class="fill" style="width:90%"></div></div></div>
@@ -329,7 +317,7 @@
         </div>
 
         <div class="skill-category">
-          <h3><span class="skill-icon">&#127959;</span> Architecture &amp; Tooling</h3>
+          <h3><span class="skill-icon">&#127959;</span> <span data-i18n="skills.cat5">Architecture &amp; Tooling</span></h3>
           <div class="skill-items">
             <div class="skill-item"><span>REST APIs / Azure APIs</span><div class="bar"><div class="fill" style="width:85%"></div></div></div>
             <div class="skill-item"><span>Git / GitHub</span><div class="bar"><div class="fill" style="width:88%"></div></div></div>
@@ -339,11 +327,11 @@
         </div>
 
         <div class="skill-category">
-          <h3><span class="skill-icon">&#127963;</span> Methodologies</h3>
+          <h3><span class="skill-icon">&#127963;</span> <span data-i18n="skills.cat6">Methodologies</span></h3>
           <div class="skill-items">
             <div class="skill-item"><span>Scrum / Scrum Master</span><div class="bar"><div class="fill" style="width:90%"></div></div></div>
             <div class="skill-item"><span>Kanban</span><div class="bar"><div class="fill" style="width:85%"></div></div></div>
-            <div class="skill-item"><span>QA / Testing</span><div class="bar"><div class="fill" style="width:88%"></div></div></div>
+            <div class="skill-item"><span data-i18n="skills.qa">QA / Testing</span><div class="bar"><div class="fill" style="width:88%"></div></div></div>
             <div class="skill-item"><span>Lean Software Dev</span><div class="bar"><div class="fill" style="width:80%"></div></div></div>
           </div>
         </div>
@@ -355,30 +343,30 @@
   <!-- EDUCATION -->
   <section id="education">
     <div class="container">
-      <h2 class="section-title">Education</h2>
+      <h2 class="section-title" data-i18n="edu.title">Education</h2>
       <div class="edu-grid">
         <div class="edu-card">
           <div class="edu-icon">&#127979;</div>
           <div>
-            <h3>Bachelor of Computer Science</h3>
+            <h3 data-i18n="edu.c1.title">Bachelor of Computer Science</h3>
             <p class="edu-school">Universidad Autónoma de Asunción</p>
-            <p class="edu-courses">OOP (C++, .NET, C#, Java) &middot; Compilers &middot; Algorithms &middot; Operating Systems &middot; Data Structures &middot; Software Quality &middot; Project Management</p>
+            <p class="edu-courses" data-i18n="edu.c1.courses">OOP (C++, .NET, C#, Java) &middot; Compilers &middot; Algorithms &middot; Operating Systems &middot; Data Structures &middot; Software Quality &middot; Project Management</p>
           </div>
         </div>
         <div class="edu-card">
           <div class="edu-icon">&#128202;</div>
           <div>
-            <h3>Diploma in Data Science</h3>
+            <h3 data-i18n="edu.c2.title">Diploma in Data Science</h3>
             <p class="edu-school">Universidad Comunera</p>
-            <p class="edu-courses">Statistics &amp; Probability &middot; Machine Learning &middot; Data Visualization &middot; Python for Data Analysis &middot; Predictive Modeling</p>
+            <p class="edu-courses" data-i18n="edu.c2.courses">Statistics &amp; Probability &middot; Machine Learning &middot; Data Visualization &middot; Python for Data Analysis &middot; Predictive Modeling</p>
           </div>
         </div>
         <div class="edu-card">
           <div class="edu-icon">&#127891;</div>
           <div>
-            <h3>Specialist in University Didactics</h3>
+            <h3 data-i18n="edu.c3.title">Specialist in University Didactics</h3>
             <p class="edu-school">Universidad del Norte</p>
-            <p class="edu-courses">Didactics Resources &amp; TICS &middot; Assessment of Learning &middot; Curricular Design &middot; Competency-Based Instruction</p>
+            <p class="edu-courses" data-i18n="edu.c3.courses">Didactics Resources &amp; TICS &middot; Assessment of Learning &middot; Curricular Design &middot; Competency-Based Instruction</p>
           </div>
         </div>
       </div>
@@ -388,15 +376,15 @@
   <!-- CONTACT -->
   <section id="contact">
     <div class="container">
-      <h2 class="section-title">Get In Touch</h2>
-      <p class="contact-subtitle">
+      <h2 class="section-title" data-i18n="contact.title">Get In Touch</h2>
+      <p class="contact-subtitle" data-i18n="contact.subtitle">
         Open to consulting engagements, RPA projects, and data analytics work.
         Based in Asunción — available remotely worldwide.
       </p>
       <div class="contact-links">
         <a href="mailto:walterlorenzopy@hotmail.com" class="contact-card">
           <span class="contact-icon">&#9993;</span>
-          <span class="contact-label">Email</span>
+          <span class="contact-label" data-i18n="contact.email">Email</span>
           <span class="contact-value">walterlorenzopy@hotmail.com</span>
         </a>
         <a href="https://linkedin.com/in/walterlorenzomontielvargas" target="_blank" class="contact-card">
@@ -406,7 +394,7 @@
         </a>
         <a href="tel:+595972199660" class="contact-card">
           <span class="contact-icon">&#128222;</span>
-          <span class="contact-label">Phone / WhatsApp</span>
+          <span class="contact-label" data-i18n="contact.phone">Phone / WhatsApp</span>
           <span class="contact-value">+595 972 199 660</span>
         </a>
       </div>
