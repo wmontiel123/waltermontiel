@@ -117,8 +117,8 @@ a:hover { color: var(--accent); }
 }
 .btn-primary { background: var(--gold-grad); color: #1a1305; border: 1px solid rgba(245,231,168,.4); }
 .btn-primary:hover { color: #000; box-shadow: 0 0 28px rgba(212,175,55,.5); transform: translateY(-1px); }
-.btn-outline { border: 1px solid var(--border); color: var(--text); }
-.btn-outline:hover { border-color: var(--accent); color: var(--accent2); }
+.btn-outline { background: #0d0b07; border: 1px solid var(--accent); color: var(--accent2); }
+.btn-outline:hover { background: #000; border-color: var(--accent2); color: var(--accent2); box-shadow: 0 0 18px rgba(212,175,55,.3); }
 
 /* ── PIXEL-ART VISUAL ── */
 .hero-visual { display: flex; flex-direction: column; align-items: center; justify-content: center; }
