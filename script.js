@@ -325,8 +325,8 @@ document.querySelectorAll('.timeline-card, .edu-card, .stat').forEach(el => {
 
   function resize() {
     const parent = canvas.parentElement;
-    const cssW = Math.min(parent.clientWidth, 380);
-    PIXEL = Math.max(10, Math.floor(cssW / (COLS + 6)));
+    const cssW = Math.min(parent.clientWidth, 260);
+    PIXEL = Math.max(7, Math.floor(cssW / (COLS + 6)));
     const w = (COLS + 6) * PIXEL;
     const h = (ROWS + 7) * PIXEL;
     const dpr = window.devicePixelRatio || 1;
