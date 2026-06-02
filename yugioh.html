@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Press+Start+2P&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     .yg-wrap { max-width: 1100px; margin: 0 auto; padding: 7.5rem 2rem 5rem; }
     .yg-back { font-family: var(--mono); font-size: .82rem; color: var(--muted); display:inline-block; margin-bottom: 1.5rem; }
@@ -17,7 +18,7 @@
     .yg-sub { color: var(--muted); max-width: 640px; margin-bottom: 2.5rem; line-height: 1.7; }
 
     .yg-input-grid { display:grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 1rem; }
-    textarea#deckInput { width:100%; min-height: 180px; resize: vertical; background: var(--card); color: var(--text);
+    textarea#deckInput { width:100%; min-height: 170px; resize: vertical; background: var(--card); color: var(--text);
       border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.1rem; font-family: var(--mono); font-size: .9rem; line-height: 1.6; }
     textarea#deckInput:focus { outline: none; border-color: rgba(212,175,55,.5); }
     .yg-formats { font-family: var(--mono); font-size: .76rem; color: var(--muted); line-height: 1.9; background: var(--bg3); border:1px solid var(--border); border-radius: 10px; padding: .8rem 1rem; }
@@ -27,29 +28,45 @@
     .yg-file-label:hover { border-color: var(--accent); color: var(--accent2); }
     #ydkFile { display:none; }
     .yg-note { font-size:.8rem; color: var(--muted); }
+    select.yg-select, input.yg-text { background: var(--card); color: var(--text); border:1px solid var(--border); border-radius:8px; padding:.5rem .7rem; font-family: var(--mono); font-size:.82rem; }
+    select.yg-select:focus, input.yg-text:focus { outline:none; border-color: rgba(212,175,55,.5); }
 
     .yg-section-title { font-size: 1.4rem; font-weight:700; margin: 2.5rem 0 1.2rem; display:inline-block; }
     .yg-section-title::after { content:''; display:block; height:3px; width:55%; background: linear-gradient(90deg, var(--accent), transparent); margin-top:.35rem; border-radius:2px; }
 
     .yg-table-wrap { overflow-x:auto; border:1px solid var(--border); border-radius:14px; }
-    table.yg-table { width:100%; border-collapse: collapse; font-size:.9rem; min-width: 720px; }
-    .yg-table th, .yg-table td { padding:.6rem .8rem; text-align:left; border-bottom:1px solid var(--border); }
-    .yg-table thead th { background: var(--bg3); font-family: var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color: var(--muted); white-space:nowrap; }
+    table.yg-table { width:100%; border-collapse: collapse; font-size:.88rem; min-width: 860px; }
+    .yg-table th, .yg-table td { padding:.55rem .7rem; text-align:left; border-bottom:1px solid var(--border); }
+    .yg-table thead th { background: var(--bg3); font-family: var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.04em; color: var(--muted); white-space:nowrap; }
     .yg-table tbody tr:hover { background: rgba(212,175,55,.04); }
-    .yg-table td.qty, .yg-table th.qty { text-align:center; width:48px; font-family:var(--mono); }
-    .yg-cat-col { text-align:center; width:84px; }
+    .yg-table td.qty, .yg-table th.qty { text-align:center; width:42px; font-family:var(--mono); }
+    .yg-cat-col { text-align:center; width:72px; }
     .yg-cardname { font-weight:500; }
+    .g2col { display:none; }
+    body.sideo .g2col { display:table-cell; }
+    .g2-input { width:48px; text-align:center; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:.25rem; font-family:var(--mono); font-size:.82rem; }
+    .zone-sel { background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:.25rem .35rem; font-family:var(--mono); font-size:.76rem; }
+    tr.zone-extra { opacity:.6; } tr.zone-side { background: rgba(122,184,209,.04); }
     .cat-chk { appearance:none; width:18px; height:18px; border:1px solid var(--border); border-radius:5px; cursor:pointer; position:relative; background: var(--card); transition: all .15s; }
     .cat-chk:hover { border-color: var(--accent); }
     .cat-chk:checked { background: var(--gold-grad); border-color: transparent; }
     .cat-chk:checked::after { content:'\2713'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#1a1305; font-size:.8rem; font-weight:700; }
 
-    .yg-stats { display:grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap:1rem; margin-top:1.5rem; }
-    .stat-card { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:1.2rem 1.3rem; }
-    .stat-card .lbl { font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); display:block; margin-bottom:.4rem; }
-    .stat-card .val { font-size:1.8rem; font-weight:700; color: var(--accent2); font-family:var(--mono); }
-    .stat-card .sub { font-size:.78rem; color:var(--muted); margin-top:.2rem; }
+    .yg-stats { display:grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap:1rem; margin-top:1.2rem; }
+    .stat-card { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:1.1rem 1.2rem; }
+    .stat-card .lbl { font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); display:block; margin-bottom:.4rem; }
+    .stat-card .val { font-size:1.7rem; font-weight:700; color: var(--accent2); font-family:var(--mono); }
+    .stat-card .val .g2v { font-size:1rem; color:var(--muted); }
+    .stat-card .sub { font-size:.76rem; color:var(--muted); margin-top:.2rem; }
     .stat-card.good .val { color:#9ad17a; } .stat-card.warn .val { color:#e0b24a; } .stat-card.bad .val { color:#e08a4a; }
+
+    .yg-toggle { display:flex; align-items:center; gap:.6rem; font-size:.85rem; color:var(--muted); cursor:pointer; }
+    .yg-toggle input { width:16px; height:16px; accent-color:#d4af37; }
+
+    .charts-grid { display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-top:1rem; }
+    .chart-box { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.2rem; }
+    .chart-box h4 { font-size:.9rem; margin-bottom:.8rem; color:var(--text); }
+    @media (max-width:760px){ .charts-grid { grid-template-columns:1fr; } }
 
     .yg-hand { display:flex; flex-wrap:wrap; gap:.7rem; margin-top:1.2rem; }
     .hand-card { background: var(--card); border:1px solid var(--border); border-radius:10px; padding:.7rem .9rem; min-width:150px; flex:1 1 160px; max-width:220px; }
@@ -63,6 +80,12 @@
     .tag.brick { color:#e08a4a; border-color:rgba(224,138,74,.4); background:rgba(224,138,74,.08); }
     .tag.none { color:var(--muted); border-color:var(--border); }
 
+    .comp-table-wrap { overflow-x:auto; border:1px solid var(--border); border-radius:14px; margin-top:1rem; }
+    table.comp-table { width:100%; border-collapse:collapse; font-size:.85rem; min-width:560px; }
+    .comp-table th, .comp-table td { padding:.6rem .8rem; border-bottom:1px solid var(--border); text-align:center; }
+    .comp-table th:first-child, .comp-table td:first-child { text-align:left; }
+    .comp-table thead th { background:var(--bg3); font-family:var(--mono); font-size:.7rem; text-transform:uppercase; color:var(--muted); }
+    .del-deck { cursor:pointer; color:#e08a4a; font-size:.75rem; font-family:var(--mono); }
     .empty-msg { color:var(--muted); font-size:.95rem; padding:1rem 0; }
   </style>
 </head>
@@ -72,21 +95,27 @@
     <a href="proyectos.html" class="yg-back">&larr; Volver a Demos</a>
     <h1 class="yg-title">Analizador de Decks <span>Yu-Gi-Oh!</span></h1>
     <p class="yg-sub">
-      Pegá tu decklist, clasificá cada carta y calculá la consistencia del deck para manos de apertura de 5 cartas.
-      Incluye un simulador de manos. Todo corre en tu navegador.
+      Cargá tu decklist, clasificá cada carta y su zona, calculá la consistencia para manos de 5 cartas,
+      probá planes de sideo (Game 2), visualizá gráficos y compará varios decks. Todo corre en tu navegador.
     </p>
 
     <h2 class="yg-section-title">1 · Cargar decklist</h2>
     <div class="yg-input-grid">
-      <textarea id="deckInput" placeholder="Pegá tu decklist aquí..."></textarea>
+      <textarea id="deckInput" placeholder="Pegá tu decklist o código .ydk aquí..."></textarea>
       <div class="yg-formats">
         Formatos aceptados:<br>
         &bull; <b>3 Ash Blossom &amp; Joyous Spring</b> &nbsp;(cantidad + nombre)<br>
         &bull; <b>Ash Blossom &amp; Joyous Spring x3</b> &nbsp;(nombre + xcantidad)<br>
-        &bull; <b>.ydk</b> &nbsp;(archivo o texto con IDs &mdash; los nombres se obtienen de YGOPRODeck)
+        &bull; <b>.ydk</b> &nbsp;(archivo o texto pegado — separa main/extra/side y obtiene nombres de YGOPRODeck)
       </div>
     </div>
     <div class="yg-actions">
+      <select class="yg-select" id="formatSel">
+        <option value="auto">Detectar formato automáticamente</option>
+        <option value="ydk">Forzar código .ydk</option>
+        <option value="text">Forzar lista de texto</option>
+      </select>
+      <input class="yg-text" id="deckName" type="text" placeholder="Nombre del deck (ej. Snake-Eye)" />
       <button class="btn btn-primary" id="loadBtn">Cargar deck</button>
       <label class="yg-file-label" for="ydkFile">&#128193; Subir archivo .ydk</label>
       <input type="file" id="ydkFile" accept=".ydk,.txt" />
@@ -95,17 +124,25 @@
 
     <div id="results" style="display:none;">
       <h2 class="yg-section-title">2 · Clasificar cartas</h2>
-      <p class="yg-sub" style="margin-bottom:1rem;">Marcá una o más categorías por carta. La consistencia se recalcula automáticamente.</p>
+      <div class="yg-actions" style="margin:.2rem 0 1rem;">
+        <label class="yg-toggle"><input type="checkbox" id="sideoToggle"> Modo post-sideo (mostrar columna Game 2)</label>
+      </div>
+      <p class="yg-sub" style="margin-bottom:1rem;">
+        Asigná la <b>zona</b> (Main / Extra / Side) y marcá las categorías. Solo el Main Deck cuenta para la consistencia.
+        En modo post-sideo, ajustá las copias de cada carta en el Main para tu plan de Game 2.
+      </p>
       <div class="yg-table-wrap">
         <table class="yg-table">
           <thead>
             <tr>
               <th class="qty">#</th>
               <th>Carta</th>
+              <th>Zona</th>
+              <th class="g2col">G2 Main</th>
               <th class="yg-cat-col">Starter</th>
               <th class="yg-cat-col">Extender</th>
               <th class="yg-cat-col">Handtrap</th>
-              <th class="yg-cat-col">Board Breaker</th>
+              <th class="yg-cat-col">Breaker</th>
               <th class="yg-cat-col">Brick</th>
             </tr>
           </thead>
@@ -116,11 +153,37 @@
       <h2 class="yg-section-title">3 · Consistencia (mano de 5)</h2>
       <div class="yg-stats" id="statsGrid"></div>
 
-      <h2 class="yg-section-title">4 · Simulador de manos</h2>
+      <h2 class="yg-section-title">4 · Gráficos</h2>
+      <div class="charts-grid">
+        <div class="chart-box"><h4>Distribución de categorías (Main)</h4><canvas id="catChart"></canvas></div>
+        <div class="chart-box"><h4>Consistencia de apertura</h4><canvas id="consChart"></canvas></div>
+      </div>
+
+      <h2 class="yg-section-title">5 · Simulador de manos</h2>
       <div class="yg-actions" style="margin-bottom:.5rem;">
+        <select class="yg-select" id="simConfig">
+          <option value="g1">Configuración Game 1 (pre-sideo)</option>
+          <option value="g2">Configuración Game 2 (post-sideo)</option>
+        </select>
         <button class="btn btn-primary" id="drawBtn">Robar mano (5 cartas)</button>
       </div>
       <div class="yg-hand" id="handArea"><p class="empty-msg">Presioná "Robar mano" para simular una apertura.</p></div>
+
+      <h2 class="yg-section-title">6 · Comparar decks</h2>
+      <div class="yg-actions" style="margin-bottom:.5rem;">
+        <button class="btn btn-outline" id="saveCompBtn">Guardar este deck para comparar</button>
+        <span class="yg-note" id="compNote"></span>
+      </div>
+      <div id="compEmpty" class="empty-msg">Aún no guardaste decks para comparar.</div>
+      <div id="compWrap" style="display:none;">
+        <div class="comp-table-wrap">
+          <table class="comp-table">
+            <thead><tr><th>Deck</th><th>Main</th><th>≥1 Starter</th><th>≥1 Handtrap</th><th>≥1 Extender</th><th>Brick risk</th><th></th></tr></thead>
+            <tbody id="compRows"></tbody>
+          </table>
+        </div>
+        <div class="chart-box" style="margin-top:1.2rem;"><h4>Comparativa de consistencia</h4><canvas id="compChart"></canvas></div>
+      </div>
     </div>
   </div>
 
@@ -132,176 +195,250 @@
       { key:'breaker',  label:'Board Breaker' },
       { key:'brick',    label:'Brick' }
     ];
-
-    // Auto-deteccion basica de handtraps comunes (se puede desmarcar)
     const KNOWN_HANDTRAPS = [
       'ash blossom','maxx','ghost ogre','effect veiler','nibiru','droll','infinite impermanence',
-      'd.d. crow','ghost belle','ghost sister','skull meister','artifact lancea','dimension shifter','gnomaterial','retaliating'
+      'd.d. crow','ghost belle','ghost sister','skull meister','artifact lancea','dimension shifter','retaliating'
     ];
 
-    let deck = []; // {name, qty, cats:{}}
+    let deck = [];          // {name, count, zone, cats:{}, g2}
+    let deckName = '';
+    let savedDecks = [];
+    let charts = {};
 
-    function comb(n,k){ if(k<0||k>n||n<0) return 0; k=Math.min(k,n-k); let r=1; for(let i=0;i<k;i++){ r = r*(n-i)/(i+1); } return r; }
-
-    function autoCats(name){
-      const n = name.toLowerCase();
-      const cats = {};
-      if (KNOWN_HANDTRAPS.some(h => n.includes(h))) cats.handtrap = true;
-      return cats;
-    }
+    function comb(n,k){ if(k<0||k>n||n<0) return 0; k=Math.min(k,n-k); let r=1; for(let i=0;i<k;i++){ r=r*(n-i)/(i+1); } return r; }
+    function autoCats(name){ const n=name.toLowerCase(); const c={}; if(KNOWN_HANDTRAPS.some(h=>n.includes(h))) c.handtrap=true; return c; }
+    function escapeHtml(s){ return s.replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
     function parseText(text){
       const map = new Map();
-      text.split(/\r?\n/).forEach(raw => {
-        let line = raw.trim();
-        if(!line || line.startsWith('#') || line.startsWith('!')) return;
-        let qty, name, m;
-        if ((m = line.match(/^(\d+)\s*[xX]?\s+(.+)$/))) { qty = +m[1]; name = m[2].trim(); }
-        else if ((m = line.match(/^(.+?)\s*[xX]\s*(\d+)$/))) { name = m[1].trim(); qty = +m[2]; }
-        else { qty = 1; name = line; }
+      text.split(/\r?\n/).forEach(raw=>{
+        let line=raw.trim();
+        if(!line||line.startsWith('#')||line.startsWith('!')) return;
+        let qty,name,m;
+        if((m=line.match(/^(\d+)\s*[xX]?\s+(.+)$/))){ qty=+m[1]; name=m[2].trim(); }
+        else if((m=line.match(/^(.+?)\s*[xX]\s*(\d+)$/))){ name=m[1].trim(); qty=+m[2]; }
+        else { qty=1; name=line; }
         if(!name) return;
-        const key = name.toLowerCase();
-        if (map.has(key)) map.get(key).qty += qty;
-        else map.set(key, { name, qty, cats: autoCats(name) });
+        const key=name.toLowerCase();
+        if(map.has(key)) map.get(key).count+=qty;
+        else map.set(key,{ name, count:qty, zone:'main', cats:autoCats(name), g2:qty });
       });
       return [...map.values()];
     }
 
     async function parseYDK(text){
-      const lines = text.split(/\r?\n/);
-      let section = '';
-      const counts = new Map();
-      for (const raw of lines){
-        const line = raw.trim();
-        if(!line) continue;
-        if(line.startsWith('#main')) { section='main'; continue; }
-        if(line.startsWith('#extra')) { section='extra'; continue; }
-        if(line.startsWith('!side')) { section='side'; continue; }
-        if(line.startsWith('#')) { section=''; continue; }
-        if(section==='main' && /^\d+$/.test(line)) counts.set(line, (counts.get(line)||0)+1);
+      const lines=text.split(/\r?\n/); let section='';
+      const counts=new Map(); // key id -> {zone, n}
+      for(const raw of lines){
+        const line=raw.trim(); if(!line) continue;
+        if(line.startsWith('#main')){ section='main'; continue; }
+        if(line.startsWith('#extra')){ section='extra'; continue; }
+        if(line.startsWith('!side')){ section='side'; continue; }
+        if(line.startsWith('#')){ section=''; continue; }
+        if((section==='main'||section==='extra'||section==='side') && /^\d+$/.test(line)){
+          const k=section+':'+line;
+          if(counts.has(k)) counts.get(k).n++; else counts.set(k,{zone:section,id:line,n:1});
+        }
       }
-      const ids = [...counts.keys()];
+      const entries=[...counts.values()];
+      const ids=[...new Set(entries.map(e=>e.id))];
       if(!ids.length) return [];
-      let names = {};
-      try {
-        const res = await fetch('https://db.ygoprodeck.com/api/v7/cardinfo.php?id=' + ids.join(','));
-        const data = await res.json();
-        (data.data||[]).forEach(c => names[String(c.id)] = c.name);
-      } catch(e) { /* offline: usar IDs */ }
-      return ids.map(id => {
-        const name = names[id] || ('Carta #' + id);
-        return { name, qty: counts.get(id), cats: autoCats(name) };
+      let names={};
+      try{
+        const res=await fetch('https://db.ygoprodeck.com/api/v7/cardinfo.php?id='+ids.join(','));
+        const data=await res.json();
+        (data.data||[]).forEach(c=>names[String(c.id)]=c.name);
+      }catch(e){}
+      return entries.map(e=>{
+        const name=names[e.id]||('Carta #'+e.id);
+        return { name, count:e.n, zone:e.zone, cats:autoCats(name), g2:(e.zone==='main'?e.n:0) };
       });
     }
 
     async function loadDeck(text){
-      const note = document.getElementById('loadNote');
-      note.textContent = 'Procesando...';
-      const isYDK = /#main/i.test(text) || /^#created/im.test(text);
+      const note=document.getElementById('loadNote');
+      note.textContent='Procesando...';
+      const fmt=document.getElementById('formatSel').value;
+      const isYDK = fmt==='ydk' || (fmt==='auto' && (/#main/i.test(text)||/^#created/im.test(text)));
       deck = isYDK ? await parseYDK(text) : parseText(text);
-      if(!deck.length){ note.textContent = 'No se detectaron cartas. Revisá el formato.'; return; }
-      const total = deck.reduce((s,c)=>s+c.qty,0);
-      note.textContent = `${deck.length} cartas distintas · ${total} en total`;
+      if(!deck.length){ note.textContent='No se detectaron cartas. Revisá el formato.'; return; }
+      deckName = document.getElementById('deckName').value.trim() || 'Deck sin nombre';
+      const main=deck.filter(c=>c.zone==='main').reduce((s,c)=>s+c.count,0);
+      const extra=deck.filter(c=>c.zone==='extra').reduce((s,c)=>s+c.count,0);
+      const side=deck.filter(c=>c.zone==='side').reduce((s,c)=>s+c.count,0);
+      note.textContent=`Main ${main} · Extra ${extra} · Side ${side}`;
       renderTable();
-      document.getElementById('results').style.display = 'block';
-      computeStats();
+      document.getElementById('results').style.display='block';
+      refresh();
     }
 
     function renderTable(){
-      const tbody = document.getElementById('cardRows');
-      tbody.innerHTML = '';
-      deck.forEach((card, i) => {
-        const tr = document.createElement('tr');
-        let cells = `<td class="qty">${card.qty}</td><td class="yg-cardname">${escapeHtml(card.name)}</td>`;
-        CATS.forEach(cat => {
-          const checked = card.cats[cat.key] ? 'checked' : '';
-          cells += `<td class="yg-cat-col"><input type="checkbox" class="cat-chk" data-i="${i}" data-cat="${cat.key}" ${checked}></td>`;
+      const tbody=document.getElementById('cardRows'); tbody.innerHTML='';
+      deck.forEach((card,i)=>{
+        const tr=document.createElement('tr');
+        tr.className='zone-'+card.zone;
+        let cells=`<td class="qty">${card.count}</td><td class="yg-cardname">${escapeHtml(card.name)}</td>`;
+        cells+=`<td><select class="zone-sel" data-i="${i}">
+            <option value="main" ${card.zone==='main'?'selected':''}>Main</option>
+            <option value="extra" ${card.zone==='extra'?'selected':''}>Extra</option>
+            <option value="side" ${card.zone==='side'?'selected':''}>Side</option>
+          </select></td>`;
+        cells+=`<td class="g2col"><input type="number" min="0" max="9" class="g2-input" data-i="${i}" value="${card.g2}"></td>`;
+        CATS.forEach(cat=>{
+          const checked=card.cats[cat.key]?'checked':'';
+          cells+=`<td class="yg-cat-col"><input type="checkbox" class="cat-chk" data-i="${i}" data-cat="${cat.key}" ${checked}></td>`;
         });
-        tr.innerHTML = cells;
-        tbody.appendChild(tr);
+        tr.innerHTML=cells; tbody.appendChild(tr);
       });
-      tbody.querySelectorAll('.cat-chk').forEach(chk => {
-        chk.addEventListener('change', e => {
-          const i = +e.target.dataset.i, cat = e.target.dataset.cat;
-          deck[i].cats[cat] = e.target.checked;
-          computeStats();
-        });
-      });
+      tbody.querySelectorAll('.cat-chk').forEach(chk=>chk.addEventListener('change',e=>{
+        deck[+e.target.dataset.i].cats[e.target.dataset.cat]=e.target.checked; refresh();
+      }));
+      tbody.querySelectorAll('.zone-sel').forEach(sel=>sel.addEventListener('change',e=>{
+        const i=+e.target.dataset.i; deck[i].zone=e.target.value;
+        if(e.target.value==='main' && deck[i].g2===0) deck[i].g2=deck[i].count;
+        e.target.closest('tr').className='zone-'+e.target.value; refresh();
+      }));
+      tbody.querySelectorAll('.g2-input').forEach(inp=>inp.addEventListener('input',e=>{
+        deck[+e.target.dataset.i].g2=Math.max(0,parseInt(e.target.value)||0); refresh();
+      }));
     }
 
-    function catCount(key){ return deck.reduce((s,c)=> s + (c.cats[key] ? c.qty : 0), 0); }
+    function metricsFor(cards){
+      const N=cards.reduce((s,c)=>s+c.copies,0); const H=5;
+      const K=key=>cards.reduce((s,c)=>s+(c.cats[key]?c.copies:0),0);
+      const pAtLeast=key=>{ const k=K(key); return (N>=H&&k)?(1-comb(N-k,H)/comb(N,H)):0; };
+      const S=K('starter');
+      const brickRisk=(N>=H)?(S?comb(N-S,H)/comb(N,H):1):1;
+      return { N, starter:pAtLeast('starter'), extender:pAtLeast('extender'), handtrap:pAtLeast('handtrap'),
+               breaker:pAtLeast('breaker'), brickRisk,
+               counts:{ starter:K('starter'),extender:K('extender'),handtrap:K('handtrap'),breaker:K('breaker'),brick:K('brick') } };
+    }
+    function g1Cards(){ return deck.filter(c=>c.zone==='main').map(c=>({copies:c.count,cats:c.cats})); }
+    function g2Cards(){ return deck.filter(c=>c.zone!=='extra'&&c.g2>0).map(c=>({copies:c.g2,cats:c.cats})); }
+
+    function refresh(){ computeStats(); drawCharts(); }
 
     function computeStats(){
-      const N = deck.reduce((s,c)=>s+c.qty,0);
-      const H = 5;
-      const grid = document.getElementById('statsGrid');
-      grid.innerHTML = '';
-      if(N < H){ grid.innerHTML = '<p class="empty-msg">El deck necesita al menos 5 cartas.</p>'; return; }
+      const sideo=document.body.classList.contains('sideo');
+      const m1=metricsFor(g1Cards());
+      const m2=sideo?metricsFor(g2Cards()):null;
+      const grid=document.getElementById('statsGrid'); grid.innerHTML='';
+      if(m1.N<5){ grid.innerHTML='<p class="empty-msg">El Main Deck necesita al menos 5 cartas.</p>'; return; }
+      const pct=v=>(v*100).toFixed(1)+'%';
+      const cls=v=>v>=0.85?'good':v>=0.6?'warn':'bad';
+      const clsB=v=>v<=0.15?'good':v<=0.4?'warn':'bad';
+      const card=(label,v1,v2,sub,clsf)=>{
+        const g2 = (sideo&&v2!=null)?` <span class="g2v">→ ${pct(v2)} G2</span>`:'';
+        return `<div class="stat-card ${clsf?clsf(v1):''}"><span class="lbl">${label}</span><span class="val">${pct(v1)}${g2}</span><div class="sub">${sub}</div></div>`;
+      };
+      let html=`<div class="stat-card"><span class="lbl">Tamaño Main</span><span class="val">${m1.N}${sideo&&m2?` <span class="g2v">→ ${m2.N} G2</span>`:''}</span><div class="sub">cartas en el Main Deck</div></div>`;
+      html+=card('Abrir con Starter', m1.starter, m2&&m2.starter, `${m1.counts.starter} copias`, cls);
+      html+=card('Abrir con Extender', m1.extender, m2&&m2.extender, `${m1.counts.extender} copias`, cls);
+      html+=card('Abrir con Handtrap', m1.handtrap, m2&&m2.handtrap, `${m1.counts.handtrap} copias`, cls);
+      html+=card('Abrir con Board Breaker', m1.breaker, m2&&m2.breaker, `${m1.counts.breaker} copias`, cls);
+      html+=card('Mano sin starter (brick)', m1.brickRisk, m2&&m2.brickRisk, 'riesgo de apertura muerta', clsB);
+      grid.innerHTML=html;
+    }
 
-      const totalCard = (label, val, sub, cls='') =>
-        `<div class="stat-card ${cls}"><span class="lbl">${label}</span><span class="val">${val}</span><div class="sub">${sub}</div></div>`;
+    function drawCharts(){
+      const m1=metricsFor(g1Cards());
+      const sideo=document.body.classList.contains('sideo');
+      const m2=sideo?metricsFor(g2Cards()):null;
+      const grid='#2a2620', txt='#b3ab98';
+      Chart.defaults.color=txt; Chart.defaults.borderColor=grid; Chart.defaults.font.family="'JetBrains Mono', monospace";
 
-      let html = totalCard('Tamaño del deck', N, 'cartas en el Main Deck');
-
-      const defs = [
-        { key:'starter',  label:'Abrir con Starter' },
-        { key:'extender', label:'Abrir con Extender' },
-        { key:'handtrap', label:'Abrir con Handtrap' },
-        { key:'breaker',  label:'Abrir con Board Breaker' }
-      ];
-      defs.forEach(d => {
-        const K = catCount(d.key);
-        const pAtLeast1 = K ? (1 - comb(N-K, H)/comb(N, H)) : 0;
-        const expected = (H*K/N);
-        const cls = pAtLeast1>=0.85 ? 'good' : pAtLeast1>=0.6 ? 'warn' : 'bad';
-        html += totalCard(d.label, (pAtLeast1*100).toFixed(1)+'%',
-          `${K} copias · ~${expected.toFixed(2)} por mano`, K?cls:'');
+      // category doughnut
+      const cc=m1.counts; const unclass=Math.max(0, m1.N-(cc.starter+cc.extender+cc.handtrap+cc.breaker));
+      if(charts.cat) charts.cat.destroy();
+      charts.cat=new Chart(document.getElementById('catChart'),{
+        type:'doughnut',
+        data:{ labels:['Starter','Extender','Handtrap','Breaker','Brick','Otros'],
+          datasets:[{ data:[cc.starter,cc.extender,cc.handtrap,cc.breaker,cc.brick,unclass],
+            backgroundColor:['#9ad17a','#7ab8d1','#d17a9a','#c9a227','#e08a4a','#4a463c'], borderColor:'#0e0d0b', borderWidth:2 }] },
+        options:{ plugins:{ legend:{ position:'bottom', labels:{ font:{size:11}, padding:10 } } } }
       });
 
-      // Starter count expectation already; brick risk = mano sin ningun starter
-      const S = catCount('starter');
-      const pNoStarter = S ? (comb(N-S, H)/comb(N, H)) : 1;
-      const clsBrick = pNoStarter<=0.15 ? 'good' : pNoStarter<=0.4 ? 'warn' : 'bad';
-      html += totalCard('Mano sin starter', (pNoStarter*100).toFixed(1)+'%', 'riesgo de brick (apertura muerta)', clsBrick);
-
-      // Cartas marcadas como Brick
-      const B = catCount('brick');
-      const pBrick1 = B ? (1 - comb(N-B, H)/comb(N, H)) : 0;
-      html += totalCard('Robar ≥1 Brick', (pBrick1*100).toFixed(1)+'%', `${B} cartas marcadas como brick`, B? (pBrick1<=0.3?'good':pBrick1<=0.55?'warn':'bad') : '');
-
-      grid.innerHTML = html;
+      // consistency bar (G1 vs G2)
+      const labels=['Starter','Extender','Handtrap','Breaker','No-brick'];
+      const d1=[m1.starter,m1.extender,m1.handtrap,m1.breaker,1-m1.brickRisk].map(v=>+(v*100).toFixed(1));
+      const datasets=[{ label:'Game 1', data:d1, backgroundColor:'rgba(212,175,55,.75)', borderColor:'#d4af37', borderWidth:1 }];
+      if(m2){ const d2=[m2.starter,m2.extender,m2.handtrap,m2.breaker,1-m2.brickRisk].map(v=>+(v*100).toFixed(1));
+        datasets.push({ label:'Game 2 (post-sideo)', data:d2, backgroundColor:'rgba(122,184,209,.6)', borderColor:'#7ab8d1', borderWidth:1 }); }
+      if(charts.cons) charts.cons.destroy();
+      charts.cons=new Chart(document.getElementById('consChart'),{
+        type:'bar', data:{ labels, datasets },
+        options:{ scales:{ y:{ beginAtZero:true, max:100, ticks:{ callback:v=>v+'%' } } }, plugins:{ legend:{ display:!!m2, position:'bottom' } } }
+      });
     }
 
     function drawHand(){
-      const pool = [];
-      deck.forEach(c => { for(let k=0;k<c.qty;k++) pool.push(c); });
-      // Fisher-Yates
+      const cfg=document.getElementById('simConfig').value;
+      const src = cfg==='g2' ? deck.filter(c=>c.zone!=='extra').map(c=>({name:c.name,copies:c.g2,cats:c.cats}))
+                             : deck.filter(c=>c.zone==='main').map(c=>({name:c.name,copies:c.count,cats:c.cats}));
+      const pool=[]; src.forEach(c=>{ for(let k=0;k<c.copies;k++) pool.push(c); });
+      const area=document.getElementById('handArea');
+      if(pool.length<5){ area.innerHTML='<p class="empty-msg">No hay suficientes cartas en esta configuración.</p>'; return; }
       for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
-      const hand = pool.slice(0,5);
-      const area = document.getElementById('handArea');
-      area.innerHTML = '';
-      hand.forEach(c => {
-        const tags = CATS.filter(cat => c.cats[cat.key]);
-        const tagHtml = tags.length
-          ? tags.map(cat => `<span class="tag ${cat.key}">${cat.label}</span>`).join('')
-          : '<span class="tag none">sin clasificar</span>';
-        const div = document.createElement('div');
-        div.className = 'hand-card';
-        div.innerHTML = `<div class="hc-name">${escapeHtml(c.name)}</div><div class="hc-tags">${tagHtml}</div>`;
+      const hand=pool.slice(0,5);
+      area.innerHTML='';
+      hand.forEach(c=>{
+        const tags=CATS.filter(cat=>c.cats[cat.key]);
+        const tagHtml=tags.length?tags.map(cat=>`<span class="tag ${cat.key}">${cat.label}</span>`).join(''):'<span class="tag none">sin clasificar</span>';
+        const div=document.createElement('div'); div.className='hand-card';
+        div.innerHTML=`<div class="hc-name">${escapeHtml(c.name)}</div><div class="hc-tags">${tagHtml}</div>`;
         area.appendChild(div);
       });
     }
 
-    function escapeHtml(s){ return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+    /* ---- comparativa ---- */
+    function loadSaved(){ try{ savedDecks=JSON.parse(localStorage.getItem('yg_saved'))||[]; }catch(e){ savedDecks=[]; } }
+    function persist(){ try{ localStorage.setItem('yg_saved', JSON.stringify(savedDecks)); }catch(e){} }
+    function saveForComparison(){
+      const m=metricsFor(g1Cards());
+      if(m.N<5){ document.getElementById('compNote').textContent='Cargá un deck válido primero.'; return; }
+      const name=(document.getElementById('deckName').value.trim()||deckName||'Deck '+(savedDecks.length+1));
+      savedDecks=savedDecks.filter(d=>d.name!==name);
+      savedDecks.push({ name, N:m.N, starter:m.starter, handtrap:m.handtrap, extender:m.extender, breaker:m.breaker, brickRisk:m.brickRisk });
+      persist(); renderComparison();
+      document.getElementById('compNote').textContent='"'+name+'" guardado.';
+    }
+    function renderComparison(){
+      const wrap=document.getElementById('compWrap'), empty=document.getElementById('compEmpty');
+      if(!savedDecks.length){ wrap.style.display='none'; empty.style.display='block'; return; }
+      empty.style.display='none'; wrap.style.display='block';
+      const rows=document.getElementById('compRows'); rows.innerHTML='';
+      const pct=v=>(v*100).toFixed(1)+'%';
+      savedDecks.forEach((d,i)=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${escapeHtml(d.name)}</td><td>${d.N}</td><td>${pct(d.starter)}</td><td>${pct(d.handtrap)}</td><td>${pct(d.extender)}</td><td>${pct(d.brickRisk)}</td><td><span class="del-deck" data-i="${i}">quitar</span></td>`;
+        rows.appendChild(tr);
+      });
+      rows.querySelectorAll('.del-deck').forEach(b=>b.addEventListener('click',e=>{ savedDecks.splice(+e.target.dataset.i,1); persist(); renderComparison(); }));
+      const labels=savedDecks.map(d=>d.name);
+      if(charts.comp) charts.comp.destroy();
+      charts.comp=new Chart(document.getElementById('compChart'),{
+        type:'bar',
+        data:{ labels, datasets:[
+          { label:'≥1 Starter', data:savedDecks.map(d=>+(d.starter*100).toFixed(1)), backgroundColor:'rgba(154,209,122,.75)' },
+          { label:'≥1 Handtrap', data:savedDecks.map(d=>+(d.handtrap*100).toFixed(1)), backgroundColor:'rgba(209,122,154,.75)' },
+          { label:'Brick risk', data:savedDecks.map(d=>+(d.brickRisk*100).toFixed(1)), backgroundColor:'rgba(224,138,74,.75)' }
+        ]},
+        options:{ scales:{ y:{ beginAtZero:true, max:100, ticks:{ callback:v=>v+'%' } } }, plugins:{ legend:{ position:'bottom' } } }
+      });
+    }
 
-    document.getElementById('loadBtn').addEventListener('click', () => loadDeck(document.getElementById('deckInput').value));
-    document.getElementById('drawBtn').addEventListener('click', drawHand);
-    document.getElementById('ydkFile').addEventListener('change', e => {
-      const file = e.target.files[0]; if(!file) return;
-      const reader = new FileReader();
-      reader.onload = ev => { document.getElementById('deckInput').value = ev.target.result; loadDeck(ev.target.result); };
+    document.getElementById('loadBtn').addEventListener('click',()=>loadDeck(document.getElementById('deckInput').value));
+    document.getElementById('drawBtn').addEventListener('click',drawHand);
+    document.getElementById('saveCompBtn').addEventListener('click',saveForComparison);
+    document.getElementById('sideoToggle').addEventListener('change',e=>{ document.body.classList.toggle('sideo',e.target.checked); refresh(); });
+    document.getElementById('ydkFile').addEventListener('change',e=>{
+      const file=e.target.files[0]; if(!file) return;
+      const reader=new FileReader();
+      reader.onload=ev=>{ document.getElementById('deckInput').value=ev.target.result; document.getElementById('formatSel').value='ydk'; loadDeck(ev.target.result); };
       reader.readAsText(file);
     });
+
+    loadSaved(); renderComparison();
   </script>
 </body>
 </html>
