@@ -1,0 +1,175 @@
+@page "/"
+@inject EstadoService Svc
+@inject IJSRuntime JS
+
+<div class="topbar">
+    <h1>🍽️ Pedidos</h1>
+    <div class="spacer"></div>
+    <button class="btn @(_editar ? "active" : "")" @onclick="ToggleEditar">
+        @(_editar ? "✓ Listo" : "✎ Editar mesas")
+    </button>
+</div>
+
+<div class="legend">
+    @foreach (var e in Estados)
+    {
+        <span><i style="background:@e.Color()"></i> @e.Label()</span>
+    }
+    <span><i style="background:#c9ccd3"></i> Libre</span>
+</div>
+
+@if (_editar)
+{
+    <p class="hint">Tocá sobre el plano para agregar una mesa. Tocá una mesa para renombrar o eliminar.</p>
+}
+
+<div class="board-wrap">
+    <div class="board @(_editar ? "edit" : "")" @ref="_board" @onclick="OnBoardClick">
+        <img src="images/floorplan.png" alt="Plano del restaurante" />
+
+        @foreach (var mesa in Svc.State.Mesas)
+        {
+            var color = mesa.Pedido is not null ? mesa.Pedido.Estado.Color() : "#c9ccd3";
+            <div class="marker"
+                 style="left:@(mesa.X.ToString(Ci))%; top:@(mesa.Y.ToString(Ci))%; background:@color;"
+                 @onclick:stopPropagation="true"
+                 @onclick="() => SeleccionarMesa(mesa)">
+                <span class="m-name">@mesa.Nombre</span>
+                @if (mesa.Pedido is not null)
+                {
+                    <span class="m-num">#@mesa.Pedido.Numero</span>
+                }
+                else
+                {
+                    <span class="m-libre">libre</span>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@if (_sel is not null)
+{
+    <div class="sheet-backdrop" @onclick="Cerrar"></div>
+    <div class="sheet">
+        @if (_editar)
+        {
+            <h2>Editar mesa</h2>
+            <p class="sub">Posición: @_sel.X.ToString("0")%, @_sel.Y.ToString("0")%</p>
+            <input class="input" @bind="_sel.Nombre" placeholder="Nombre de la mesa" />
+            <div class="sheet-actions">
+                <button class="btn danger" @onclick="EliminarMesa">🗑 Eliminar</button>
+                <button class="btn primary" @onclick="GuardarYCerrar">Guardar</button>
+            </div>
+        }
+        else if (_sel.Pedido is null)
+        {
+            <h2>@_sel.Nombre</h2>
+            <p class="sub">Mesa libre</p>
+            <div class="sheet-actions">
+                <button class="btn primary" @onclick="CrearPedido">＋ Nuevo pedido</button>
+                <button class="btn" @onclick="Cerrar">Cancelar</button>
+            </div>
+        }
+        else
+        {
+            <h2>@_sel.Nombre — Pedido #@_sel.Pedido.Numero</h2>
+            <p class="sub">
+                Estado actual:
+                <span class="estado-pill" style="background:@_sel.Pedido.Estado.Color()">@_sel.Pedido.Estado.Label()</span>
+            </p>
+
+            <div class="estado-grid">
+                @foreach (var e in Estados)
+                {
+                    <button class="estado-btn @(_sel.Pedido.Estado == e ? "sel" : "")" @onclick="() => CambiarEstado(e)">
+                        <i style="background:@e.Color()"></i> @e.Label()
+                    </button>
+                }
+            </div>
+
+            <div class="sheet-actions">
+                <button class="btn primary" @onclick="AvanzarEstado">⏭ Siguiente estado</button>
+                <button class="btn danger" @onclick="CerrarMesa">✓ Cerrar mesa</button>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private static readonly System.Globalization.CultureInfo Ci = System.Globalization.CultureInfo.InvariantCulture;
+    private static readonly EstadoPedido[] Estados =
+        (EstadoPedido[])Enum.GetValues(typeof(EstadoPedido));
+
+    private ElementReference _board;
+    private Mesa? _sel;
+    private bool _editar;
+
+    protected override async Task OnInitializedAsync() => await Svc.LoadAsync();
+
+    private void ToggleEditar()
+    {
+        _editar = !_editar;
+        _sel = null;
+    }
+
+    private void SeleccionarMesa(Mesa mesa) => _sel = mesa;
+
+    private void Cerrar() => _sel = null;
+
+    private async Task OnBoardClick(MouseEventArgs e)
+    {
+        if (!_editar) return;
+        var rect = await JS.InvokeAsync<Rect>("appBoard.rect", _board);
+        if (rect.Width <= 0 || rect.Height <= 0) return;
+        var x = (e.ClientX - rect.Left) / rect.Width * 100;
+        var y = (e.ClientY - rect.Top) / rect.Height * 100;
+        _sel = Svc.AgregarMesa(x, y);
+        await Svc.SaveAsync();
+    }
+
+    private async Task CrearPedido()
+    {
+        if (_sel is null) return;
+        Svc.CrearPedido(_sel);
+        await Svc.SaveAsync();
+    }
+
+    private async Task CambiarEstado(EstadoPedido estado)
+    {
+        if (_sel is null) return;
+        Svc.CambiarEstado(_sel, estado);
+        await Svc.SaveAsync();
+    }
+
+    private async Task AvanzarEstado()
+    {
+        if (_sel is null) return;
+        Svc.AvanzarEstado(_sel);
+        await Svc.SaveAsync();
+    }
+
+    private async Task CerrarMesa()
+    {
+        if (_sel is null) return;
+        Svc.CerrarMesa(_sel);
+        await Svc.SaveAsync();
+        _sel = null;
+    }
+
+    private async Task EliminarMesa()
+    {
+        if (_sel is null) return;
+        Svc.EliminarMesa(_sel);
+        await Svc.SaveAsync();
+        _sel = null;
+    }
+
+    private async Task GuardarYCerrar()
+    {
+        await Svc.SaveAsync();
+        _sel = null;
+    }
+
+    private record Rect(double Left, double Top, double Width, double Height);
+}
