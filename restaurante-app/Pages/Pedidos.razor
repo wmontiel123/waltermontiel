@@ -1,0 +1,67 @@
+@page "/pedidos"
+@implements IDisposable
+@inject EstadoService Svc
+
+<div class="topbar"><h1>📋 Pedidos activos</h1></div>
+
+@if (!_pedidos.Any())
+{
+    <p class="hint">No hay pedidos activos. Creá uno desde el Plano.</p>
+}
+else
+{
+    <div class="list">
+        @foreach (var (mesa, p) in _pedidos)
+        {
+            <div class="pedido-card">
+                <div class="pc-head">
+                    <span class="pc-num">#@p.Numero</span>
+                    <span class="pc-mesa">@p.MesaNombre</span>
+                    <span class="estado-pill" style="background:@p.Estado.Color()">@p.Estado.Label()</span>
+                </div>
+                <div class="pc-items">@p.ResumenItems</div>
+                <div class="pc-times">
+                    <span>⏱️ En <b>@p.Estado.Label()</b>: @TiempoUtil.Dur(_now - p.UltimoCambio)</span>
+                    <span>🕒 Total: @TiempoUtil.Dur(_now - p.Creado)</span>
+                </div>
+                <div class="pc-actions">
+                    @if (p.Estado.Siguiente() is { } sig)
+                    {
+                        <button class="btn primary" @onclick="() => Avanzar(mesa)">⏭ @sig.Label()</button>
+                    }
+                    <button class="btn" @onclick="() => Cerrar(mesa)">✓ Cerrar</button>
+                    <button class="btn danger" @onclick="() => Cancelar(mesa)">✕ Cancelar</button>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private System.Timers.Timer? _timer;
+    private DateTime _now = DateTime.Now;
+
+    private List<(Mesa Mesa, Pedido Pedido)> _pedidos =>
+        Svc.State.Mesas.Where(m => m.Pedido is not null)
+            .Select(m => (m, m.Pedido!))
+            .OrderBy(t => t.Item2.Creado)
+            .ToList();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Svc.Loaded) await Svc.LoadAsync();
+        _timer = new System.Timers.Timer(1000) { AutoReset = true };
+        _timer.Elapsed += async (_, _) =>
+        {
+            _now = DateTime.Now;
+            await InvokeAsync(StateHasChanged);
+        };
+        _timer.Start();
+    }
+
+    private async Task Avanzar(Mesa m) { Svc.AvanzarEstado(m); await Svc.SaveAsync(); }
+    private async Task Cerrar(Mesa m) { Svc.CerrarMesa(m); await Svc.SaveAsync(); }
+    private async Task Cancelar(Mesa m) { Svc.CancelarPedido(m); await Svc.SaveAsync(); }
+
+    public void Dispose() => _timer?.Dispose();
+}

@@ -6,7 +6,8 @@ public enum EstadoPedido
     EnPreparacion,
     Listo,
     Entregado,
-    Pagado
+    Pagado,
+    Cancelado
 }
 
 public static class EstadoPedidoExtensions
@@ -18,6 +19,7 @@ public static class EstadoPedidoExtensions
         EstadoPedido.Listo => "Listo",
         EstadoPedido.Entregado => "Entregado",
         EstadoPedido.Pagado => "Pagado",
+        EstadoPedido.Cancelado => "Cancelado",
         _ => "—"
     };
 
@@ -28,6 +30,7 @@ public static class EstadoPedidoExtensions
         EstadoPedido.Listo => "#5cb85c",
         EstadoPedido.Entregado => "#4aa3a3",
         EstadoPedido.Pagado => "#8a8478",
+        EstadoPedido.Cancelado => "#c0392b",
         _ => "#8a8478"
     };
 
@@ -38,5 +41,12 @@ public static class EstadoPedidoExtensions
         EstadoPedido.Listo => EstadoPedido.Entregado,
         EstadoPedido.Entregado => EstadoPedido.Pagado,
         _ => null
+    };
+
+    /// <summary>Estados del flujo normal (sin Cancelado).</summary>
+    public static readonly EstadoPedido[] Flujo =
+    {
+        EstadoPedido.Pendiente, EstadoPedido.EnPreparacion,
+        EstadoPedido.Listo, EstadoPedido.Entregado, EstadoPedido.Pagado
     };
 }

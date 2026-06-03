@@ -3,7 +3,7 @@
 @inject IJSRuntime JS
 
 <div class="topbar">
-    <h1>🍽️ Pedidos</h1>
+    <h1>🗺️ Plano</h1>
     <div class="spacer"></div>
     <button class="btn @(_editar ? "active" : "")" @onclick="ToggleEditar">
         @(_editar ? "✓ Listo" : "✎ Editar mesas")
@@ -11,7 +11,7 @@
 </div>
 
 <div class="legend">
-    @foreach (var e in Estados)
+    @foreach (var e in EstadoPedidoExtensions.Flujo)
     {
         <span><i style="background:@e.Color()"></i> @e.Label()</span>
     }
@@ -75,12 +75,41 @@
         {
             <h2>@_sel.Nombre — Pedido #@_sel.Pedido.Numero</h2>
             <p class="sub">
-                Estado actual:
+                Estado:
                 <span class="estado-pill" style="background:@_sel.Pedido.Estado.Color()">@_sel.Pedido.Estado.Label()</span>
             </p>
 
+            <h3 class="mini-title">Platos</h3>
+            @if (_sel.Pedido.Items.Count > 0)
+            {
+                <ul class="item-list">
+                    @foreach (var it in _sel.Pedido.Items.ToList())
+                    {
+                        <li><span>@it.Cantidad× @it.Nombre</span>
+                            <button class="x" @onclick="() => QuitarItem(it)">✕</button></li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="sub">Aún sin platos.</p>
+            }
+
+            <div class="add-row">
+                <input class="input flex" @bind="_nuevoPlato" placeholder="Agregar plato…" @onkeyup="OnKeyAdd" />
+                <input class="input qty" type="number" min="1" @bind="_nuevaCant" />
+                <button class="btn" @onclick="AgregarItem">＋</button>
+            </div>
+            <div class="menu-quick">
+                @foreach (var m in Menu)
+                {
+                    <button class="chip" @onclick="() => AgregarRapido(m)">@m</button>
+                }
+            </div>
+
+            <h3 class="mini-title">Estado</h3>
             <div class="estado-grid">
-                @foreach (var e in Estados)
+                @foreach (var e in EstadoPedidoExtensions.Flujo)
                 {
                     <button class="estado-btn @(_sel.Pedido.Estado == e ? "sel" : "")" @onclick="() => CambiarEstado(e)">
                         <i style="background:@e.Color()"></i> @e.Label()
@@ -89,8 +118,9 @@
             </div>
 
             <div class="sheet-actions">
-                <button class="btn primary" @onclick="AvanzarEstado">⏭ Siguiente estado</button>
-                <button class="btn danger" @onclick="CerrarMesa">✓ Cerrar mesa</button>
+                <button class="btn primary" @onclick="AvanzarEstado">⏭ Siguiente</button>
+                <button class="btn" @onclick="CerrarMesa">✓ Cerrar mesa</button>
+                <button class="btn danger" @onclick="CancelarPedido">✕ Cancelar pedido</button>
             </div>
         }
     </div>
@@ -98,14 +128,18 @@
 
 @code {
     private static readonly System.Globalization.CultureInfo Ci = System.Globalization.CultureInfo.InvariantCulture;
-    private static readonly EstadoPedido[] Estados =
-        (EstadoPedido[])Enum.GetValues(typeof(EstadoPedido));
+    private static readonly string[] Menu = { "Milanesa", "Pizza", "Hamburguesa", "Empanada", "Lomito", "Pasta", "Ensalada", "Gaseosa" };
 
     private ElementReference _board;
     private Mesa? _sel;
     private bool _editar;
+    private string _nuevoPlato = "";
+    private int _nuevaCant = 1;
 
-    protected override async Task OnInitializedAsync() => await Svc.LoadAsync();
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Svc.Loaded) await Svc.LoadAsync();
+    }
 
     private void ToggleEditar()
     {
@@ -114,7 +148,6 @@
     }
 
     private void SeleccionarMesa(Mesa mesa) => _sel = mesa;
-
     private void Cerrar() => _sel = null;
 
     private async Task OnBoardClick(MouseEventArgs e)
@@ -132,6 +165,33 @@
     {
         if (_sel is null) return;
         Svc.CrearPedido(_sel);
+        await Svc.SaveAsync();
+    }
+
+    private async Task AgregarItem()
+    {
+        if (_sel?.Pedido is null) return;
+        Svc.AgregarItem(_sel.Pedido, _nuevoPlato, _nuevaCant < 1 ? 1 : _nuevaCant);
+        _nuevoPlato = ""; _nuevaCant = 1;
+        await Svc.SaveAsync();
+    }
+
+    private async Task AgregarRapido(string nombre)
+    {
+        if (_sel?.Pedido is null) return;
+        Svc.AgregarItem(_sel.Pedido, nombre, 1);
+        await Svc.SaveAsync();
+    }
+
+    private async Task OnKeyAdd(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") await AgregarItem();
+    }
+
+    private async Task QuitarItem(ItemPedido it)
+    {
+        if (_sel?.Pedido is null) return;
+        Svc.QuitarItem(_sel.Pedido, it);
         await Svc.SaveAsync();
     }
 
@@ -153,6 +213,14 @@
     {
         if (_sel is null) return;
         Svc.CerrarMesa(_sel);
+        await Svc.SaveAsync();
+        _sel = null;
+    }
+
+    private async Task CancelarPedido()
+    {
+        if (_sel is null) return;
+        Svc.CancelarPedido(_sel);
         await Svc.SaveAsync();
         _sel = null;
     }

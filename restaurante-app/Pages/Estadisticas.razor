@@ -1,0 +1,81 @@
+@page "/estadisticas"
+@inject EstadoService Svc
+
+<div class="topbar">
+    <h1>📊 Estadísticas</h1>
+    <div class="spacer"></div>
+    <button class="btn danger" @onclick="Reiniciar">↺ Reiniciar datos</button>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="lbl">Tiempo promedio por pedido</span>
+        <span class="val">@(_prom is { } p ? TiempoUtil.Dur(p) : "—")</span>
+        <span class="sub">de creación a cierre (@_completados completados)</span>
+    </div>
+    <div class="stat-card">
+        <span class="lbl">Mesas procesadas / día</span>
+        <span class="val">@_porDia.ToString("0.0")</span>
+        <span class="sub">promedio de pedidos cerrados por día</span>
+    </div>
+    <div class="stat-card">
+        <span class="lbl">Pedidos activos</span>
+        <span class="val">@_activos</span>
+        <span class="sub">en curso ahora</span>
+    </div>
+    <div class="stat-card">
+        <span class="lbl">Cancelados</span>
+        <span class="val">@_cancelados</span>
+        <span class="sub">pedidos cancelados</span>
+    </div>
+</div>
+
+<h2 class="section-h">🍽️ Platos más pedidos</h2>
+@if (_platos.Count == 0)
+{
+    <p class="hint">Todavía no se cargaron platos.</p>
+}
+else
+{
+    <div class="bars">
+        @{ var max = _platos.Max(x => x.Cantidad); }
+        @foreach (var (nombre, cant) in _platos)
+        {
+            <div class="bar-row">
+                <span class="bar-name">@nombre</span>
+                <div class="bar-track"><div class="bar-fill" style="width:@(cant * 100 / max)%"></div></div>
+                <span class="bar-val">@cant</span>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private TimeSpan? _prom;
+    private double _porDia;
+    private int _completados, _cancelados, _activos;
+    private List<(string Nombre, int Cantidad)> _platos = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Svc.Loaded) await Svc.LoadAsync();
+        Calcular();
+    }
+
+    private void Calcular()
+    {
+        _prom = Svc.PromedioTiempoPedido();
+        _porDia = Svc.PromedioMesasPorDia();
+        _completados = Svc.Completados().Count;
+        _cancelados = Svc.Cancelados();
+        _activos = Svc.Activos().Count();
+        _platos = Svc.PlatosMasPedidos();
+    }
+
+    private async Task Reiniciar()
+    {
+        Svc.ReiniciarTodo();
+        await Svc.SaveAsync();
+        Calcular();
+    }
+}
