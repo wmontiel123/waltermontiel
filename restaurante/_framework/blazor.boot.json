@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "RestaurantePedidos",
   "resources": {
-    "hash": "sha256-GXpPlfd+AB1xds9dEEqf8mLH3S1abrR7u5dSBu/QfCU=",
+    "hash": "sha256-qfhIrWNxDlO6cdGUclwqQsZJr3djkmzdvQF2yYTOECo=",
     "jsModuleNative": {
       "dotnet.native.8.0.27.j4bmvmwwb6.js": "sha256-sn/g61GjVPhViOYQDkq1OMlk0eyS9r2Hi0qgU2o0HIU="
     },
@@ -31,7 +31,7 @@
       "Microsoft.Extensions.Primitives.wasm": "sha256-6187ynEahDlSLMBvD4vAmiLpZ3clRb5xu6rM7O8AxNo=",
       "Microsoft.JSInterop.wasm": "sha256-yJqP01uZioaEiigeZk2MqlS6FByRHoAV190k1c/lU7E=",
       "Microsoft.JSInterop.WebAssembly.wasm": "sha256-9AzNVd3i686bkW6t2r1ANE2xjkU7ZjxukvxCXHYb7EY=",
-      "RestaurantePedidos.wasm": "sha256-VAivzmbU6kviFXOvSR4aLyqKU2IScP+uHj5b9CAoq0c=",
+      "RestaurantePedidos.wasm": "sha256-sZPbUOW2RX8Y9U5+ahTAcrWSG8kmOwzUuYMnKaWLfeE=",
       "System.Collections.Concurrent.wasm": "sha256-/6n3MsmCYkdUmIkaVXhQ7ZQ8nUrDfay2sT93iGdA3dk=",
       "System.Collections.wasm": "sha256-MUvlXLcVFRFBf3mYEhReg7bgscL6sn09p9uhsjS4ofw=",
       "System.ComponentModel.Primitives.wasm": "sha256-hb+T+uJfQFlnhU1rEyEWuPCNy0MqqvB+Gaf2ygXmJwQ=",
