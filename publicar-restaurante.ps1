@@ -15,7 +15,9 @@ $dst     = Join-Path $repo "restaurante"
 $baseHref = "/waltermontiel/restaurante/"
 
 Write-Host "==> Publicando (Release)..." -ForegroundColor Cyan
-dotnet publish $appDir -c Release -o (Join-Path $appDir "publish") --nologo -v quiet
+$pubDir = Join-Path $appDir "publish"
+if (Test-Path $pubDir) { Remove-Item $pubDir -Recurse -Force }   # limpiar salida vieja
+dotnet publish $appDir -c Release -o $pubDir --nologo -v quiet
 $src = Join-Path $appDir "publish\wwwroot"
 if (-not (Test-Path $src)) { throw "No se encontro la salida de publish en $src" }
 
@@ -24,12 +26,18 @@ if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
 New-Item -ItemType Directory -Path $dst | Out-Null
 Copy-Item "$src\*" $dst -Recurse -Force
 
-# Ajustar base href para la subruta de GitHub Pages
+# Ajustar base href para la subruta de GitHub Pages (preservando UTF-8 sin BOM)
 $idx = Join-Path $dst "index.html"
-(Get-Content $idx -Raw) -replace '<base href="/" />', "<base href=""$baseHref"" />" | Set-Content $idx -Encoding utf8
+$utf8 = New-Object System.Text.UTF8Encoding($false)
+$html = [System.IO.File]::ReadAllText($idx)
+$html = $html.Replace('<base href="/" />', "<base href=""$baseHref"" />")
+[System.IO.File]::WriteAllText($idx, $html, $utf8)
 
 # .nojekyll para que se sirva la carpeta _framework
 New-Item -ItemType File -Path (Join-Path $dst ".nojekyll") -Force | Out-Null
+
+# 404.html = index.html (fallback de rutas SPA en GitHub Pages)
+Copy-Item $idx (Join-Path $dst "404.html") -Force
 
 Write-Host "==> Listo. base href = $baseHref" -ForegroundColor Green
 

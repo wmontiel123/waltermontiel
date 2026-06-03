@@ -1,0 +1,15 @@
+# La app Blazor publicada (restaurante/) NO debe sufrir conversión de saltos
+# de línea: sus archivos llevan hashes de integridad calculados al publicar.
+# Cualquier conversión CRLF rompería el arranque en GitHub Pages.
+restaurante/** -text
+
+# Binarios comunes: tratarlos como tales en todo el repo
+*.wasm binary
+*.dll binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.dat binary
+*.br binary
+*.gz binary
