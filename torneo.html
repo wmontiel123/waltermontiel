@@ -54,6 +54,7 @@
     .panel { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.2rem 1.3rem; }
     .panel h3 { font-size:1.05rem; margin-bottom:.9rem; }
 
+    #standingsWrap { overflow-x:auto; }
     table.tn-table { width:100%; border-collapse:collapse; font-size:.85rem; }
     .tn-table th, .tn-table td { padding:.45rem .55rem; border-bottom:1px solid var(--border); text-align:center; }
     .tn-table th:first-child, .tn-table td:first-child { text-align:left; }
@@ -103,6 +104,36 @@
 
     .empty-msg { color:var(--muted); font-size:.92rem; padding:.6rem 0; }
     .hidden { display:none; }
+
+    /* ── mobile ── */
+    @media (max-width:600px){
+      .tn-wrap { padding: 6rem 1rem 4rem; }
+      .tn-section-title { margin: 1.6rem 0 .9rem; font-size:1.2rem; }
+      .tn-actions { gap:.6rem; }
+      .tn-actions .btn, #startBtn { flex:1 1 auto; text-align:center; }
+      .fmt-group { width:100%; }
+      .fmt-btn { flex:1; padding:.55rem .5rem; }
+      .cfg-row { gap:.7rem; }
+      .cfg-field input { width:60px; }
+
+      .tn-toolbar { gap:.55rem; padding:.8rem .9rem; }
+      .tn-toolbar .spacer { display:none; }
+      .tn-roundlbl { width:100%; }
+      .tn-toolbar #addName { flex:1 1 100%; width:auto; }
+      .tn-toolbar .btn { flex:1 1 auto; text-align:center; }
+
+      .panel { padding:1rem .9rem; }
+      .tn-table th, .tn-table td { padding:.4rem .35rem; font-size:.8rem; }
+      .tn-table th:nth-child(5), .tn-table td:nth-child(5) { display:none; } /* hide Buchholz to save width */
+
+      .match { gap:.4rem; }
+      .slot-sel { flex:1 1 calc(50% - .9rem); max-width:none; min-width:0; }
+      .match .vs { display:none; }
+      .res-btns { flex:1 1 100%; justify-content:space-between; }
+      .res-btn { flex:1; text-align:center; }
+
+      .br-round { min-width:150px; }
+    }
   </style>
 </head>
 <body>
