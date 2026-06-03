@@ -4,7 +4,17 @@
     </Found>
     <NotFound>
         <LayoutView Layout="@typeof(MainLayout)">
-            <p>Página no encontrada.</p>
+            <div class="manual">
+                <h1>🍽️ Gestor de Pedidos</h1>
+                <p class="manual-sub">Demo en C# (Blazor WebAssembly). Guía rápida:</p>
+                <ol class="manual-list">
+                    <li><b>🗺️ Plano:</b> tocá una mesa → <i>Nuevo pedido</i>, agregá platos y cambiá el estado.</li>
+                    <li><b>📋 Pedidos:</b> lista de pedidos activos con el tiempo en cada estado.</li>
+                    <li><b>📊 Estadísticas:</b> tiempos promedio, platos top y mesas por día.</li>
+                    <li><b>✎ Editar mesas:</b> (en el Plano) tocá el plano para mover o agregar mesas.</li>
+                </ol>
+                <a class="manual-cta" href="">Empezar →</a>
+            </div>
         </LayoutView>
     </NotFound>
 </Router>
