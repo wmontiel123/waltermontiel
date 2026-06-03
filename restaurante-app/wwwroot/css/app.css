@@ -132,3 +132,14 @@ body {
 .bar-track { flex: 1; height: 12px; background: #242833; border-radius: 999px; overflow: hidden; }
 .bar-fill { height: 100%; background: linear-gradient(90deg, #b8902a, #f5e7a8); border-radius: 999px; }
 .bar-val { width: 30px; text-align: right; color: var(--accent); font-weight: 700; }
+
+/* ---- Blazor error UI (oculto por defecto; Blazor lo muestra ante un error real) ---- */
+#blazor-error-ui {
+    display: none;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000;
+    background: #2a1414; color: #ffb4a0; border-top: 1px solid #c0392b;
+    padding: .7rem 1.2rem; font-size: .9rem;
+    box-shadow: 0 -2px 12px rgba(0,0,0,.4);
+}
+#blazor-error-ui .reload { color: var(--accent); margin-left: .4rem; }
+#blazor-error-ui .dismiss { cursor: pointer; float: right; color: #ffb4a0; }
