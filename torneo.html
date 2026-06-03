@@ -167,6 +167,7 @@
         <!-- standings / bracket -->
         <div class="panel" id="leftPanel">
           <h3 id="leftTitle" data-i18n="standings">Tabla de posiciones</h3>
+          <div id="champWrap" class="hidden" style="margin-bottom:1rem;"></div>
           <div id="standingsWrap"></div>
           <div id="bracketWrap"></div>
         </div>
@@ -380,6 +381,15 @@
         document.getElementById('bracketWrap').classList.add('hidden');
         renderStandings(); renderSwissRound();
         const done=TS.rounds.length>=TS.totalRounds;
+        // declare champion when the tournament is over and the final round is fully reported
+        const last=TS.rounds[TS.rounds.length-1];
+        const finished=done && last && last.matches.every(m=>m.result!=null);
+        const champWrap=document.getElementById('champWrap');
+        if(finished){
+          const top=standings().filter(s=>{ const p=TS.players.find(x=>x.id===s.id); return p && !p.dropped; })[0];
+          champWrap.innerHTML = top ? `<div class="br-champion"><div class="lbl">${t('champion')}</div><div class="name">${esc(pName(top.id))}</div></div>` : '';
+          champWrap.classList.remove('hidden');
+        } else { champWrap.innerHTML=''; champWrap.classList.add('hidden'); }
         document.getElementById('nextBtn').disabled=done;
         document.getElementById('nextBtn').style.opacity=done?'.45':'';
         document.getElementById('nextBtn').classList.remove('hidden');
@@ -389,6 +399,7 @@
         document.getElementById('roundLbl').textContent = fmtName;
         document.getElementById('leftTitle').textContent = t('bracket');
         document.getElementById('standingsWrap').classList.add('hidden');
+        document.getElementById('champWrap').classList.add('hidden');
         document.getElementById('bracketWrap').classList.remove('hidden');
         renderBracket();
         document.getElementById('nextBtn').classList.add('hidden');
