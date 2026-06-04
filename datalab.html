@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Predictive Analytics Lab — Python &amp; R | Walter Montiel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    .dl-wrap { max-width: 1100px; margin: 0 auto; padding: 7.5rem 2rem 5rem; }
+    .dl-back { font-family: var(--mono); font-size:.82rem; color: var(--muted); display:inline-block; margin-bottom:1.5rem; }
+    .dl-back:hover { color: var(--accent2); }
+    .dl-title { font-size: clamp(1.9rem,5vw,3rem); font-weight:700; margin-bottom:.5rem; }
+    .dl-title span { background: var(--gold-grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+    .dl-sub { color: var(--muted); max-width:680px; margin-bottom:2rem; line-height:1.7; }
+    .dl-h { font-size:1.3rem; font-weight:700; margin:2.2rem 0 1rem; display:inline-block; }
+    .dl-h::after { content:''; display:block; height:3px; width:55%; background:linear-gradient(90deg,var(--accent),transparent); margin-top:.3rem; border-radius:2px; }
+
+    .table-wrap { overflow:auto; max-height:240px; border:1px solid var(--border); border-radius:12px; }
+    table.dt { width:100%; border-collapse:collapse; font-size:.84rem; font-family:var(--mono); min-width:420px; }
+    .dt th,.dt td { padding:.4rem .7rem; border-bottom:1px solid var(--border); text-align:right; }
+    .dt th:first-child,.dt td:first-child { text-align:left; }
+    .dt thead th { position:sticky; top:0; background:var(--bg3); color:var(--muted); font-size:.72rem; text-transform:uppercase; }
+
+    .lang-tabs { display:flex; gap:.5rem; margin:1rem 0; }
+    .lang-tab { font-family:var(--mono); font-size:.85rem; padding:.5rem 1.1rem; border:1px solid var(--border); border-radius:999px; background:var(--card); color:var(--muted); cursor:pointer; }
+    .lang-tab.active { background: var(--gold-grad); color:#1a1305; border-color:transparent; font-weight:700; }
+    .run-row { display:flex; align-items:center; gap:.9rem; flex-wrap:wrap; margin-bottom:1rem; }
+    .status { font-family:var(--mono); font-size:.8rem; color:var(--muted); }
+
+    .cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:1rem; margin-bottom:1.2rem; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1rem 1.1rem; }
+    .card .lbl { font-family:var(--mono); font-size:.7rem; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:.35rem; }
+    .card .val { font-size:1.6rem; font-weight:700; color:var(--accent2); font-family:var(--mono); }
+    .card .sub { font-size:.72rem; color:var(--muted); }
+
+    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; }
+    @media (max-width:820px){ .grid2 { grid-template-columns:1fr; } }
+    .panel { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.2rem; }
+    .panel h4 { font-size:.85rem; margin-bottom:.8rem; }
+    table.coef { width:100%; border-collapse:collapse; font-family:var(--mono); font-size:.85rem; }
+    .coef td { padding:.4rem .2rem; border-bottom:1px solid var(--border); }
+    .coef td:last-child { text-align:right; color:var(--accent2); }
+
+    .pred-row { display:flex; gap:1rem; flex-wrap:wrap; align-items:flex-end; }
+    .field { display:flex; flex-direction:column; gap:.3rem; }
+    .field label { font-size:.74rem; color:var(--muted); font-family:var(--mono); }
+    .field input { width:110px; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:8px; padding:.5rem; font-family:var(--mono); }
+    .pred-out { font-size:2rem; font-weight:700; color:var(--accent); font-family:var(--mono); }
+    .muted-note { color:var(--muted); font-size:.8rem; margin-top:1rem; line-height:1.6; }
+  </style>
+</head>
+<body>
+  <div class="dl-wrap">
+    <a href="proyectos.html" class="dl-back">&larr; Volver a Demos</a>
+    <h1 class="dl-title">Predictive <span>Analytics Lab</span></h1>
+    <p class="dl-sub">
+      Análisis de datos y modelado predictivo en el navegador. Entrenamos una <b>regresión lineal múltiple</b>
+      (gasto en TV, Radio y Diario → Ventas) ejecutando el modelo en <b>Python (numpy / Pyodide)</b> o
+      <b>R (lm / WebR)</b>, con métricas, gráfico de ajuste y un predictor interactivo. Sin servidor — todo WASM.
+    </p>
+
+    <h2 class="dl-h">1 · Dataset</h2>
+    <p class="dl-sub" style="margin-bottom:.8rem;">Gasto publicitario (en miles) y ventas resultantes. <span id="nrows"></span> observaciones.</p>
+    <div class="table-wrap">
+      <table class="dt">
+        <thead><tr><th>#</th><th>TV</th><th>Radio</th><th>Diario</th><th>Ventas</th></tr></thead>
+        <tbody id="dataRows"></tbody>
+      </table>
+    </div>
+
+    <h2 class="dl-h">2 · Entrenar modelo</h2>
+    <div class="lang-tabs" id="langTabs">
+      <button class="lang-tab active" data-lang="py">🐍 Python (numpy)</button>
+      <button class="lang-tab" data-lang="r">📊 R (lm)</button>
+    </div>
+    <div class="run-row">
+      <button class="btn btn-primary" id="trainBtn">▶ Entrenar regresión</button>
+      <span class="status" id="status"></span>
+    </div>
+
+    <div id="results" style="display:none;">
+      <div class="cards" id="metricCards"></div>
+      <div class="grid2">
+        <div class="panel">
+          <h4>Coeficientes del modelo</h4>
+          <table class="coef" id="coefTable"></table>
+          <p class="muted-note">Ventas ≈ intercepto + β·gasto. Un coeficiente mayor = más impacto por cada mil invertido.</p>
+        </div>
+        <div class="panel">
+          <h4>Ajuste: Ventas reales vs. predichas</h4>
+          <canvas id="fitChart"></canvas>
+        </div>
+      </div>
+
+      <h2 class="dl-h">3 · Predicción interactiva</h2>
+      <div class="panel">
+        <div class="pred-row">
+          <div class="field"><label>TV</label><input type="number" id="inTV" value="150"></div>
+          <div class="field"><label>Radio</label><input type="number" id="inRadio" value="25"></div>
+          <div class="field"><label>Diario</label><input type="number" id="inNews" value="30"></div>
+          <button class="btn btn-primary" id="predBtn">Predecir ventas</button>
+          <div class="pred-out" id="predOut">—</div>
+        </div>
+        <p class="muted-note">Usa los coeficientes del último modelo entrenado (<span id="modelLang">—</span>).</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ---- Dataset sintético determinista (reproducible) ----
+  function genData(n){
+    let s = 42;
+    const rnd = () => { s = (s*1103515245 + 12345) & 0x7fffffff; return s/0x7fffffff; };
+    const rows = [];
+    for(let i=0;i<n;i++){
+      const TV = +(rnd()*290+10).toFixed(1);
+      const Radio = +(rnd()*48+2).toFixed(1);
+      const News = +(rnd()*95+5).toFixed(1);
+      const Sales = +(4 + 0.047*TV + 0.19*Radio + 0.012*News + (rnd()-0.5)*3.2).toFixed(2);
+      rows.push({TV, Radio, Newspaper:News, Sales});
+    }
+    return rows;
+  }
+  const DATA = genData(60);
+  const $ = id => document.getElementById(id);
+
+  (function renderData(){
+    $('nrows').textContent = DATA.length;
+    const tb = $('dataRows');
+    DATA.forEach((r,i)=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${i+1}</td><td>${r.TV}</td><td>${r.Radio}</td><td>${r.Newspaper}</td><td>${r.Sales}</td>`;
+      tb.appendChild(tr);
+    });
+  })();
+
+  let lang='py';
+  let lastModel=null;
+  let chart=null;
+
+  document.querySelectorAll('.lang-tab').forEach(t=>t.onclick=()=>{
+    document.querySelectorAll('.lang-tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active'); lang=t.dataset.lang;
+  });
+  function setStatus(s){ $('status').textContent=s; }
+
+  // ---- Python (Pyodide + numpy) ----
+  let pyodide=null;
+  async function getPyodide(){
+    if(pyodide) return pyodide;
+    setStatus('Cargando Python + numpy…');
+    pyodide = await loadPyodide();
+    await pyodide.loadPackage('numpy');
+    return pyodide;
+  }
+  async function trainPython(){
+    const py = await getPyodide();
+    setStatus('Entrenando en Python…');
+    py.globals.set('DATA_JSON', JSON.stringify(DATA));
+    const code = `
+import json, numpy as np
+data = json.loads(DATA_JSON)
+X = np.array([[r['TV'], r['Radio'], r['Newspaper']] for r in data], float)
+y = np.array([r['Sales'] for r in data], float)
+Xb = np.column_stack([np.ones(len(X)), X])
+beta, *_ = np.linalg.lstsq(Xb, y, rcond=None)
+pred = Xb @ beta
+ss_res = float(((y - pred)**2).sum())
+ss_tot = float(((y - y.mean())**2).sum())
+r2 = 1 - ss_res/ss_tot
+rmse = (ss_res/len(y))**0.5
+json.dumps({"intercept":float(beta[0]),"coef":[float(b) for b in beta[1:]],
+            "r2":r2,"rmse":rmse,"pred":pred.tolist(),"actual":y.tolist()})
+`;
+    return JSON.parse(await py.runPythonAsync(code));
+  }
+
+  // ---- R (WebR + lm) ----
+  let webR=null;
+  async function getWebR(){
+    if(webR) return webR;
+    setStatus('Cargando R (WebR)…');
+    const { WebR } = await import('https://webr.r-wasm.org/latest/webr.mjs');
+    webR = new WebR(); await webR.init();
+    return webR;
+  }
+  async function trainR(){
+    const w = await getWebR();
+    setStatus('Entrenando en R…');
+    const TV=DATA.map(r=>r.TV).join(','), Radio=DATA.map(r=>r.Radio).join(',');
+    const News=DATA.map(r=>r.Newspaper).join(','), Sales=DATA.map(r=>r.Sales).join(',');
+    const rcode = `
+df <- data.frame(TV=c(${TV}), Radio=c(${Radio}), Newspaper=c(${News}), Sales=c(${Sales}))
+m <- lm(Sales ~ TV + Radio + Newspaper, df)
+co <- coef(m); p <- as.numeric(predict(m))
+ssr <- sum(resid(m)^2); sst <- sum((df$Sales - mean(df$Sales))^2)
+list(intercept=unname(co[1]), coef=unname(co[2:4]), r2=1-ssr/sst,
+     rmse=sqrt(ssr/nrow(df)), pred=p, actual=df$Sales)
+`;
+    const o = await w.evalR(rcode);
+    const j = await o.toJs();
+    if(w.destroy) await w.destroy(o);
+    const obj={}; j.names.forEach((n,i)=>{ obj[n]=j.values[i].values; });
+    return { intercept:obj.intercept[0], coef:obj.coef, r2:obj.r2[0], rmse:obj.rmse[0], pred:obj.pred, actual:obj.actual };
+  }
+
+  function renderModel(m){
+    lastModel = m;
+    $('results').style.display='block';
+    $('modelLang').textContent = lang==='py' ? 'Python / numpy' : 'R / lm';
+
+    $('metricCards').innerHTML =
+      `<div class="card"><span class="lbl">R²</span><span class="val">${m.r2.toFixed(3)}</span><div class="sub">bondad de ajuste</div></div>`+
+      `<div class="card"><span class="lbl">RMSE</span><span class="val">${m.rmse.toFixed(2)}</span><div class="sub">error típico (ventas)</div></div>`+
+      `<div class="card"><span class="lbl">Observaciones</span><span class="val">${m.actual.length}</span><div class="sub">filas usadas</div></div>`;
+
+    const names=['Intercepto','TV','Radio','Diario'];
+    const vals=[m.intercept, ...m.coef];
+    $('coefTable').innerHTML = names.map((n,i)=>`<tr><td>${n}</td><td>${vals[i].toFixed(4)}</td></tr>`).join('');
+
+    const pts = m.actual.map((a,i)=>({x:a, y:m.pred[i]}));
+    const lo=Math.min(...m.actual, ...m.pred), hi=Math.max(...m.actual, ...m.pred);
+    Chart.defaults.color='#b3ab98'; Chart.defaults.borderColor='#2a2620';
+    if(chart) chart.destroy();
+    chart = new Chart($('fitChart'), {
+      type:'scatter',
+      data:{ datasets:[
+        { label:'Real vs Predicho', data:pts, backgroundColor:'rgba(212,175,55,.65)', pointRadius:4 },
+        { label:'Ideal (y=x)', type:'line', data:[{x:lo,y:lo},{x:hi,y:hi}], borderColor:'#7ab8d1', borderWidth:1.5, pointRadius:0 }
+      ]},
+      options:{ scales:{ x:{title:{display:true,text:'Ventas reales'}}, y:{title:{display:true,text:'Ventas predichas'}} },
+                plugins:{ legend:{position:'bottom'} } }
+    });
+  }
+
+  $('trainBtn').onclick = async () => {
+    $('trainBtn').disabled = true;
+    try {
+      const m = lang==='py' ? await trainPython() : await trainR();
+      renderModel(m);
+      setStatus('Modelo entrenado.');
+    } catch(e){
+      setStatus('Error: '+(e.message||e));
+    } finally { $('trainBtn').disabled = false; }
+  };
+
+  $('predBtn').onclick = () => {
+    if(!lastModel){ $('predOut').textContent='entrená primero'; return; }
+    const x=[+$('inTV').value||0, +$('inRadio').value||0, +$('inNews').value||0];
+    const yhat = lastModel.intercept + lastModel.coef[0]*x[0] + lastModel.coef[1]*x[1] + lastModel.coef[2]*x[2];
+    $('predOut').textContent = yhat.toFixed(2);
+  };
+  </script>
+</body>
+</html>
