@@ -63,6 +63,7 @@
 
     <div class="lang-tabs" id="langTabs">
       <button class="lang-tab active" data-lang="py">🐍 Python</button>
+      <button class="lang-tab" data-lang="js">🟨 JS / TS</button>
       <button class="lang-tab" data-lang="r">📊 R</button>
     </div>
 
@@ -152,6 +153,98 @@
         {name:'min(normalizar(1:5)) == 0', expr:'abs(min(normalizar(c(1,2,3,4,5)))) < 1e-9'},
         {name:'max(normalizar(1:5)) == 1', expr:'abs(max(normalizar(c(1,2,3,4,5))) - 1) < 1e-9'}
       ]
+    },
+
+    {
+      id:'py-refactor', lang:'py', kind:'refactor', title:'Refactor: contar_palabras',
+      spec:`<b>Refactor.</b> <code>contar_palabras(texto)</code> funciona pero es verboso. Refactoralo (por ejemplo con <code>str.split()</code> y <code>collections.Counter</code>) <b>manteniendo el mismo comportamiento</b> — los tests deben seguir en verde.`,
+      code:`def contar_palabras(texto):
+    palabras = texto.split(' ')
+    d = {}
+    for p in palabras:
+        if p == '':
+            continue
+        if p in d:
+            d[p] = d[p] + 1
+        else:
+            d[p] = 1
+    return d`,
+      tests:[
+        {name:'"a b a" → {a:2, b:1}', expr:'contar_palabras("a b a")=={"a":2,"b":1}'},
+        {name:'espacios extra colapsan', expr:'contar_palabras("  hola   mundo  ")=={"hola":1,"mundo":1}'},
+        {name:'cadena vacía → {}', expr:'contar_palabras("")=={}'}
+      ]
+    },
+    {
+      id:'py-testgen', lang:'py', kind:'testgen', fn:'es_primo', title:'Generar tests: es_primo',
+      spec:`<b>Generación de tests.</b> Escribí <code>check(es_primo)</code> que devuelva <code>True</code> si la función es correcta. Los tests starter pasan en la implementación correcta <b>y también en una con bug</b> — <b>agregá casos borde</b> para que detecten el bug (pista: ¿qué pasa con <code>n &lt; 2</code>?).`,
+      code:`def check(es_primo):
+    # TODO: agregá más casos para detectar bugs (n=0, 1, negativos...)
+    if es_primo(7) is not True: return False
+    if es_primo(8) is not False: return False
+    return True`,
+      reference:`def es_primo(n):
+    if n < 2: return False
+    i = 2
+    while i*i <= n:
+        if n % i == 0: return False
+        i += 1
+    return True`,
+      mutant:`def es_primo(n):
+    if n < 2: return True
+    i = 2
+    while i*i <= n:
+        if n % i == 0: return False
+        i += 1
+    return True`
+    },
+
+    {
+      id:'js-slug', lang:'js', kind:'impl', title:'Implementar: slugify',
+      spec:`Implementá <code>slugify(s)</code>: minúsculas, espacios/símbolos → guiones, sin guiones al inicio/fin. Es la <b>implementación de referencia</b>.`,
+      code:`function slugify(s) {
+  return s
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}`,
+      tests:[
+        {name:'"Hello, World!" → hello-world', expr:'slugify("Hello, World!")==="hello-world"'},
+        {name:'espacios → "spaced-out"', expr:'slugify("  spaced  out  ")==="spaced-out"'},
+        {name:'ya es slug', expr:'slugify("already-slug")==="already-slug"'}
+      ]
+    },
+    {
+      id:'js-refactor', lang:'js', kind:'refactor', title:'Refactor: totalConDescuento',
+      spec:`<b>Refactor.</b> Limpiá <code>totalConDescuento(items)</code> (usá <code>reduce</code>, eliminá variables intermedias) <b>sin cambiar el comportamiento</b>. 10% de descuento si el subtotal supera 100.`,
+      code:`function totalConDescuento(items) {
+  var total = 0;
+  for (var i = 0; i < items.length; i++) {
+    total = total + items[i].precio * items[i].cant;
+  }
+  var desc = 0;
+  if (total > 100) { desc = total * 0.1; } else { desc = 0; }
+  var fin = total - desc;
+  return fin;
+}`,
+      tests:[
+        {name:'sin descuento: 10×2 = 20', expr:'totalConDescuento([{precio:10,cant:2}])===20'},
+        {name:'con descuento: 60×2 = 108', expr:'totalConDescuento([{precio:60,cant:2}])===108'},
+        {name:'vacío → 0', expr:'totalConDescuento([])===0'}
+      ]
+    },
+    {
+      id:'js-testgen', lang:'js', kind:'testgen', title:'Generar tests: isEven',
+      spec:`<b>Generación de tests.</b> Escribí <code>check(isEven)</code> que devuelva <code>true</code> si la función es correcta. Los tests starter pasan en la correcta <b>y en una con bug</b> — <b>agregá casos</b> para detectar el bug.`,
+      code:`function check(isEven) {
+  // TODO: agregá más casos para detectar bugs
+  if (isEven(4) !== true) return false;
+  if (isEven(3) !== false) return false;
+  return true;
+}`,
+      reference:`function (n) { return n % 2 === 0; }`,
+      mutant:`function (n) { return n % 4 === 0; }`
     }
   ];
 
@@ -257,6 +350,83 @@ json.dumps(_results)
     return results;
   }
 
+  // ---- Python (test-generation) ----
+  async function runPythonTestGen(code, task){
+    const py = await getPyodide();
+    setStatus('Ejecutando…');
+    py.globals.set('USER_CODE', code);
+    py.globals.set('REF_SRC', task.reference);
+    py.globals.set('MUT_SRC', task.mutant);
+    py.globals.set('FN', task.fn);
+    const runner = `
+import json
+_res = []
+_ns = {}
+try:
+    exec(USER_CODE, _ns)
+    _check = _ns.get("check")
+    if _check is None: raise NameError("falta la función check(fn)")
+    _r = {}; exec(REF_SRC, _r); _ref = _r[FN]
+    _m = {}; exec(MUT_SRC, _m); _mut = _m[FN]
+    try:
+        _ok1 = _check(_ref) is True
+        _res.append({"name":"Tus tests pasan en la implementación correcta","ok":_ok1,"msg":"" if _ok1 else "check devolvió no-True"})
+    except Exception as e:
+        _res.append({"name":"Pasan en la correcta","ok":False,"msg":f"{type(e).__name__}: {e}"})
+    try:
+        _ok2 = _check(_mut) is False
+        _res.append({"name":"Tus tests detectan el bug (mutante)","ok":_ok2,"msg":"" if _ok2 else "no detectaron el bug — agregá casos"})
+    except Exception as e:
+        _res.append({"name":"Detectan el bug","ok":False,"msg":f"{type(e).__name__}: {e}"})
+except Exception as e:
+    _res.append({"name":"Ejecución del código","ok":False,"msg":f"{type(e).__name__}: {e}"})
+json.dumps(_res)
+`;
+    const out = await py.runPythonAsync(runner);
+    return JSON.parse(out);
+  }
+
+  // ---- JavaScript / TypeScript ----
+  function runJS(code, tests){
+    const results = [];
+    let evalIn;
+    try {
+      const factory = new Function(code + "\n; return function(__expr){ return eval(__expr); };");
+      evalIn = factory();
+    } catch(e){
+      return [{name:'Ejecución del código', ok:false, msg:String(e.message||e)}];
+    }
+    for(const t of tests){
+      try { const ok = !!evalIn(t.expr); results.push({name:t.name, ok, msg: ok?'':'esperado true'}); }
+      catch(e){ results.push({name:t.name, ok:false, msg:String(e.message||e)}); }
+    }
+    return results;
+  }
+
+  function runJSTestGen(code, task){
+    let check;
+    try {
+      const factory = new Function(code + "\n; return (typeof check==='function') ? check : null;");
+      check = factory();
+    } catch(e){ return [{name:'Ejecución del código', ok:false, msg:String(e.message||e)}]; }
+    if(!check) return [{name:'Definí check(fn)', ok:false, msg:'falta function check(fn)'}];
+    const res = [];
+    let correct, mutant;
+    try { correct = eval('(' + task.reference + ')'); mutant = eval('(' + task.mutant + ')'); }
+    catch(e){ return [{name:'Cargar implementaciones', ok:false, msg:String(e.message||e)}]; }
+    try { const ok = check(correct) === true; res.push({name:'Tus tests pasan en la implementación correcta', ok, msg: ok?'':'check devolvió no-true'}); }
+    catch(e){ res.push({name:'Pasan en la correcta', ok:false, msg:String(e.message||e)}); }
+    try { const ok = check(mutant) === false; res.push({name:'Tus tests detectan el bug (mutante)', ok, msg: ok?'':'no detectaron el bug — agregá casos'}); }
+    catch(e){ res.push({name:'Detectan el bug', ok:false, msg:String(e.message||e)}); }
+    return res;
+  }
+
+  async function execTask(task, code){
+    if(task.lang==='py') return task.kind==='testgen' ? runPythonTestGen(code, task) : runPython(code, task.tests);
+    if(task.lang==='js') return task.kind==='testgen' ? runJSTestGen(code, task) : runJS(code, task.tests);
+    return runR(code, task.tests);
+  }
+
   function setStatus(s){ $('status').textContent=s; }
 
   function renderResults(results){
@@ -279,8 +449,7 @@ json.dumps(_results)
     $('runBtn').disabled=true;
     try {
       const code=$('editor').value;
-      const results = current.lang==='py' ? await runPython(code, current.tests)
-                                          : await runR(code, current.tests);
+      const results = await execTask(current, code);
       renderResults(results);
       setStatus('Listo.');
     } catch(e){
